@@ -1,0 +1,4 @@
+Canción actual en uso en el proyecto:
+- Perros y Gatos - Macha y el Bloque Depresivo.mp3
+
+(Si en el futuro deseas cambiarla por otra canción, puedes colocarla aquí y actualizar la ruta del archivo <audio id="bg-audio" src="..."> en index.html).

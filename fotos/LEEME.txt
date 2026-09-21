@@ -1,0 +1,10 @@
+Coloca aquí tus 6 fotos con los siguientes nombres exactos:
+
+- foto1.jpg
+- foto2.jpg
+- foto3.jpg
+- foto4.jpg
+- foto5.jpg
+- foto6.jpg
+
+(Si tus imágenes son en formato .png o .jpeg, puedes renombrarlas a .jpg o actualizar la extensión en el array RECUERDOS dentro de index.html).

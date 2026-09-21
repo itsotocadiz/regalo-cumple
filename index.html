@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feliz Cumpleaños, Mi Amor</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Indie+Flower&family=Kalam:wght@400;700&family=Marck+Script&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+            handwriting: ['"Caveat"', '"Patrick Hand"', '"Indie Flower"', 'cursive'],
+            typewriter: ['"Special Elite"', 'cursive'],
+          },
+          colors: {
+            rosewood: '#1e0c12',
+            blush: '#ffd5dd',
+            champagne: '#fbf7f4',
+            velvet: '#e11d48',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Cursor personalizado de perrito */
+    html, body {
+      cursor: url('assets/perrito-cursor.png') 0 0, auto;
+    }
+
+    a, button, input, textarea, select, label, .cursor-pointer {
+      cursor: url('assets/perrito-cursor.png') 0 0, pointer !important;
+    }
+
+    /* Estilos 3D para el Flip de Polaroids con máxima nitidez de imagen */
+    .perspective-1000 {
+      perspective: 1200px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .polaroid-card {
+      transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1), box-shadow 0.3s ease;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .polaroid-card img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: high-quality;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    .polaroid-card.is-flipped {
+      transform: rotateY(180deg) scale(1.03) !important;
+    }
+
+    /* Cinta adhesiva Washi Tape decorativa */
+    .washi-tape {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 110px;
+      height: 28px;
+      background: rgba(255, 235, 220, 0.65);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      border-left: 2px dashed rgba(210, 180, 160, 0.4);
+      border-right: 2px dashed rgba(210, 180, 160, 0.4);
+      z-index: 10;
+    }
+
+    /* Efectos de brillo de fondo y partículas */
+    .ambient-glow {
+      background: radial-gradient(circle at 50% 20%, rgba(244, 114, 182, 0.15), transparent 60%),
+                  radial-gradient(circle at 80% 80%, rgba(251, 113, 133, 0.12), transparent 50%),
+                  radial-gradient(circle at 20% 70%, rgba(254, 205, 211, 0.2), transparent 50%);
+    }
+
+    /* Canvas para partículas interactivas */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Ocultar barra de desplazamiento manteniendo la fluidez */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fbf7f4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f472b6;
+      border-radius: 4px;
+    }
+
+    /* Estilo máquina de escribir para la Carta de Amor */
+    .carta-texto-maquina {
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+      line-height: 1.7;
+      color: #443e3e;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    .carta-texto-maquina p {
+      margin-bottom: 1.25rem;
+    }
+    .carta-texto-maquina strong {
+      color: #1e0c12;
+    }
+    .carta-firma {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+    }
+    .carta-firma .firma-principal {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #e11d48;
+    }
+    .carta-firma .firma-subtexto {
+      font-size: 0.85rem;
+      color: #78716c;
+      margin-top: 0.25rem;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+
+<body class="bg-[#faf5f3] text-stone-800 font-sans antialiased selection:bg-rose-200 selection:text-rose-900 relative overflow-x-hidden min-h-screen">
+
+  <!-- Canvas de partículas flotantes de fondo -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- PANTALLA DE BLOQUEO PRIVADA -->
+  <div id="gatekeeper-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#150a0e]/90 backdrop-blur-md px-4 transition-all duration-700">
+    <div class="max-w-md w-full bg-white/95 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-rose-100 text-center relative overflow-hidden">
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-200 rounded-full blur-2xl opacity-60"></div>
+      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-200 rounded-full blur-2xl opacity-60"></div>
+      
+      <div class="relative z-10">
+        <div class="w-16 h-16 mx-auto mb-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+          🔒
+        </div>
+        <h2 class="font-serif text-3xl text-rose-950 font-bold mb-2">Un Espacio Solo Para Ti</h2>
+        <p class="text-stone-600 text-sm mb-6 leading-relaxed px-2">Para ingresar debes anotar el nombre del amor más puro que has recibido, amor de queso 🧀 y boca chueca</p>
+        
+        <form id="gatekeeper-form" class="space-y-4" onsubmit="handleUnlock(event)">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="passcode-input" 
+              placeholder="Escribe el nombre aquí... 💕" 
+              class="w-full px-5 py-3.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-rose-50/40 text-center text-base sm:text-lg font-medium text-stone-800 tracking-wider transition-all placeholder:text-stone-400 placeholder:text-sm"
+              autocomplete="off"
+              required
+            >
+          </div>
+          <p id="error-msg" class="text-xs text-rose-600 font-medium hidden">¡Ups! Esa no es la clave secreta, inténtalo de nuevo amor ❤️</p>
+          <button 
+            type="submit" 
+            class="w-full py-3.5 bg-gradient-to-r from-rose-500 via-rose-600 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium rounded-xl shadow-lg shadow-rose-300/40 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <span>Desbloquear Mi Regalo</span>
+            <span>✨</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPRODUCTOR DE MÚSICA FLOTANTE VINTAGE -->
+  <!-- Elemento de audio con la canción agregada -->
+  <audio id="bg-audio" src="./musica/Perros y Gatos - Macha y el Bloque Depresivo.mp3" loop preload="auto"></audio>
+  <div id="music-player" class="fixed bottom-5 right-5 z-40 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl border border-rose-200/80 flex items-center gap-3 transition-transform duration-300 hover:scale-105">
+    <button id="music-toggle-btn" onclick="toggleMusic()" class="w-11 h-11 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white flex items-center justify-center shadow-md shadow-rose-300 focus:outline-none hover:opacity-90">
+      <span id="play-icon">▶</span>
+    </button>
+    <div class="text-left pr-2 select-none">
+      <p id="song-title" class="text-xs font-bold text-stone-800 tracking-wide truncate max-w-[160px] sm:max-w-[220px]">Perros y Gatos</p>
+      <p id="song-artist" class="text-[10px] text-stone-500 font-medium truncate max-w-[160px] sm:max-w-[220px]">Macha y el Bloque Depresivo</p>
+      <div class="flex items-center gap-2 mt-0.5">
+        <span class="text-[10px] text-rose-500 font-medium" id="song-status">Pausado</span>
+        <div class="w-1.5 h-1.5 rounded-full bg-rose-400" id="audio-pulse"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="relative z-10 ambient-glow min-h-screen">
+    <!-- Header / Hero -->
+    <header class="max-w-4xl mx-auto pt-16 pb-12 px-6 text-center">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 text-xs font-semibold uppercase tracking-widest mb-6 shadow-sm">
+        ✨ Hoy es tu día especial ✨
+      </span>
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-serif font-bold text-stone-900 tracking-tight leading-tight mb-4">
+        ¡Feliz Cumpleaños, <br class="hidden sm:inline" />
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500">Babu!</span>
+      </h1>
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-stone-600 leading-relaxed font-light mb-8">
+        Cada momento a tu lado es el regalo más hermoso de mi vida. Me siento profundamente orgulloso de la mujer increíble que camina a mi lado, y por eso creé este pequeño rincón para ti: un espacio lleno del cariño sincero de los seres que te aman con lo más puro y noble de su corazón.
+      </p>
+
+      <!-- Contador de tiempo o días especiales juntos -->
+      <div class="inline-flex flex-wrap items-center justify-center gap-4 bg-white/70 backdrop-blur-md px-6 py-4 rounded-2xl border border-rose-100 shadow-sm">
+        <div class="text-center px-3">
+          <span id="counter-days" class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">0</span>
+          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Días de Amor</p>
+        </div>
+        <div class="w-px h-8 bg-rose-100"></div>
+        <div class="text-center px-3">
+          <span id="counter-smiles" class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">∞</span>
+          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Sonrisas Compartidas</p>
+        </div>
+        <div class="w-px h-8 bg-rose-100"></div>
+        <div class="text-center px-3">
+          <span class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">365</span>
+          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Nuevos Deseos</p>
+        </div>
+      </div>
+      
+      <!-- Detalle de fecha de inicio y badge especial si lo abre en su cumpleaños -->
+      <div class="mt-3 flex flex-col items-center gap-1.5">
+        <p class="text-xs text-stone-500 font-medium">Juntos desde el <span class="text-rose-600 font-semibold">5 de Marzo de 2022</span> ❤️</p>
+        <div id="bday-special-badge" class="hidden px-4 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs font-semibold shadow-md animate-pulse">
+          🎂 ¡Hoy es 27 de Noviembre, tu Cumpleaños! Feliz día mi amor 🎉
+        </div>
+      </div>
+
+      <p class="text-xs text-rose-400/90 mt-4 italic font-medium">👇 Toca cualquier foto Polaroid para darle la vuelta y leer su secreto</p>
+    </header>
+
+    <!-- GALERÍA POLAROID INTERACTIVA -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+      <div id="polaroid-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 perspective-1000">
+        <!-- Las fotos se cargan dinámicamente desde el array en JavaScript para fácil edición -->
+      </div>
+    </section>
+
+    <!-- CARTA O MENSAJE FINAL ROMÁNTICO -->
+    <section class="max-w-3xl mx-auto px-6 py-16">
+      <div class="bg-white/85 backdrop-blur-lg p-8 sm:p-12 rounded-3xl shadow-xl border border-rose-100 relative overflow-hidden">
+        <div class="washi-tape"></div>
+        <div class="text-center mb-6">
+          <span class="text-3xl">💌</span>
+          <h3 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-2">Para el amor de mi vida</h3>
+          <p class="text-xs text-rose-500 font-medium">Un deseo sincero desde lo más profundo de mi corazón</p>
+        </div>
+        <div class="carta-texto-maquina">
+          <p>
+            Si tuviera que programar en código mi destino,<br>
+            elegiría mil veces coincidir en tu camino.<br>
+            Porque eres la luz que reinicia cualquier mal día,<br>
+            el algoritmo perfecto de mi paz y mi alegría.
+          </p>
+          <p>
+            Recuerdo el viento en la playa en nuestro último viaje,<br>
+            tu risa ganándole al mar y a todo el paisaje.<br>
+            Entre mochilas, caminos, desvelos y estudio sin fin,<br>
+            hacer equipo contigo es mi mayor festín.<br>
+            No importa la ruta ni cuán lejos vayamos a andar,<br>
+            en cualquier coordenada tú siempre serás mi hogar.
+          </p>
+          <p>
+            A tu lado camina esta hermosa y loca manada:<br>
+            <strong>NALA</strong>, nube blanca de energía renovada,<br>
+            un angelito travieso listo para la aventura,<br>
+            llenando la casa de juegos, saltos y dulzura.
+          </p>
+          <p>
+            Y <strong>JULIETA</strong>, negrita de nobleza y corazón singular,<br>
+            con sus manías y su mundo que solo tú sabes descifrar.<br>
+            Un amor diferente, tan presente y leal,<br>
+            que encuentra en tus caricias su calma especial.
+          </p>
+          <p>
+            Y desde una estrella que nunca deja de brillar,<br>
+            <strong>ROMEO</strong>, tu eterno chetito, te vuelve a abrazar.<br>
+            Con su aroma a quesito y su amor protector,<br>
+            cuidando tus pasos con infinito calor.
+          </p>
+          <p>
+            Hoy celebro tu vida, tu bondad y tu existir,<br>
+            el orgullo inmenso de verte crecer y sonreír.<br>
+            Que este nuevo año te traiga sueños cumplidos a montones,<br>
+            más playas, más rutas y millones de emociones.
+          </p>
+          <p><strong>¡Feliz cumpleaños, mi amor!</strong></p>
+        </div>
+
+        <div class="carta-firma">
+          <p class="firma-principal">Talo, Romeo, Nala & Juli ❤️</p>
+          <p class="firma-subtexto">🐾 Tus acompañantes de viaje 🐾</p>
+        </div>
+        
+        <div class="mt-8 flex justify-center">
+          <button onclick="launchLoveBurst()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold rounded-full shadow-md shadow-rose-300 transition-transform active:scale-95 flex items-center gap-2">
+            <span>Presiona para recibir un abrazo virtual</span>
+            <span>💖</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-xs text-stone-400">
+      Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!
+    </footer>
+  </main>
+
+  <script>
+    /* =========================================================================
+       1. DATOS DE LOS RECUERDOS (FÁCILMENTE EDITABLE)
+       -------------------------------------------------------------------------
+       📸 FOTOS: Guarda tus imágenes en la carpeta "fotos/" con los nombres foto1.jpg, foto2.jpg, etc.
+       ✏️ TEXTOS: Puedes personalizar 'titulo', 'fecha' y 'nota' (mensaje secreto) a tu gusto.
+       ========================================================================= */
+    const RECUERDOS = [
+      {
+        id: 1,
+        imagen: "./fotos/foto 1.jpg", // 📸 Foto 1
+        titulo: "Tu arcoíris", // ✏️ Título
+        inclinacionTexto: "-3deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M7 17a5 5 0 0 1 10 0"/><circle cx="19" cy="8" r="1.2" fill="#222"/><circle cx="17" cy="6" r="1" fill="#222"/><circle cx="21" cy="6" r="1" fill="#222"/><path d="M19 10c-1 0-1.5.8-1.5 1.2 0 .5.7 1 1.5 1s1.5-.5 1.5-1c0-.4-.5-1.2-1.5-1.2z" fill="#222"/></svg>`,
+        nota: "Un angelito blanco que a tu vida llegó,\nde nuevas energías tu mundo llenó.\nCompañera fiel de juegos y dulzura,\nlista para compartir cada nueva aventura.", // ✏️ Poema en rima
+        firma: "NALITA (*)", // ✏️ Firma estilo máquina / MSN 2000s
+        rotacion: "-2deg"
+      },
+      {
+        id: 2,
+        imagen: "./fotos/foto 2.jpg", // 📸 Foto 2
+        titulo: "Sonrisa que contagia", // ✏️ Título
+        inclinacionTexto: "2.5deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><circle cx="12" cy="12" r="7"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9.5 14a3.5 3.5 0 0 0 5 0"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/></svg>`,
+        nota: "Esa sonrisa hermosa que en tu rostro brilla,\nes la magia viva que todo lo maravilla.\nComo las flores frescas que despiertan en el jardín,\ny el canto matutino de las aves sin fin.", // ✏️ Poema en rima
+        firma: "Babu", // ✏️ Firma estilo máquina
+        rotacion: "2.5deg"
+      },
+      {
+        id: 3,
+        imagen: "./fotos/foto 3.jpg", // 📸 Foto 3
+        titulo: "Tu eterno chetito", // ✏️ Título
+        inclinacionTexto: "-2deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M6 18c3-1 6-5 5-9s4-5 6-3 1 6-2 9-6 4-9 3z" stroke-dasharray="0.5 1.5"/><path d="M16 4c1 1 1 2 0 3"/><path d="M19 5c1.2 1.2 1.2 2.5 0 3.7"/><path d="M5 14c-.5.8-.3 1.8.5 2.2"/></svg>`,
+        nota: "Fui tu fiel compañero en cada camino y andar,\ncon un amor tan puro que nunca dejará de brillar.\nRecuerda mis patitas con olor a chetitos de queso,\nque siempre te cuidarán desde el cielo con un beso.", // ✏️ Poema en rima
+        firma: "ROMEO 🐾", // ✏️ Firma estilo máquina
+        rotacion: "-1.5deg"
+      },
+      {
+        id: 4,
+        imagen: "./fotos/foto 4.jpg", // 📸 Foto 4
+        titulo: "Nuestros momentos", // ✏️ Título
+        inclinacionTexto: "3deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="m3 12 18-9-9 18-2-7-7-2z"/><path d="M12 12l9-9"/><path d="M16 16c-1-1.5-2.5-.5-2.5 0s1.5 2.5 2.5 3.5c1-1 2.5-3 2.5-3.5s-1.5-1.5-2.5 0z" fill="#222"/></svg>`,
+        nota: "Entre viajes, mochilas y rutas por descubrir,\nlibros, desvelos y metas por cumplir.\nCon pelitos en la ropa y risas sin fin,\nconstruir esta vida a tu lado es mi mejor festín.", // ✏️ Poema en rima
+        firma: "Talito <3", // ✏️ Firma estilo máquina / MSN 2000s
+        rotacion: "3deg"
+      },
+      {
+        id: 5,
+        imagen: "./fotos/foto 5.jpg", // 📸 Foto 5
+        titulo: "Un amor diferente", // ✏️ Título
+        inclinacionTexto: "-2.8deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M12 12c-2-2-4 0-2 2s4 2 4-1-2-4-4-3-3 4-1 6 6 1 7-2"/><circle cx="18" cy="8" r="1" fill="#222"/><circle cx="20" cy="10" r="0.9" fill="#222"/><circle cx="16" cy="10" r="0.9" fill="#222"/></svg>`,
+        nota: "Llegué a este hogar con mi forma especial de querer,\nun amor tan único que pocos logran entender.\nCon mis pequeñas fijaciones y mi mundo singular,\naquí estoy presente para cuidarte y acompañar.", // ✏️ Poema en rima
+        firma: "JULIETA 🐾", // ✏️ Firma estilo máquina
+        rotacion: "-2.8deg"
+      },
+      {
+        id: 6,
+        imagen: "./fotos/foto 6.jpg", // 📸 Foto 6
+        titulo: "Nobleza de tu alma", // ✏️ Título
+        inclinacionTexto: "2deg",
+        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M12 20s-7-4.5-8.5-8.5C2 7.5 5 4 8.5 6.5L12 9.5l3.5-3C19 4 22 7.5 20.5 11.5 19 15.5 12 20 12 20z"/><path d="M19 4l1.5-1.5"/><path d="M22 6h-2"/><path d="M4 4l-1.5-1.5"/></svg>`,
+        nota: "Miras donde pocos ven y sabes escuchar,\nsanando silencios con solo acariciar.\nTu nobleza no pide nada a cambio al entregar,\neres pura empatía y amor sin condición al cuidar.", // ✏️ Poema en rima
+        firma: "Babu (*)", // ✏️ Firma estilo máquina / MSN 2000s
+        rotacion: "1.8deg"
+      }
+    ];
+
+    /* =========================================================================
+       CONFIGURACIÓN PERSONALIZADA: CLAVE SECRETA Y FECHA DE ANIVERSARIO
+       ========================================================================= */
+
+    // 🔑 CLAVE DE ACCESO:
+    const claveCorrecta = "romeo";
+    const SECRET_PASSCODE = claveCorrecta; 
+
+    // 📅 FECHA DE INICIO DE SU HISTORIA: 5 de Marzo del 2022
+    // (En JavaScript los meses van de 0 a 11: 0 = Enero, 1 = Febrero, 2 = Marzo...)
+    // Con esta fecha, cuando ella lo abra el 27 de noviembre mostrará la cantidad exacta de días juntos.
+    const FECHA_INICIO = new Date(2022, 2, 5);
+
+    /* =========================================================================
+       2. GENERACIÓN DE TARJETAS POLAROID 3D
+       ========================================================================= */
+    const polaroidGrid = document.getElementById('polaroid-grid');
+
+    function renderPolaroids() {
+      polaroidGrid.innerHTML = RECUERDOS.map((recuerdo) => `
+        <div class="relative w-full aspect-[4/5] min-h-[440px] max-h-[520px] cursor-pointer group" onclick="toggleFlip(this)">
+          <div class="washi-tape"></div>
+          
+          <!-- Contenedor 3D Flip con proporción Polaroid auténtica -->
+          <div class="polaroid-card w-full h-full transform-style-3d relative rounded-2xl shadow-lg hover:shadow-2xl bg-white p-3.5 sm:p-4 border border-stone-200/70"
+               style="transform: rotate(${recuerdo.rotacion});">
+            
+            <!-- CARA FRONTAL (Polaroid Clásica con Garabato a Mano) -->
+            <div class="absolute inset-0 p-3.5 sm:p-4 bg-white rounded-2xl backface-hidden flex flex-col justify-between shadow-sm">
+              <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 relative shadow-inner">
+                <img 
+                  src="${recuerdo.imagen}" 
+                  alt="${recuerdo.titulo}" 
+                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  decoding="async"
+                  onerror="this.src='https://placehold.co/600x600/ffd5dd/1e0c12?text=Momento+Especial'"
+                />
+                <span class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-rose-600 px-2.5 py-1 rounded-full shadow-sm font-sans">
+                  Girar 🔄
+                </span>
+              </div>
+              
+              <!-- Texto mecanografiado que ingresa ligeramente sobre la foto con inclinación natural y dibujo SVG -->
+              <div class="relative -mt-6 sm:-mt-7 pt-1 pb-2 px-1 text-center z-20 pointer-events-none select-none flex items-center justify-center">
+                <div class="inline-flex items-center justify-center py-1.5 px-3.5 bg-white/95 backdrop-blur-[2px] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-stone-200/90 transition-transform duration-300 group-hover:scale-105"
+                     style="transform: rotate(${recuerdo.inclinacionTexto || '-2deg'}); display: flex; align-items: center; justify-content: center;">
+                  <h4 class="font-typewriter text-base sm:text-lg font-bold text-stone-900 tracking-wide flex items-center justify-center m-0">
+                    <span>${recuerdo.titulo}</span>
+                    ${recuerdo.svgDoodle}
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARA TRASERA (Estilo Máquina de Escribir Vintage) -->
+            <div class="absolute inset-0 p-6 sm:p-7 bg-[#fffdfa] rounded-2xl backface-hidden rotate-y-180 flex flex-col justify-between border-2 border-stone-200/80 shadow-inner">
+              <div class="flex-1 flex flex-col justify-center">
+                <h4 class="font-typewriter text-xl sm:text-2xl font-bold text-stone-900 mb-3 tracking-wide">${recuerdo.titulo}</h4>
+                <p class="font-typewriter text-xs sm:text-[13.5px] text-stone-800 leading-relaxed tracking-wider whitespace-pre-line">
+                  "${recuerdo.nota}"
+                </p>
+              </div>
+              
+              <div class="pt-3 border-t border-stone-200/70 flex items-center justify-between">
+                <span class="font-typewriter text-base sm:text-lg text-stone-900 font-bold tracking-wider">${recuerdo.firma || 'Siempre juntos'}</span>
+                <span class="font-typewriter text-[11px] text-stone-400">Toca para volver</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFlip(container) {
+      const card = container.querySelector('.polaroid-card');
+      card.classList.toggle('is-flipped');
+      // Sonido de clic sutil / interacción háptica
+      playChime(600, 0.05);
+    }
+
+    /* =========================================================================
+       3. SISTEMA DE DESBLOQUEO Y VALIDACIÓN
+       ========================================================================= */
+    function handleUnlock(e) {
+      e.preventDefault();
+      const inputClave = document.getElementById('passcode-input');
+      const input = inputClave.value.trim().toLowerCase();
+      const errorMsg = document.getElementById('error-msg');
+      const gatekeeper = document.getElementById('gatekeeper-screen');
+
+      if (input === claveCorrecta.toLowerCase()) {
+        errorMsg.classList.add('hidden');
+        
+        // Efecto confeti de celebración
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#f43f5e', '#fb7185', '#fda4af', '#fecdd3', '#ffe4e6']
+        });
+
+        // Ocultar modal con transición fluida
+        gatekeeper.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => {
+          gatekeeper.style.display = 'none';
+        }, 700);
+
+        // Iniciar música automáticamente tras desbloquear
+        startMusic();
+      } else {
+        errorMsg.classList.remove('hidden');
+        const inputElem = document.getElementById('passcode-input');
+        inputElem.classList.add('border-red-400', 'animate-shake');
+        setTimeout(() => {
+          inputElem.classList.remove('border-red-400', 'animate-shake');
+        }, 600);
+      }
+    }
+
+    /* =========================================================================
+       4. REPRODUCTOR DE MÚSICA DUAL:
+          - Prioridad 1: Archivo MP3 './musica/cancion.mp3'
+          - Respaldo: Sintetizador Web Audio API si no existe el archivo o falla
+       ========================================================================= */
+    const bgAudio = document.getElementById('bg-audio');
+    let audioCtx = null;
+    let isPlaying = false;
+    let musicInterval = null;
+    let currentNoteIndex = 0;
+    let usingCustomAudio = false;
+
+    // Patrones de notas para las diferentes melodías sintetizadas de respaldo (frecuencias en Hz)
+    const MELODIES = {
+      sweet: [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 440.00, 349.23, 261.63, 392.00], // Cálido
+      dream: [329.63, 392.00, 493.88, 587.33, 493.88, 392.00, 329.63, 293.66, 369.99],       // Vals soñador
+      starlight: [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 783.99]           // Caja de música
+    };
+
+    let selectedMelody = 'sweet';
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playNote(freq, duration = 0.6) {
+      if (!audioCtx) return;
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      // Sonido tipo Rhodes / campana suave
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playChime(freq = 520, duration = 0.1) {
+      initAudio();
+      playNote(freq, duration);
+    }
+
+    function startSynthMelody() {
+      initAudio();
+      const notes = MELODIES[selectedMelody];
+      clearInterval(musicInterval);
+      
+      musicInterval = setInterval(() => {
+        if (!isPlaying) return;
+        const note = notes[currentNoteIndex % notes.length];
+        playNote(note, 0.8);
+        currentNoteIndex++;
+      }, 500);
+    }
+
+    function stopSynthMelody() {
+      clearInterval(musicInterval);
+    }
+
+    function startMusic() {
+      isPlaying = true;
+      document.getElementById('play-icon').textContent = '❚❚';
+      document.getElementById('song-status').textContent = 'Reproduciendo';
+      document.getElementById('audio-pulse').classList.add('animate-ping');
+
+      // 1. Intentar reproducir el archivo de música agregado
+      if (bgAudio) {
+        const playPromise = bgAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            usingCustomAudio = true;
+            document.getElementById('song-title').textContent = 'Perros y Gatos';
+            const artistElem = document.getElementById('song-artist');
+            if (artistElem) artistElem.textContent = 'Macha y el Bloque Depresivo';
+          }).catch(() => {
+            // Si el archivo no existe o falla la reproducción, usar sintetizador Web Audio API
+            usingCustomAudio = false;
+            document.getElementById('song-title').textContent = 'Melodía Romántica';
+            const artistElem = document.getElementById('song-artist');
+            if (artistElem) artistElem.textContent = 'Sintetizador Lofi';
+            startSynthMelody();
+          });
+          return;
+        }
+      }
+
+      // 2. Si no hay soporte o elemento, ejecutar sintetizador
+      startSynthMelody();
+    }
+
+    function stopMusic() {
+      isPlaying = false;
+      if (bgAudio) {
+        bgAudio.pause();
+      }
+      stopSynthMelody();
+      document.getElementById('play-icon').textContent = '▶';
+      document.getElementById('song-status').textContent = 'Pausado';
+      document.getElementById('audio-pulse').classList.remove('animate-ping');
+    }
+
+    function toggleMusic() {
+      if (isPlaying) {
+        stopMusic();
+      } else {
+        startMusic();
+      }
+    }
+
+    // Alias para garantizar compatibilidad con llamadas existentes
+    function startMelody() {
+      startMusic();
+    }
+
+    function stopMelody() {
+      stopMusic();
+    }
+
+    /* =========================================================================
+       5. FÓRMULA MATEMÁTICA Y CONTADOR DE DÍAS DE AMOR
+       Calcula con exactitud matemática los días transcurridos desde el 5 de marzo del 2022
+       hasta el día en que abra la página (por ejemplo el 27 de noviembre).
+       ========================================================================= */
+    function updateCounter() {
+      const hoy = new Date();
+      
+      // Normalizamos ambas fechas a medianoche en tiempo UTC.
+      // Esto garantiza la precisión exacta de días de calendario sin verse afectado
+      // por la hora en que lo abra o por cambios de horario de verano/invierno (DST).
+      const msPorDia = 1000 * 60 * 60 * 24;
+      const utcInicio = Date.UTC(FECHA_INICIO.getFullYear(), FECHA_INICIO.getMonth(), FECHA_INICIO.getDate());
+      const utcHoy = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+      
+      // Fórmula matemática:
+      // Días = (Tiempo_Actual_UTC - Tiempo_Inicio_UTC) / (1000 * 60 * 60 * 24)
+      const dias = Math.max(0, Math.floor((utcHoy - utcInicio) / msPorDia));
+      
+      // Animación suave de conteo numérico progresivo
+      animateCounter('counter-days', dias);
+
+      // Si el día en que abre la página es 27 de Noviembre (mes 10 en base 0):
+      if (hoy.getDate() === 27 && hoy.getMonth() === 10) {
+        const bdayBadge = document.getElementById('bday-special-badge');
+        if (bdayBadge) {
+          bdayBadge.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Efecto de conteo numérico progresivo fluido
+    function animateCounter(elementId, targetValue, duration = 1200) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Easing out cubic: desaceleración suave y elegante
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(ease * targetValue);
+        element.textContent = current.toLocaleString('es-ES');
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          element.textContent = targetValue.toLocaleString('es-ES');
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    /* =========================================================================
+       6. INTERACCIÓN DE ABRAZO VIRTUAL Y CONFETI
+       ========================================================================= */
+    function launchLoveBurst() {
+      playChime(784, 0.4);
+      confetti({
+        particleCount: 100,
+        spread: 90,
+        origin: { y: 0.8 },
+        colors: ['#e11d48', '#f43f5e', '#fb7185', '#f472b6']
+      });
+    }
+
+    /* =========================================================================
+       7. FONDO INTERACTIVO DE PARTÍCULAS (CORAZONES Y BRILLOS)
+       ========================================================================= */
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height + Math.random() * 20;
+        this.size = Math.random() * 12 + 6;
+        this.speedY = Math.random() * 0.8 + 0.4;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.5 + 0.2;
+        this.isHeart = Math.random() > 0.4;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.x += this.speedX;
+        if (this.y < -20) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        if (this.isHeart) {
+          ctx.fillStyle = '#fb7185';
+          ctx.font = `${this.size}px serif`;
+          ctx.fillText('❤', this.x, this.y);
+        } else {
+          ctx.fillStyle = '#fbcfe8';
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size / 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = window.innerWidth < 640 ? 18 : 35;
+      for (let i = 0; i < count; i++) {
+        const p = new Particle();
+        p.y = Math.random() * canvas.height;
+        particles.push(p);
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    /* =========================================================================
+       8. INICIALIZACIÓN GENERAL
+       ========================================================================= */
+    window.onload = function() {
+      renderPolaroids();
+      updateCounter();
+      initParticles();
+      animateParticles();
+    };
+  </script>
+</body>
+</html>
