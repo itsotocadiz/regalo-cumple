@@ -353,21 +353,22 @@
     }
 
     /* =========================================================================
-       SOBRE POSTAL 3D REALISTA CON SOLAPA Y SELLO DE LACRE
+       SOBRE POSTAL 3D REALISTA CON BOLSILLO, FORRO INTERIOR Y SELLO DE LACRE
        ========================================================================= */
     .real-envelope-wrapper {
       position: relative;
       width: 100%;
       max-width: 440px;
-      height: 270px;
-      margin: 1.5rem auto 2.5rem;
+      height: 260px;
+      margin: 3.5rem auto 2.5rem;
       perspective: 1200px;
       cursor: pointer;
     }
     @media (max-width: 640px) {
       .real-envelope-wrapper {
-        max-width: 330px;
-        height: 215px;
+        max-width: 320px;
+        height: 195px;
+        margin: 2.5rem auto 2rem;
       }
     }
 
@@ -375,157 +376,221 @@
       position: relative;
       width: 100%;
       height: 100%;
-      background: #fbf7f4;
-      border-radius: 12px;
-      box-shadow: 0 16px 36px -8px rgba(30, 12, 18, 0.22), 0 4px 12px rgba(225, 29, 72, 0.1);
+      background: #fdfaf7;
+      border-radius: 14px;
+      box-shadow: 0 18px 40px -10px rgba(30, 12, 18, 0.22), 0 4px 14px rgba(225, 29, 72, 0.08);
       transform-style: preserve-3d;
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
-      border: 1px solid rgba(225, 29, 72, 0.15);
+      border: 1px solid rgba(225, 29, 72, 0.12);
     }
     .real-envelope-wrapper:hover .real-envelope {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 24px 44px -6px rgba(30, 12, 18, 0.28), 0 8px 20px rgba(225, 29, 72, 0.18);
+      transform: translateY(-5px) scale(1.015);
+      box-shadow: 0 24px 48px -8px rgba(30, 12, 18, 0.28), 0 8px 20px rgba(225, 29, 72, 0.15);
     }
 
-    .envelope-pocket-bg {
+    /* Fondo interior y forro de lujo */
+    .envelope-backplate {
       position: absolute;
       inset: 0;
-      background: #ebdcd6;
-      border-radius: 12px;
+      background: #faede6;
+      border-radius: 14px;
       overflow: hidden;
+      border: 1px solid #ebd8ce;
+      z-index: 1;
+    }
+    .envelope-inner-lining {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #fff5f6 0%, #fee4e8 100%);
+      opacity: 0.95;
     }
 
+    /* Carta privada deslizable */
     .envelope-letter-paper {
       position: absolute;
-      top: 15px;
+      top: 24px;
       left: 20px;
       right: 20px;
-      height: 190px;
+      height: 180px;
       background: #ffffff;
       border-radius: 8px 8px 0 0;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.07);
       padding: 16px 20px;
-      transition: transform 1.35s cubic-bezier(0.25, 1, 0.35, 1);
+      transition: transform 1.35s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 2;
-      border: 1px solid #f0e6e2;
+      border: 1px solid #f2e4df;
       border-bottom: none;
     }
     @media (max-width: 640px) {
       .envelope-letter-paper {
-        top: 10px;
-        left: 14px;
-        right: 14px;
-        height: 160px;
+        top: 14px;
+        left: 12px;
+        right: 12px;
+        height: 140px;
         padding: 10px 14px;
       }
     }
     .envelope-letter-paper.slide-out {
-      transform: translateY(-130px);
+      transform: translateY(-120px);
     }
     @media (max-width: 640px) {
       .envelope-letter-paper.slide-out {
-        transform: translateY(-95px);
+        transform: translateY(-85px);
       }
     }
 
-    .envelope-flap-left {
+    /* Bolsillo frontal sólido del sobre (altura completa con corte V) */
+    .envelope-front-pocket {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 135px 0 135px 220px;
-      border-color: transparent transparent transparent #f5eae5;
-      border-radius: 0 0 0 12px;
+      inset: 0;
       z-index: 3;
-      filter: drop-shadow(2px 0 3px rgba(0,0,0,0.03));
       pointer-events: none;
     }
-    .envelope-flap-right {
+    .envelope-pocket-svg {
       position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 135px 220px 135px 0;
-      border-color: transparent #f0e3dc transparent transparent;
-      border-radius: 0 0 12px 0;
-      z-index: 3;
-      filter: drop-shadow(-2px 0 3px rgba(0,0,0,0.03));
-      pointer-events: none;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.04));
     }
-    .envelope-flap-bottom {
+
+    .envelope-address {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 0 220px 145px 220px;
-      border-color: transparent transparent #faeee9 transparent;
-      border-radius: 0 0 12px 12px;
+      bottom: 22px;
+      left: 24px;
       z-index: 4;
-      filter: drop-shadow(0 -3px 4px rgba(0,0,0,0.04));
+      text-align: left;
+      pointer-events: none;
+      max-width: 55%;
+    }
+    @media (max-width: 640px) {
+      .envelope-address {
+        bottom: 12px;
+        left: 14px;
+        max-width: 58%;
+      }
+    }
+
+    /* Grupo de estampilla y matasellos en la esquina derecha del bolsillo (100% visible, sin cortes) */
+    .envelope-stamps-group {
+      position: absolute;
+      bottom: 20px;
+      right: 22px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 4;
       pointer-events: none;
     }
     @media (max-width: 640px) {
-      .envelope-flap-left {
-        border-width: 108px 0 108px 165px;
-      }
-      .envelope-flap-right {
-        border-width: 108px 165px 108px 0;
-      }
-      .envelope-flap-bottom {
-        border-width: 0 165px 115px 165px;
+      .envelope-stamps-group {
+        bottom: 10px;
+        right: 12px;
+        gap: 4px;
       }
     }
 
-    .envelope-flap-top {
+    .postal-stamp {
+      width: 48px;
+      height: 58px;
+      background: #fffdfa;
+      border: 2px dashed #e11d48;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(2deg);
+    }
+    @media (max-width: 640px) {
+      .postal-stamp {
+        width: 36px;
+        height: 44px;
+      }
+    }
+
+    .postal-cancellation {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(225, 29, 72, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 6px;
+      color: rgba(225, 29, 72, 0.65);
+      transform: rotate(-8deg);
+    }
+    @media (max-width: 640px) {
+      .postal-cancellation {
+        width: 40px;
+        height: 40px;
+        font-size: 5px;
+      }
+    }
+
+    /* Solapa triangular 3D superior con forro interior de doble faz */
+    .envelope-flap-wrapper {
       position: absolute;
       top: 0;
       left: 0;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 145px 220px 0 220px;
-      border-color: #f7eae4 transparent transparent transparent;
-      border-radius: 12px 12px 0 0;
-      z-index: 6;
+      right: 0;
+      height: 154px;
+      z-index: 5;
       transform-origin: top center;
-      transition: transform 1.05s cubic-bezier(0.4, 0, 0.2, 1);
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.07));
+      transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
     }
     @media (max-width: 640px) {
-      .envelope-flap-top {
-        border-width: 115px 165px 0 165px;
+      .envelope-flap-wrapper {
+        height: 115px;
       }
     }
-    .real-envelope.is-open .envelope-flap-top {
+    .real-envelope.is-open .envelope-flap-wrapper {
       transform: rotateX(180deg);
       z-index: 1;
     }
-    .real-envelope.is-open .wax-seal {
-      opacity: 0;
-      transform: scale(1.35) rotate(18deg);
-      pointer-events: none;
+
+    .envelope-flap-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .envelope-flap-front {
+      z-index: 2;
+    }
+    .envelope-flap-back {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+    .envelope-flap-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
     }
 
+    /* Sello de lacre carmesí 3D centrado en la punta de la solapa */
     .wax-seal {
       position: absolute;
-      top: -30px;
-      left: -28px;
-      width: 56px;
-      height: 56px;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: radial-gradient(circle at 35% 35%, #f43f5e, #be123c 65%, #881337);
-      box-shadow: 0 4px 14px rgba(190, 18, 60, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 14px rgba(190, 18, 60, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       border: 2px dashed rgba(255, 255, 255, 0.3);
       cursor: pointer;
       z-index: 10;
@@ -533,90 +598,21 @@
       transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, opacity 0.35s ease;
     }
     .wax-seal:hover {
-      transform: scale(1.15);
+      transform: translateX(-50%) scale(1.12);
       box-shadow: 0 6px 20px rgba(190, 18, 60, 0.65), inset 0 2px 4px rgba(255, 255, 255, 0.45);
     }
     @media (max-width: 640px) {
       .wax-seal {
-        top: -24px;
-        left: -24px;
-        width: 48px;
-        height: 48px;
-        font-size: 1.25rem;
+        bottom: -18px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
       }
     }
-
-    .postal-stamp {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 52px;
-      height: 62px;
-      background: #fbf7f4;
-      border: 2px dashed #e11d48;
-      border-radius: 3px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 5;
-      transform: rotate(3deg);
+    .real-envelope.is-open .wax-seal {
+      opacity: 0;
+      transform: translateX(-50%) scale(1.35) rotate(18deg);
       pointer-events: none;
-    }
-    @media (max-width: 640px) {
-      .postal-stamp {
-        top: 12px;
-        right: 12px;
-        width: 42px;
-        height: 50px;
-      }
-    }
-
-    .postal-cancellation {
-      position: absolute;
-      top: 24px;
-      right: 68px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 1px dashed rgba(225, 29, 72, 0.4);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: monospace;
-      font-size: 7px;
-      color: rgba(225, 29, 72, 0.55);
-      transform: rotate(-12deg);
-      z-index: 5;
-      pointer-events: none;
-    }
-    @media (max-width: 640px) {
-      .postal-cancellation {
-        top: 16px;
-        right: 52px;
-        width: 48px;
-        height: 48px;
-        font-size: 6px;
-      }
-    }
-
-    .envelope-address {
-      position: absolute;
-      bottom: 24px;
-      left: 28px;
-      z-index: 5;
-      text-align: left;
-      pointer-events: none;
-      max-width: 65%;
-    }
-    @media (max-width: 640px) {
-      .envelope-address {
-        bottom: 16px;
-        left: 18px;
-        max-width: 70%;
-      }
     }
 
     /* Firma de la carta y trazo SVG animado */
@@ -894,12 +890,14 @@
     <!-- CARTA DE AMOR VINTAGE CON APERTURA DE SOBRE INTERACTIVO -->
     <section id="carta-section" class="max-w-3xl mx-auto px-6 py-16">
       <!-- Sobre postal 3D realista con solapa triangular, sello de lacre y estampilla vintage -->
-      <div id="carta-envelope-teaser" class="real-envelope-wrapper select-none my-8" onclick="openEnvelopeLetter()">
+      <div id="carta-envelope-teaser" class="real-envelope-wrapper select-none mt-14 mb-10" onclick="openEnvelopeLetter()">
         <div id="envelope-3d-box" class="real-envelope">
-          <!-- Fondo interior del bolsillo postal -->
-          <div class="envelope-pocket-bg"></div>
+          <!-- Capa 1: Fondo interior del sobre con forro blush romántico -->
+          <div class="envelope-backplate">
+            <div class="envelope-inner-lining"></div>
+          </div>
 
-          <!-- Carta que asoma y se desliza hacia afuera -->
+          <!-- Capa 2: Carta que emerge naturalmente desde el interior -->
           <div id="envelope-paper-preview" class="envelope-letter-paper">
             <div class="flex items-center justify-between border-b border-rose-100/90 pb-1.5 mb-2">
               <div class="flex items-center gap-1.5">
@@ -913,37 +911,54 @@
             </p>
           </div>
 
-          <!-- Pliegues triangulares del sobre postal (Izquierda, Derecha, Abajo) -->
-          <div class="envelope-flap-left"></div>
-          <div class="envelope-flap-right"></div>
-          <div class="envelope-flap-bottom"></div>
+          <!-- Capa 3: Bolsillo frontal sólido (sujeta la carta, con caligrafía y estampilla sin cortes) -->
+          <div class="envelope-front-pocket">
+            <svg class="envelope-pocket-svg" viewBox="0 0 440 260" preserveAspectRatio="none">
+              <path d="M 0,0 L 0,260 L 440,260 L 440,0 L 230,138 Q 220,142 210,138 L 0,0 Z" fill="#fcf7f4" stroke="#ebdcd5" stroke-width="1.5"/>
+            </svg>
 
-          <!-- Estampilla postal vintage con huellita de amor -->
-          <div class="postal-stamp">
-            <span class="text-xs sm:text-sm">🐾</span>
-            <span class="text-[7px] sm:text-[8px] font-bold text-rose-800 tracking-tighter uppercase mt-0.5">AMOR</span>
-            <span class="text-[6px] sm:text-[7px] text-rose-600 font-mono">2022</span>
+            <!-- Destinatario caligráfico manuscrito -->
+            <div class="envelope-address">
+              <p class="font-handwriting text-2xl sm:text-3xl text-rose-950 font-bold leading-tight drop-shadow-sm">Para: Babu ❤️</p>
+              <p class="font-typewriter text-[10px] sm:text-[11px] text-stone-600 leading-tight mt-0.5">El amor más puro de mi vida</p>
+              <p class="font-handwriting text-sm sm:text-base text-stone-500 mt-1">De: Talo, Romeo, Nala & Juli</p>
+            </div>
+
+            <!-- Estampilla vintage y matasellos conmemorativo (en la esquina derecha del bolsillo: 100% visible y sin cortes) -->
+            <div class="envelope-stamps-group">
+              <!-- Matasellos postal conmemorativo circular -->
+              <div class="postal-cancellation">
+                <span class="font-bold">05.MAR.22</span>
+                <span>AMOR ETERNO</span>
+                <span>CORREOS</span>
+              </div>
+
+              <!-- Estampilla postal vintage con huellita de amor -->
+              <div class="postal-stamp">
+                <span class="text-xs sm:text-sm">🐾</span>
+                <span class="text-[7px] sm:text-[8px] font-bold text-rose-800 tracking-tighter uppercase mt-0.5">AMOR</span>
+                <span class="text-[6px] sm:text-[7px] text-rose-600 font-mono">2022</span>
+              </div>
+            </div>
           </div>
 
-          <!-- Matasellos postal conmemorativo circular -->
-          <div class="postal-cancellation">
-            <span class="font-bold">05.MAR.22</span>
-            <span>AMOR ETERNO</span>
-            <span>CORREOS</span>
-          </div>
-
-          <!-- Destinatario caligráfico manuscrito -->
-          <div class="envelope-address">
-            <p class="font-handwriting text-2xl sm:text-3xl text-rose-950 font-bold leading-tight drop-shadow-sm">Para: Babu ❤️</p>
-            <p class="font-typewriter text-[10px] sm:text-[11.5px] text-stone-600 leading-tight mt-0.5">El amor más puro de mi vida</p>
-            <p class="font-handwriting text-sm sm:text-base text-stone-500 mt-1">De: Talo, Romeo, Nala & Juli</p>
-          </div>
-
-          <!-- Solapa superior triangular 3D que sella el sobre -->
-          <div class="envelope-flap-top">
-            <!-- Sello de lacre carmesí con relieve -->
-            <div class="wax-seal" title="Toca el sello para abrir">
-              <span class="drop-shadow">❤️</span>
+          <!-- Capa 4: Solapa triangular 3D superior con forro interior al abrir -->
+          <div class="envelope-flap-wrapper">
+            <!-- Cara exterior de la solapa (visible cuando está cerrado) -->
+            <div class="envelope-flap-face envelope-flap-front">
+              <svg class="envelope-flap-svg" viewBox="0 0 440 154" preserveAspectRatio="none">
+                <path d="M 0,0 L 440,0 L 230,148 Q 220,153 210,148 Z" fill="#f8ebe4" stroke="#ebdcd5" stroke-width="1.5"/>
+              </svg>
+              <!-- Sello de lacre carmesí con relieve centrado en la punta -->
+              <div class="wax-seal" title="Toca el sello para abrir">
+                <span class="drop-shadow">❤️</span>
+              </div>
+            </div>
+            <!-- Cara interior de la solapa (visible cuando se abre hacia arriba con forro blush romántico) -->
+            <div class="envelope-flap-face envelope-flap-back">
+              <svg class="envelope-flap-svg" viewBox="0 0 440 154" preserveAspectRatio="none">
+                <path d="M 0,0 L 440,0 L 230,148 Q 220,153 210,148 Z" fill="#fee4e8" stroke="#fbcfe8" stroke-width="1.5"/>
+              </svg>
             </div>
           </div>
         </div>
