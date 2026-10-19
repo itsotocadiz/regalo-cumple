@@ -352,6 +352,273 @@
       50% { opacity: 0; }
     }
 
+    /* =========================================================================
+       SOBRE POSTAL 3D REALISTA CON SOLAPA Y SELLO DE LACRE
+       ========================================================================= */
+    .real-envelope-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      height: 270px;
+      margin: 1.5rem auto 2.5rem;
+      perspective: 1200px;
+      cursor: pointer;
+    }
+    @media (max-width: 640px) {
+      .real-envelope-wrapper {
+        max-width: 330px;
+        height: 215px;
+      }
+    }
+
+    .real-envelope {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #fbf7f4;
+      border-radius: 12px;
+      box-shadow: 0 16px 36px -8px rgba(30, 12, 18, 0.22), 0 4px 12px rgba(225, 29, 72, 0.1);
+      transform-style: preserve-3d;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+      border: 1px solid rgba(225, 29, 72, 0.15);
+    }
+    .real-envelope-wrapper:hover .real-envelope {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 24px 44px -6px rgba(30, 12, 18, 0.28), 0 8px 20px rgba(225, 29, 72, 0.18);
+    }
+
+    .envelope-pocket-bg {
+      position: absolute;
+      inset: 0;
+      background: #ebdcd6;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .envelope-letter-paper {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      right: 20px;
+      height: 190px;
+      background: #ffffff;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+      padding: 16px 20px;
+      transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 2;
+      border: 1px solid #f0e6e2;
+      border-bottom: none;
+    }
+    @media (max-width: 640px) {
+      .envelope-letter-paper {
+        top: 10px;
+        left: 14px;
+        right: 14px;
+        height: 160px;
+        padding: 10px 14px;
+      }
+    }
+    .envelope-letter-paper.slide-out {
+      transform: translateY(-130px);
+    }
+    @media (max-width: 640px) {
+      .envelope-letter-paper.slide-out {
+        transform: translateY(-95px);
+      }
+    }
+
+    .envelope-flap-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 135px 0 135px 220px;
+      border-color: transparent transparent transparent #f5eae5;
+      border-radius: 0 0 0 12px;
+      z-index: 3;
+      filter: drop-shadow(2px 0 3px rgba(0,0,0,0.03));
+      pointer-events: none;
+    }
+    .envelope-flap-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 135px 220px 135px 0;
+      border-color: transparent #f0e3dc transparent transparent;
+      border-radius: 0 0 12px 0;
+      z-index: 3;
+      filter: drop-shadow(-2px 0 3px rgba(0,0,0,0.03));
+      pointer-events: none;
+    }
+    .envelope-flap-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 220px 145px 220px;
+      border-color: transparent transparent #faeee9 transparent;
+      border-radius: 0 0 12px 12px;
+      z-index: 4;
+      filter: drop-shadow(0 -3px 4px rgba(0,0,0,0.04));
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .envelope-flap-left {
+        border-width: 108px 0 108px 165px;
+      }
+      .envelope-flap-right {
+        border-width: 108px 165px 108px 0;
+      }
+      .envelope-flap-bottom {
+        border-width: 0 165px 115px 165px;
+      }
+    }
+
+    .envelope-flap-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 145px 220px 0 220px;
+      border-color: #f7eae4 transparent transparent transparent;
+      border-radius: 12px 12px 0 0;
+      z-index: 6;
+      transform-origin: top center;
+      transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.07));
+    }
+    @media (max-width: 640px) {
+      .envelope-flap-top {
+        border-width: 115px 165px 0 165px;
+      }
+    }
+    .real-envelope.is-open .envelope-flap-top {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+    .real-envelope.is-open .wax-seal {
+      opacity: 0;
+      transform: scale(1.35) rotate(18deg);
+      pointer-events: none;
+    }
+
+    .wax-seal {
+      position: absolute;
+      top: -30px;
+      left: -28px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f43f5e, #be123c 65%, #881337);
+      box-shadow: 0 4px 14px rgba(190, 18, 60, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.5rem;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      z-index: 10;
+      user-select: none;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, opacity 0.35s ease;
+    }
+    .wax-seal:hover {
+      transform: scale(1.15);
+      box-shadow: 0 6px 20px rgba(190, 18, 60, 0.65), inset 0 2px 4px rgba(255, 255, 255, 0.45);
+    }
+    @media (max-width: 640px) {
+      .wax-seal {
+        top: -24px;
+        left: -24px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+      }
+    }
+
+    .postal-stamp {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 52px;
+      height: 62px;
+      background: #fbf7f4;
+      border: 2px dashed #e11d48;
+      border-radius: 3px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transform: rotate(3deg);
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .postal-stamp {
+        top: 12px;
+        right: 12px;
+        width: 42px;
+        height: 50px;
+      }
+    }
+
+    .postal-cancellation {
+      position: absolute;
+      top: 24px;
+      right: 68px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 1px dashed rgba(225, 29, 72, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 7px;
+      color: rgba(225, 29, 72, 0.55);
+      transform: rotate(-12deg);
+      z-index: 5;
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .postal-cancellation {
+        top: 16px;
+        right: 52px;
+        width: 48px;
+        height: 48px;
+        font-size: 6px;
+      }
+    }
+
+    .envelope-address {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      z-index: 5;
+      text-align: left;
+      pointer-events: none;
+      max-width: 65%;
+    }
+    @media (max-width: 640px) {
+      .envelope-address {
+        bottom: 16px;
+        left: 18px;
+        max-width: 70%;
+      }
+    }
+
     /* Firma de la carta y trazo SVG animado */
     .carta-firma {
       margin-top: 2.2rem;
@@ -629,22 +896,70 @@
 
     <!-- CARTA DE AMOR VINTAGE CON APERTURA DE SOBRE INTERACTIVO -->
     <section id="carta-section" class="max-w-3xl mx-auto px-6 py-16">
-      <!-- Sobre cerrado interactivo en 3D que invita a abrir la carta -->
-      <div id="carta-envelope-teaser" class="max-w-md mx-auto text-center cursor-pointer group select-none transition-all duration-700" onclick="openEnvelopeLetter()">
-        <div class="relative mx-auto w-72 sm:w-80 h-48 sm:h-52 bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200/90 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-rose-300/50 border border-rose-200/80 p-5 flex flex-col items-center justify-center overflow-hidden transform group-hover:-translate-y-1.5 transition-all duration-300">
-          <div class="washi-tape"></div>
-          
-          <!-- Sello de cera con corazón palpitante -->
-          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 via-pink-600 to-rose-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-rose-400/50 group-hover:scale-110 transition-transform duration-300 relative z-20 mb-3 border-2 border-white/70">
-            💌
+      <!-- Sobre postal 3D realista con solapa triangular, sello de lacre y estampilla vintage -->
+      <div id="carta-envelope-teaser" class="real-envelope-wrapper select-none my-8" onclick="openEnvelopeLetter()">
+        <div id="envelope-3d-box" class="real-envelope">
+          <!-- Fondo interior del bolsillo postal -->
+          <div class="envelope-pocket-bg"></div>
+
+          <!-- Carta que asoma y se desliza hacia afuera -->
+          <div id="envelope-paper-preview" class="envelope-letter-paper">
+            <div class="flex items-center justify-between border-b border-rose-100/90 pb-1.5 mb-2">
+              <div class="flex items-center gap-1.5">
+                <span class="text-rose-500 text-xs">💌</span>
+                <span class="text-[11px] font-typewriter text-rose-600 font-bold tracking-wider">CARTA PRIVADA</span>
+              </div>
+              <span class="text-[10px] font-mono text-stone-400">05 • MAR • 2022</span>
+            </div>
+            <p class="font-typewriter text-[11px] sm:text-xs text-stone-700 leading-relaxed italic">
+              "Si tuviera que programar en código mi destino,<br class="hidden sm:inline">elegiría mil veces coincidir en tu camino..."
+            </p>
+            <div class="mt-2.5 sm:mt-3 flex items-center justify-center gap-1.5 text-[10.5px] sm:text-xs text-rose-600 font-semibold bg-rose-50/80 py-1 px-3 rounded-full border border-rose-100 mx-auto w-fit">
+              <span>Toca para abrir y leer</span>
+              <span class="animate-pulse">✨</span>
+            </div>
           </div>
-          
-          <h3 class="font-serif text-xl sm:text-2xl font-bold text-rose-950 relative z-20">Para el amor de mi vida</h3>
-          <p class="text-xs text-rose-600 font-medium mt-1.5 flex items-center gap-1.5 relative z-20">
-            <span>Toca para abrir tu carta</span>
-            <span class="animate-bounce">✉️</span>
-          </p>
+
+          <!-- Pliegues triangulares del sobre postal (Izquierda, Derecha, Abajo) -->
+          <div class="envelope-flap-left"></div>
+          <div class="envelope-flap-right"></div>
+          <div class="envelope-flap-bottom"></div>
+
+          <!-- Estampilla postal vintage con huellita de amor -->
+          <div class="postal-stamp">
+            <span class="text-xs sm:text-sm">🐾</span>
+            <span class="text-[7px] sm:text-[8px] font-bold text-rose-800 tracking-tighter uppercase mt-0.5">AMOR</span>
+            <span class="text-[6px] sm:text-[7px] text-rose-600 font-mono">2022</span>
+          </div>
+
+          <!-- Matasellos postal conmemorativo circular -->
+          <div class="postal-cancellation">
+            <span class="font-bold">05.MAR.22</span>
+            <span>AMOR ETERNO</span>
+            <span>CORREOS</span>
+          </div>
+
+          <!-- Destinatario caligráfico manuscrito -->
+          <div class="envelope-address">
+            <p class="font-handwriting text-2xl sm:text-3xl text-rose-950 font-bold leading-tight drop-shadow-sm">Para: Babu ❤️</p>
+            <p class="font-typewriter text-[10px] sm:text-[11.5px] text-stone-600 leading-tight mt-0.5">El amor más puro de mi vida</p>
+            <p class="font-handwriting text-sm sm:text-base text-stone-500 mt-1">De: Talo, Romeo, Nala & Juli</p>
+          </div>
+
+          <!-- Solapa superior triangular 3D que sella el sobre -->
+          <div class="envelope-flap-top">
+            <!-- Sello de lacre carmesí con relieve -->
+            <div class="wax-seal" title="Toca el sello para abrir">
+              <span class="drop-shadow">❤️</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Indicador flotante sutil debajo del sobre -->
+        <p class="text-center text-xs sm:text-sm text-rose-600 font-medium mt-5 flex items-center justify-center gap-2">
+          <span>✨ Toca el sobre o el sello de lacre para abrir tu carta</span>
+          <span class="animate-bounce">💌</span>
+        </p>
       </div>
 
       <!-- Contenedor desplegado de la carta -->
@@ -1060,6 +1375,41 @@
       } catch (err) {}
     }
 
+    // Sonido sutil de apertura y deslizamiento de papel postal con Web Audio API
+    function playPaperSound() {
+      if (!audioCtx) initAudio();
+      if (!audioCtx) return;
+      try {
+        const bufferSize = Math.floor(audioCtx.sampleRate * 0.28);
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * 0.09;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 0.25);
+        filter.Q.setValueAtTime(2.2, audioCtx.currentTime);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.27);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        noise.start();
+        noise.stop(audioCtx.currentTime + 0.28);
+      } catch (err) {}
+    }
+
     // Síntesis acústica de ladridos caninos alegres con Web Audio API
     function playSingleBark(pitch = 500, duration = 0.12, timeOffset = 0, volume = 0.14) {
       if (!audioCtx) initAudio();
@@ -1284,37 +1634,59 @@
       if (isEnvelopeOpened) return;
       isEnvelopeOpened = true;
 
+      // Sonido de deslizamiento de papel postal
+      playPaperSound();
+
       // Campanita armónica de apertura
-      playChime(640, 0.25);
+      setTimeout(() => playChime(640, 0.25), 100);
 
       // Confeti suave de corazones al abrir el sobre
       confetti({
-        particleCount: 55,
-        spread: 75,
-        origin: { y: 0.7 },
+        particleCount: 65,
+        spread: 80,
+        origin: { y: 0.65 },
         colors: ['#e11d48', '#fb7185', '#fda4af', '#fecdd3', '#ffffff']
       });
 
       const teaser = document.getElementById('carta-envelope-teaser');
+      const envelopeBox = document.getElementById('envelope-3d-box');
+      const paperPreview = document.getElementById('envelope-paper-preview');
       const letterCard = document.getElementById('carta-card');
 
-      if (teaser) {
-        teaser.style.transform = 'scale(0.92) translateY(20px)';
-        teaser.style.opacity = '0';
-        setTimeout(() => {
-          teaser.style.display = 'none';
-        }, 500);
+      // 1. Abrir solapa 3D superior del sobre
+      if (envelopeBox) {
+        envelopeBox.classList.add('is-open');
       }
 
-      if (letterCard) {
-        letterCard.classList.remove('hidden');
-        void letterCard.offsetWidth; // Reflow
-        setTimeout(() => {
-          letterCard.classList.remove('opacity-0');
-          letterCard.classList.add('opacity-100');
-          startTypewriterLetter();
-        }, 150);
-      }
+      // 2. Deslizar la hoja de la carta hacia arriba saliendo del sobre
+      setTimeout(() => {
+        if (paperPreview) {
+          paperPreview.classList.add('slide-out');
+        }
+      }, 220);
+
+      // 3. Transición fluida al contenedor de la carta mecanografiada
+      setTimeout(() => {
+        if (teaser) {
+          teaser.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          teaser.style.opacity = '0';
+          teaser.style.transform = 'scale(0.96) translateY(20px)';
+          setTimeout(() => {
+            teaser.style.display = 'none';
+          }, 600);
+        }
+
+        if (letterCard) {
+          letterCard.classList.remove('hidden');
+          void letterCard.offsetWidth; // Reflow
+          setTimeout(() => {
+            letterCard.classList.remove('opacity-0');
+            letterCard.classList.add('opacity-100');
+            letterCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            startTypewriterLetter();
+          }, 150);
+        }
+      }, 900);
     }
 
     function finishTypewriter() {
