@@ -405,7 +405,7 @@
       border-radius: 8px 8px 0 0;
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
       padding: 16px 20px;
-      transition: transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: transform 1.35s cubic-bezier(0.25, 1, 0.35, 1);
       z-index: 2;
       border: 1px solid #f0e6e2;
       border-bottom: none;
@@ -494,7 +494,7 @@
       border-radius: 12px 12px 0 0;
       z-index: 6;
       transform-origin: top center;
-      transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 1.05s cubic-bezier(0.4, 0, 0.2, 1);
       filter: drop-shadow(0 4px 6px rgba(0,0,0,0.07));
     }
     @media (max-width: 640px) {
@@ -757,10 +757,7 @@
       <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
       <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
       
-      <div class="relative z-10">
-        <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-rose-50 border border-rose-100 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl shadow-inner">
-          🔒
-        </div>
+      <div class="relative z-10 pt-2">
         <h2 class="font-serif text-2xl sm:text-3xl text-rose-950 font-bold mb-2">Un Espacio Solo Para Ti</h2>
         <p class="text-stone-600 text-xs sm:text-sm mb-5 leading-relaxed px-1 sm:px-2">Para ingresar debes anotar el nombre del amor de tu vida: el amor más puro que has recibido, amor de queso 🧀 y boca chueca</p>
         
@@ -914,10 +911,6 @@
             <p class="font-typewriter text-[11px] sm:text-xs text-stone-700 leading-relaxed italic">
               "Si tuviera que programar en código mi destino,<br class="hidden sm:inline">elegiría mil veces coincidir en tu camino..."
             </p>
-            <div class="mt-2.5 sm:mt-3 flex items-center justify-center gap-1.5 text-[10.5px] sm:text-xs text-rose-600 font-semibold bg-rose-50/80 py-1 px-3 rounded-full border border-rose-100 mx-auto w-fit">
-              <span>Toca para abrir y leer</span>
-              <span class="animate-pulse">✨</span>
-            </div>
           </div>
 
           <!-- Pliegues triangulares del sobre postal (Izquierda, Derecha, Abajo) -->
@@ -957,7 +950,7 @@
 
         <!-- Indicador flotante sutil debajo del sobre -->
         <p class="text-center text-xs sm:text-sm text-rose-600 font-medium mt-5 flex items-center justify-center gap-2">
-          <span>✨ Toca el sobre o el sello de lacre para abrir tu carta</span>
+          <span>✨ Toca el sobre para abrir tu carta</span>
           <span class="animate-bounce">💌</span>
         </p>
       </div>
@@ -972,16 +965,11 @@
           <p class="text-xs text-rose-500 font-medium">Un deseo sincero desde lo más profundo de mi corazón</p>
         </div>
 
-        <div id="carta-contenido" class="carta-texto-maquina min-h-[300px] cursor-pointer" title="Toca para mostrar toda la carta" onclick="if (!isTypingDone) revealFullLetter()">
+        <div id="carta-contenido" class="carta-texto-maquina min-h-[300px] cursor-pointer" onclick="if (!isTypingDone) revealFullLetter()">
           <!-- Texto animado tipo máquina de escribir -->
         </div>
         <div class="text-center">
           <span id="typewriter-cursor" class="typewriter-cursor hidden">|</span>
-        </div>
-        <div id="typewriter-hint" class="text-center mt-3 hidden transition-opacity duration-500">
-          <button onclick="revealFullLetter()" class="inline-flex items-center gap-1.5 text-[11px] text-stone-400 hover:text-rose-600 transition-colors py-1 px-3 rounded-full hover:bg-rose-50 border border-transparent hover:border-rose-200 cursor-pointer">
-            <span>✨ Toca aquí si deseas leerla toda de inmediato</span>
-          </button>
         </div>
 
         <!-- Firma con rúbrica SVG decorativa animada -->
@@ -1003,13 +991,9 @@
       </div>
     </section>
 
-    <!-- Footer con enlace a Tarjeta Imprimible con QR -->
-    <footer class="text-center py-8 text-xs text-stone-400 flex flex-col items-center gap-2.5">
-      <p>Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!</p>
-      <a href="tarjeta-imprimir.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-medium border border-rose-200/70 shadow-sm transition-all hover:scale-105 select-none">
-        <span>🖨️ Ver e Imprimir Tarjeta de Regalo con Código QR</span>
-        <span>✨</span>
-      </a>
+    <!-- Footer -->
+    <footer class="text-center py-8 text-xs text-stone-400">
+      Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!
     </footer>
   </main>
 
@@ -1662,27 +1646,27 @@
       const paperPreview = document.getElementById('envelope-paper-preview');
       const letterCard = document.getElementById('carta-card');
 
-      // 1. Abrir solapa 3D superior del sobre
+      // 1. Abrir solapa 3D superior del sobre con elegancia
       if (envelopeBox) {
         envelopeBox.classList.add('is-open');
       }
 
-      // 2. Deslizar la hoja de la carta hacia arriba saliendo del sobre
+      // 2. Deslizar la hoja de la carta suavemente hacia arriba
       setTimeout(() => {
         if (paperPreview) {
           paperPreview.classList.add('slide-out');
         }
-      }, 220);
+      }, 350);
 
-      // 3. Transición fluida al contenedor de la carta mecanografiada
+      // 3. Transición pausada y sutil al contenedor de la carta completa
       setTimeout(() => {
         if (teaser) {
-          teaser.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          teaser.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
           teaser.style.opacity = '0';
           teaser.style.transform = 'scale(0.96) translateY(20px)';
           setTimeout(() => {
             teaser.style.display = 'none';
-          }, 600);
+          }, 800);
         }
 
         if (letterCard) {
@@ -1691,11 +1675,22 @@
           setTimeout(() => {
             letterCard.classList.remove('opacity-0');
             letterCard.classList.add('opacity-100');
-            letterCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            startTypewriterLetter();
+
+            // Posicionar la vista exactamente al inicio superior de la carta para leer el encabezado cómodamente
+            const cardRect = letterCard.getBoundingClientRect();
+            const scrollTarget = window.pageYOffset + cardRect.top - 36;
+            window.scrollTo({
+              top: Math.max(0, scrollTarget),
+              behavior: 'smooth'
+            });
+
+            // Pausa sutil para asimilar el encabezado antes de iniciar la escritura
+            setTimeout(() => {
+              startTypewriterLetter();
+            }, 450);
           }, 150);
         }
-      }, 900);
+      }, 2200);
     }
 
     function finishTypewriter() {
@@ -1705,9 +1700,6 @@
       
       const cursor = document.getElementById('typewriter-cursor');
       if (cursor) cursor.classList.add('hidden');
-
-      const hint = document.getElementById('typewriter-hint');
-      if (hint) hint.classList.add('hidden');
 
       const firmaElem = document.getElementById('carta-firma');
       if (firmaElem) {
@@ -1732,10 +1724,8 @@
       
       const container = document.getElementById('carta-contenido');
       const cursor = document.getElementById('typewriter-cursor');
-      const hint = document.getElementById('typewriter-hint');
       container.innerHTML = '';
       cursor.classList.remove('hidden');
-      if (hint) hint.classList.remove('hidden');
 
       let currentParagraphIndex = 0;
       let currentTokenIndex = 0;
