@@ -972,11 +972,16 @@
           <p class="text-xs text-rose-500 font-medium">Un deseo sincero desde lo más profundo de mi corazón</p>
         </div>
 
-        <div id="carta-contenido" class="carta-texto-maquina min-h-[300px]">
+        <div id="carta-contenido" class="carta-texto-maquina min-h-[300px] cursor-pointer" title="Toca para mostrar toda la carta" onclick="if (!isTypingDone) revealFullLetter()">
           <!-- Texto animado tipo máquina de escribir -->
         </div>
         <div class="text-center">
           <span id="typewriter-cursor" class="typewriter-cursor hidden">|</span>
+        </div>
+        <div id="typewriter-hint" class="text-center mt-3 hidden transition-opacity duration-500">
+          <button onclick="revealFullLetter()" class="inline-flex items-center gap-1.5 text-[11px] text-stone-400 hover:text-rose-600 transition-colors py-1 px-3 rounded-full hover:bg-rose-50 border border-transparent hover:border-rose-200 cursor-pointer">
+            <span>✨ Toca aquí si deseas leerla toda de inmediato</span>
+          </button>
         </div>
 
         <!-- Firma con rúbrica SVG decorativa animada -->
@@ -998,9 +1003,13 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="text-center py-8 text-xs text-stone-400">
-      Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!
+    <!-- Footer con enlace a Tarjeta Imprimible con QR -->
+    <footer class="text-center py-8 text-xs text-stone-400 flex flex-col items-center gap-2.5">
+      <p>Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!</p>
+      <a href="tarjeta-imprimir.html" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-medium border border-rose-200/70 shadow-sm transition-all hover:scale-105 select-none">
+        <span>🖨️ Ver e Imprimir Tarjeta de Regalo con Código QR</span>
+        <span>✨</span>
+      </a>
     </footer>
   </main>
 
@@ -1696,9 +1705,9 @@
       
       const cursor = document.getElementById('typewriter-cursor');
       if (cursor) cursor.classList.add('hidden');
-      
-      const revealBtn = document.getElementById('btn-reveal-carta');
-      if (revealBtn) revealBtn.classList.add('hidden');
+
+      const hint = document.getElementById('typewriter-hint');
+      if (hint) hint.classList.add('hidden');
 
       const firmaElem = document.getElementById('carta-firma');
       if (firmaElem) {
@@ -1723,8 +1732,10 @@
       
       const container = document.getElementById('carta-contenido');
       const cursor = document.getElementById('typewriter-cursor');
+      const hint = document.getElementById('typewriter-hint');
       container.innerHTML = '';
       cursor.classList.remove('hidden');
+      if (hint) hint.classList.remove('hidden');
 
       let currentParagraphIndex = 0;
       let currentTokenIndex = 0;
@@ -1757,18 +1768,29 @@
           currentTokenIndex++;
           charCounter++;
 
-          // Clic suave en Web Audio cada 3 caracteres
+          // Clic suave en Web Audio cada 3 caracteres (sutil y cálido)
           if (charCounter % 3 === 0 && !token.startsWith('<')) {
             playTypewriterClick();
           }
 
-          const delay = token.startsWith('<') ? 10 : (20 + Math.random() * 18);
+          // Cadencia de lectura natural y humana con pausas de respiración:
+          let delay = 52 + Math.random() * 22; // Base de lectura cómoda (52-74ms por letra)
+          if (token.startsWith('<')) {
+            delay = token === '<br>' ? 380 : 15; // Pausa al final de un verso poético
+          } else if (token === '.' || token === '!' || token === '?') {
+            delay = 500 + Math.random() * 80; // Pausa reflexiva al final de frase
+          } else if (token === ',' || token === ';' || token === ':') {
+            delay = 280 + Math.random() * 50; // Respiración en comas
+          } else if (token === ' ') {
+            delay = 65 + Math.random() * 25; // Pausa natural entre palabras
+          }
+
           typewriterTimeout = setTimeout(typeNext, delay);
         } else {
-          // Fin del párrafo: pausa suave antes del siguiente
+          // Fin de la estrofa: pausa amorosa para asimilar las palabras antes del siguiente párrafo
           currentParagraphIndex++;
           activeP = null;
-          typewriterTimeout = setTimeout(typeNext, 260);
+          typewriterTimeout = setTimeout(typeNext, 1000);
         }
       }
 
@@ -1866,15 +1888,17 @@
       document.body.appendChild(particle);
       particle.addEventListener('animationend', () => particle.remove());
     }
-    window.addEventListener('mousemove', handlePointerTrail, { passive: true });
-    window.addEventListener('touchmove', handlePointerTrail, { passive: true });
+    // Optimización de batería y CPU: activar rastro solo en dispositivos con ratón/puntero fino
+    if (window.matchMedia('(pointer: fine)').matches) {
+      window.addEventListener('mousemove', handlePointerTrail, { passive: true });
+    }
 
     /* =========================================================================
        9. CIELO ESTRELLADO, GUIÑO A ROMEO Y CANVAS DE PARTÍCULAS
        ========================================================================= */
     function initStarrySky() {
       const sky = document.getElementById('starry-sky');
-      const count = window.innerWidth < 640 ? 30 : 60;
+      const count = window.innerWidth < 640 ? 25 : 50;
       for (let i = 0; i < count; i++) {
         const star = document.createElement('div');
         star.className = 'twinkling-star';
@@ -1900,7 +1924,7 @@
       });
     }
 
-    // Canvas de partículas de fondo (corazones y brillos)
+    // Canvas de partículas de fondo (corazones y brillos ligeros)
     const canvas = document.getElementById('particles-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -1909,7 +1933,7 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', resizeCanvas, { passive: true });
     resizeCanvas();
 
     class Particle {
@@ -1919,10 +1943,10 @@
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = canvas.height + Math.random() * 20;
-        this.size = Math.random() * 12 + 6;
-        this.speedY = Math.random() * 0.8 + 0.4;
-        this.speedX = (Math.random() - 0.5) * 0.4;
-        this.opacity = Math.random() * 0.5 + 0.2;
+        this.size = Math.random() * 10 + 6;
+        this.speedY = Math.random() * 0.7 + 0.35;
+        this.speedX = (Math.random() - 0.5) * 0.35;
+        this.opacity = Math.random() * 0.45 + 0.2;
         this.isHeart = Math.random() > 0.4;
       }
       update() {
@@ -1949,7 +1973,7 @@
 
     function initParticles() {
       particles = [];
-      const count = window.innerWidth < 640 ? 18 : 35;
+      const count = window.innerWidth < 640 ? 12 : 22;
       for (let i = 0; i < count; i++) {
         const p = new Particle();
         p.y = Math.random() * canvas.height;
@@ -1957,14 +1981,33 @@
       }
     }
 
+    let isTabVisible = true;
+    let particleAnimationId = null;
+
     function animateParticles() {
+      if (!isTabVisible) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
         p.update();
         p.draw();
       });
-      requestAnimationFrame(animateParticles);
+      particleAnimationId = requestAnimationFrame(animateParticles);
     }
+
+    // Ahorro total de recursos: pausar canvas cuando la pestaña pasa a segundo plano
+    document.addEventListener('visibilitychange', () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible) {
+        if (!particleAnimationId) {
+          animateParticles();
+        }
+      } else {
+        if (particleAnimationId) {
+          cancelAnimationFrame(particleAnimationId);
+          particleAnimationId = null;
+        }
+      }
+    });
 
     /* =========================================================================
        10. INICIALIZACIÓN GENERAL
