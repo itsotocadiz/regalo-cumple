@@ -31,10 +31,14 @@
 - **Entrada escalonada:** Las 6 fotos aterrizan en la página de forma progresiva con un intervalo de `120ms` y un micro-balanceo realista en la cinta washi-tape.
 - **Levitación en móviles:** En pantallas táctiles (`@media (hover: none)`), las Polaroids flotan suavemente invitando al usuario a tocarlas.
 
-### 5. 💌 Carta de Amor con Máquina de Escribir en Vivo
-- **Efecto máquina de escribir:** Al desplazarse hacia la carta, el texto se escribe en tiempo real carácter por carácter con un cursor titilante `|`.
+### 5. 💌 Sobre Postal 3D Cinemático y Carta con Máquina de Escribir en Vivo
+- **Apertura de sobre 3D realista:** Sello de lacre carmesí con relieve artesanal que cruje y se rompe al toque con destellos de confeti dorado y corazones.
+- **Solapa 3D de doble faz:** Rotación física fluida de 180° hacia arriba sin parpadeos, revelando un forro interior satinado blush y sombra proyectada.
+- **Deslizamiento y transición cinemática:** La carta asoma desde el bolsillo del sobre y se transforma fluidamente en el lienzo de lectura sin saltos bruscos.
+- **Rejugabilidad (Guardar en sobre):** Botón para volver a doblar y guardar la carta en el sobre postal para revivir la experiencia cuantas veces se desee.
+- **Efecto máquina de escribir:** Al desplegarse la carta, el texto se escribe en tiempo real carácter por carácter con un cursor titilante `|`.
 - **Sonido mecánico en Web Audio API:** Síntesis sonora procedural en cada pulsación sin necesidad de cargar archivos externos pesados.
-- **Botón de revelado instantáneo:** Opción discreta *"Mostrar carta completa ✨"* para desplegar todo el contenido al instante.
+- **Botón de revelado instantáneo:** Opción discreta *"Completar lectura ⚡"* para desplegar todo el contenido al instante.
 - **Rúbrica decorativa animada:** Una vez completada la carta, se dibuja un trazo SVG suave bajo la firma de Talo usando `stroke-dasharray` y `stroke-dashoffset`.
 
 ### 6. 🎵 Reproductor Flotante de Disco de Vinilo y Abrazo Virtual
