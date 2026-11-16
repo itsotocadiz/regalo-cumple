@@ -1,0 +1,347 @@
+:root {
+  --bg-deep: #12080c;
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --bg-surface-hover: rgba(255, 255, 255, 0.07);
+  --border-subtle: rgba(255, 213, 221, 0.14);
+  --border-strong: rgba(255, 213, 221, 0.28);
+  --text-primary: #fbf7f4;
+  --text-secondary: #e7cfd6;
+  --text-muted: #b89aa4;
+  --accent-velvet: #e11d48;
+  --accent-rose: #fb7185;
+  --accent-blush: #ffd5dd;
+  --accent-gold: #f6d38b;
+  --polaroid-paper: #fbf7f4;
+  --polaroid-ink: #1e0c12;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  cursor: url('../assets/perrito-cursor.png') 16 16, auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+a, button, input, [role="button"] {
+  cursor: url('../assets/perrito-cursor.png') 16 16, pointer;
+}
+
+/* Fondo atmosférico con mesh gradients y grano sutil */
+.ambient-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 18%, rgba(225, 29, 72, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 85% 22%, rgba(246, 211, 139, 0.08) 0%, transparent 42%),
+    radial-gradient(circle at 50% 85%, rgba(159, 18, 57, 0.18) 0%, transparent 50%);
+}
+
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#sky-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cursor-halo {
+  position: fixed;
+  width: 260px;
+  height: 260px;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 3;
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.12) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+@media (hover: hover) {
+  body:hover .cursor-halo {
+    opacity: 1;
+  }
+}
+
+/* Tipografía editorial */
+.font-serif-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-mono-letter {
+  font-family: 'Courier Prime', ui-monospace, SFMono-Regular, monospace;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Glassmorphism refinado */
+.glass-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.55);
+}
+
+.glass-card-interactive {
+  transition: transform 0.35s var(--ease-smooth), border-color 0.35s ease, background 0.35s ease;
+}
+
+.glass-card-interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+}
+
+/* Pantalla de bloqueo */
+.gatekeeper-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: radial-gradient(circle at center, rgba(30, 12, 18, 0.92), #0d0508 80%);
+  backdrop-filter: blur(20px);
+  transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth), visibility 0.8s;
+}
+
+.gatekeeper-overlay.is-unlocked {
+  opacity: 0;
+  transform: scale(1.06);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.paw-dot {
+  transition: transform 0.3s var(--ease-spring), color 0.3s ease, filter 0.3s ease;
+  color: rgba(255, 213, 221, 0.22);
+}
+
+.paw-dot.is-active {
+  color: var(--accent-rose);
+  transform: scale(1.22);
+  filter: drop-shadow(0 0 8px rgba(251, 113, 133, 0.65));
+}
+
+@keyframes shakeError {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shakeError 0.42s ease-in-out;
+}
+
+/* Estrella de Romeo */
+.romeo-star-btn {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 35;
+}
+
+@keyframes starPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 8px rgba(246, 211, 139, 0.65)); }
+  50% { transform: scale(1.12) rotate(8deg); filter: drop-shadow(0 0 16px rgba(246, 211, 139, 0.95)); }
+}
+
+.romeo-star-icon {
+  animation: starPulse 3.6s ease-in-out infinite;
+}
+
+/* Polaroids 3D modernas */
+.polaroid-scene {
+  perspective: 1400px;
+}
+
+.polaroid-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease-spring);
+  cursor: pointer;
+}
+
+.polaroid-card.is-flipped {
+  transform: rotateY(180deg) scale(1.02);
+}
+
+.polaroid-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--polaroid-paper);
+  color: var(--polaroid-ink);
+  box-shadow: 0 22px 45px -15px rgba(0, 0, 0, 0.65);
+}
+
+.polaroid-front {
+  padding: 0.85rem 0.85rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.polaroid-back {
+  transform: rotateY(180deg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(160deg, #fffaf7 0%, #f7ebe4 100%);
+  border: 1px solid rgba(30, 12, 18, 0.08);
+}
+
+.polaroid-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 50%),
+    rgba(255, 255, 255, 0.35) 0%,
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+}
+
+.polaroid-scene:hover .polaroid-glare {
+  opacity: 1;
+}
+
+/* Sobre 3D y Carta */
+.wax-seal-btn {
+  transition: transform 0.35s var(--ease-spring), box-shadow 0.35s ease;
+}
+
+.wax-seal-btn:hover {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.55);
+}
+
+.letter-paper {
+  background: linear-gradient(180deg, #fdfaf7 0%, #f6ede6 100%);
+  color: #241118;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.75);
+}
+
+.type-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background-color: var(--accent-velvet);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blinkCursor 0.85s steps(2, start) infinite;
+}
+
+@keyframes blinkCursor {
+  to { opacity: 0; }
+}
+
+/* Botón Sorpresa de Video Flow al terminar la carta */
+@keyframes shimmerGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px -5px rgba(225, 29, 72, 0.5), 0 0 18px rgba(246, 211, 139, 0.35);
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    box-shadow: 0 14px 36px -4px rgba(225, 29, 72, 0.72), 0 0 26px rgba(246, 211, 139, 0.6);
+    transform: translateY(-2px) scale(1.02);
+  }
+}
+
+.flow-surprise-btn {
+  animation: shimmerGlow 2.8s ease-in-out infinite;
+}
+
+/* Reproductor de Vinilo */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-spinning {
+  animation: spinSlow 4.5s linear infinite;
+}
+
+.vinyl-paused {
+  animation: spinSlow 4.5s linear infinite;
+  animation-play-state: paused;
+}
+
+.eq-bar {
+  width: 3px;
+  border-radius: 9999px;
+  background: var(--accent-rose);
+  transition: height 0.15s ease;
+}
+
+/* Partículas de Abrazo Virtual */
+@keyframes floatHeartUp {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 0px), var(--ty, -180px)) scale(1.35) rotate(var(--rot, 20deg));
+  }
+}
+
+.hug-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 60;
+  animation: floatHeartUp 1.8s var(--ease-smooth) forwards;
+}
+
+/* Respeto a prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

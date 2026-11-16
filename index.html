@@ -1,2256 +1,415 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feliz Cumpleaños, Mi Amor</title>
-  
-  <!-- Preload de recursos críticos -->
-  <link rel="preload" as="image" href="assets/perrito-cursor.png">
-  <link rel="preload" as="image" href="fotos/foto1.jpg">
-  <link rel="preload" as="image" href="fotos/foto2.jpg">
-  <link rel="preload" as="image" href="fotos/foto3.jpg">
-  <link rel="preload" as="image" href="fotos/foto4.jpg">
-  <link rel="preload" as="image" href="fotos/foto5.jpg">
-  <link rel="preload" as="image" href="fotos/foto6.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Un Espacio Solo Para Ti — Feliz Cumpleaños, Babu</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@600;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Indie+Flower&family=Kalam:wght@400;700&family=Marck+Script&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Canvas Confetti CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            serif: ['"Playfair Display"', 'serif'],
-            handwriting: ['"Caveat"', '"Patrick Hand"', '"Indie Flower"', 'cursive'],
-            typewriter: ['"Special Elite"', 'cursive'],
-            courier: ['"Courier Prime"', '"Courier New"', 'monospace']
-          },
-          colors: {
-            rosewood: '#1e0c12',
-            blush: '#ffd5dd',
-            champagne: '#fbf7f4',
-            velvet: '#e11d48'
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Cursor personalizado de perrito */
-    html, body {
-      cursor: url('assets/perrito-cursor.png') 0 0, auto;
-    }
-
-    a, button, input, textarea, select, label, .cursor-pointer {
-      cursor: url('assets/perrito-cursor.png') 0 0, pointer !important;
-    }
-
-    /* Contenedor y perspectiva 3D */
-    .perspective-1000 {
-      perspective: 1200px;
-    }
-    .transform-style-3d {
-      transform-style: preserve-3d;
-      -webkit-transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-
-    /* Tarjetas Polaroid 3D */
-    .polaroid-card {
-      transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
-      transform-style: preserve-3d;
-      -webkit-transform-style: preserve-3d;
-      will-change: transform;
-    }
-    .polaroid-card img {
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: high-quality;
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
-    }
-    .polaroid-card.is-flipped {
-      transform: rotateY(180deg) scale(1.03) !important;
-    }
-
-    /* Brillo holográfico especular interactivo sobre Polaroid */
-    .polaroid-glare {
-      position: absolute;
-      inset: 0;
-      border-radius: 1rem;
-      pointer-events: none;
-      z-index: 15;
-      background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.45), transparent 65%);
-      opacity: 0;
-      transition: opacity 0.25s ease;
-      mix-blend-mode: overlay;
-    }
-    .polaroid-card:hover .polaroid-glare {
-      opacity: 1;
-    }
-
-    /* Entrada escalonada de Polaroids */
-    .polaroid-container {
-      opacity: 0;
-      transform: translateY(40px) scale(0.92);
-      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .polaroid-container.is-visible {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    /* Cinta adhesiva Washi Tape con micro-balanceo */
-    .washi-tape {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-2deg);
-      width: 110px;
-      height: 28px;
-      background: rgba(255, 235, 220, 0.72);
-      backdrop-filter: blur(2px);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-      border-left: 2px dashed rgba(210, 180, 160, 0.45);
-      border-right: 2px dashed rgba(210, 180, 160, 0.45);
-      z-index: 25;
-      pointer-events: none;
-      transition: transform 0.3s ease;
-    }
-    @keyframes washiWobble {
-      0% { transform: translateX(-50%) rotate(-2deg); }
-      30% { transform: translateX(-50%) rotate(3deg) scale(1.04); }
-      60% { transform: translateX(-50%) rotate(-3.5deg) scale(0.98); }
-      100% { transform: translateX(-50%) rotate(-2deg); }
-    }
-    .washi-wobble {
-      animation: washiWobble 0.65s ease-out;
-    }
-
-    /* Animación continua en móviles sin hover */
-    @media (hover: none) {
-      .polaroid-card:not(.is-flipped) {
-        animation: floatPolaroid 3.8s ease-in-out infinite;
-      }
-    }
-    @keyframes floatPolaroid {
-      0%, 100% { transform: rotate(var(--card-rot, 0deg)) translateY(0px); }
-      50% { transform: rotate(var(--card-rot, 0deg)) translateY(-7px); }
-    }
-
-    /* Resplandor ambiental de fondo */
-    .ambient-glow {
-      background: radial-gradient(circle at 50% 15%, rgba(244, 114, 182, 0.16), transparent 55%),
-                  radial-gradient(circle at 85% 75%, rgba(251, 113, 133, 0.12), transparent 50%),
-                  radial-gradient(circle at 15% 65%, rgba(254, 205, 211, 0.18), transparent 50%);
-    }
-
-    /* Canvas de partículas de fondo */
-    #particles-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* Cielo estrellado fijo y luciérnagas */
-    .starry-sky {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-    .twinkling-star {
-      position: absolute;
-      border-radius: 50%;
-      background: #ffffff;
-      animation: twinkle var(--duration, 3.2s) infinite ease-in-out;
-      animation-delay: var(--delay, 0s);
-    }
-    @keyframes twinkle {
-      0%, 100% {
-        opacity: 0.15;
-        transform: scale(0.7);
-      }
-      50% {
-        opacity: 0.95;
-        transform: scale(1.3);
-        box-shadow: 0 0 6px rgba(255, 235, 180, 0.9);
-      }
-    }
-
-    /* Estrella juguetona de Romeo flotando suavemente por el cielo */
-    @keyframes romeoPlayingSky {
-      0% {
-        top: 3.5%;
-        left: 82%;
-        transform: translate(0, 0) rotate(0deg) scale(1);
-      }
-      20% {
-        top: 8%;
-        left: 64%;
-        transform: translate(-10px, 8px) rotate(14deg) scale(1.1);
-      }
-      40% {
-        top: 3%;
-        left: 42%;
-        transform: translate(12px, -6px) rotate(-10deg) scale(0.95);
-      }
-      60% {
-        top: 9%;
-        left: 22%;
-        transform: translate(-8px, 10px) rotate(12deg) scale(1.08);
-      }
-      80% {
-        top: 4.5%;
-        left: 54%;
-        transform: translate(12px, -4px) rotate(-8deg) scale(1.02);
-      }
-      100% {
-        top: 3.5%;
-        left: 82%;
-        transform: translate(0, 0) rotate(0deg) scale(1);
-      }
-    }
-    #romeo-star {
-      position: fixed;
-      z-index: 35;
-      animation: romeoPlayingSky 32s ease-in-out infinite;
-      transition: transform 0.3s ease;
-      will-change: top, left, transform;
-    }
-    #romeo-star:hover {
-      animation-play-state: paused;
-    }
-
-    /* Estela de cursor interactiva */
-    .cursor-trail-particle {
-      position: fixed;
-      pointer-events: none;
-      z-index: 99999;
-      user-select: none;
-      font-size: 19px;
-      animation: cursorTrailFade 0.85s ease-out forwards;
-      will-change: transform, opacity;
-    }
-    @keyframes cursorTrailFade {
-      0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        opacity: 0.95;
-      }
-      100% {
-        transform: translate(calc(-50% + var(--dx, 0px)), calc(-50% - 28px)) scale(0.4) rotate(var(--drot, 15deg));
-        opacity: 0;
-      }
-    }
-
-    /* Pantalla de bloqueo: Transición de apertura de sobre 3D */
-    #gatekeeper-screen {
-      perspective: 1200px;
-      transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    #gatekeeper-screen.unlock-transition {
-      transform: translateY(-100%) rotateX(15deg);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* Animación de error al ingresar clave */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-    .animate-shake {
-      animation: shake 0.4s ease-in-out;
-    }
-    .input-error-glow {
-      border-color: #e11d48 !important;
-      box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.25), 0 0 16px rgba(225, 29, 72, 0.45) !important;
-    }
-
-    /* Indicadores de huellitas sobre la clave */
-    .passcode-dot {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      font-size: 1.35rem;
-      opacity: 0.35;
-      transform: scale(1);
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-      filter: grayscale(0.8);
-      user-select: none;
-    }
-    .passcode-dot.active {
-      opacity: 1;
-      transform: scale(1.32);
-      filter: drop-shadow(0 0 10px rgba(225, 29, 72, 0.85)) grayscale(0);
-    }
-
-    /* Animación de latido de corazón a 60 BPM (1s) */
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      25% { transform: scale(1.14); }
-      40% { transform: scale(1.03); }
-      60% { transform: scale(1.14); }
-      75% { transform: scale(1); }
-    }
-    .animate-heartbeat {
-      display: inline-block;
-      animation: heartbeat 1s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-      transform-origin: center;
-    }
-
-    /* Estilo máquina de escribir para la Carta de Amor */
-    .carta-texto-maquina {
-      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
-      line-height: 1.75;
-      color: #3f3939;
-      font-size: 0.96rem;
-      text-align: center;
-    }
-    .carta-texto-maquina p {
-      margin-bottom: 1.35rem;
-    }
-    .carta-texto-maquina strong {
-      color: #1e0c12;
-      font-weight: 700;
-    }
-    .typewriter-cursor {
-      display: inline-block;
-      font-weight: 700;
-      color: #e11d48;
-      animation: blink 0.8s infinite;
-      font-size: 1.15rem;
-      vertical-align: baseline;
-      margin-left: 2px;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* =========================================================================
-       SOBRE POSTAL 3D REALISTA CON BOLSILLO, FORRO INTERIOR Y SELLO DE LACRE
-       ========================================================================= */
-    .real-envelope-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: min(440px, 92vw);
-      height: 260px;
-      margin: 3.5rem auto 2.5rem;
-      perspective: 1200px;
-      cursor: pointer;
-    }
-    @media (max-width: 640px) {
-      .real-envelope-wrapper {
-        max-width: min(340px, 92vw);
-        height: 200px;
-        margin: 2.5rem auto 2rem;
-      }
-    }
-
-    .real-envelope {
-      position: relative;
-      width: 100%;
-      max-width: min(440px, 92vw);
-      height: 100%;
-      margin: 0 auto;
-      background: #fdfaf7;
-      border-radius: 14px;
-      box-shadow: 0 18px 40px -10px rgba(30, 12, 18, 0.22), 0 4px 14px rgba(225, 29, 72, 0.08);
-      transform-style: preserve-3d;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
-      border: 1px solid rgba(225, 29, 72, 0.12);
-    }
-    .real-envelope-wrapper:hover .real-envelope {
-      transform: translateY(-5px) scale(1.015);
-      box-shadow: 0 24px 48px -8px rgba(30, 12, 18, 0.28), 0 8px 20px rgba(225, 29, 72, 0.15);
-    }
-
-    /* Fondo interior y forro de lujo */
-    .envelope-backplate {
-      position: absolute;
-      inset: 0;
-      background: #faede6;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid #ebd8ce;
-      z-index: 1;
-    }
-    .envelope-inner-lining {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #fff5f6 0%, #fee4e8 100%);
-      opacity: 0.95;
-    }
-
-    /* Carta privada deslizable (emerge suavemente al abrir el sobre) */
-    .envelope-letter-paper {
-      position: absolute;
-      top: 24px;
-      left: 20px;
-      right: 20px;
-      height: 195px;
-      background: #ffffff;
-      border-radius: 10px 10px 0 0;
-      box-shadow: 0 -4px 16px rgba(30, 12, 18, 0.08);
-      padding: 16px 20px;
-      transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.8s ease;
-      z-index: 8;
-      border: 1px solid #f2e4df;
-      border-bottom: none;
-      transform: translateY(0);
-    }
-    @media (max-width: 640px) {
-      .envelope-letter-paper {
-        top: 14px;
-        left: 12px;
-        right: 12px;
-        height: 150px;
-        padding: 10px 14px;
-      }
-    }
-    .envelope-letter-paper.slide-out {
-      transform: translateY(-190px) scale(1.03);
-      box-shadow: 0 -12px 28px rgba(30, 12, 18, 0.14);
-      z-index: 8 !important;
-    }
-    @media (max-width: 640px) {
-      .envelope-letter-paper.slide-out {
-        transform: translateY(-135px) scale(1.03);
-        z-index: 8 !important;
-      }
-    }
-
-    /* Bolsillo frontal sólido del sobre (altura completa con corte V) */
-    .envelope-front-pocket {
-      position: absolute;
-      inset: 0;
-      z-index: 14;
-      pointer-events: none;
-    }
-    .envelope-pocket-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 -4px 6px rgba(0, 0, 0, 0.04));
-    }
-
-    .envelope-address {
-      position: absolute;
-      bottom: 22px;
-      left: 24px;
-      z-index: 16;
-      text-align: left;
-      pointer-events: none;
-      max-width: 55%;
-    }
-    @media (max-width: 640px) {
-      .envelope-address {
-        bottom: 12px;
-        left: 14px;
-        max-width: 58%;
-      }
-    }
-
-    /* Grupo de estampilla y matasellos en la esquina derecha del bolsillo (100% visible, sin cortes) */
-    .envelope-stamps-group {
-      position: absolute;
-      bottom: 20px;
-      right: 22px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 16;
-      pointer-events: none;
-    }
-    @media (max-width: 640px) {
-      .envelope-stamps-group {
-        bottom: 10px;
-        right: 12px;
-        gap: 4px;
-      }
-    }
-
-    .postal-stamp {
-      width: 48px;
-      height: 58px;
-      background: #fffdfa;
-      border: 2px dashed #e11d48;
-      border-radius: 4px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transform: rotate(2deg);
-    }
-    @media (max-width: 640px) {
-      .postal-stamp {
-        width: 36px;
-        height: 44px;
-      }
-    }
-
-    .postal-cancellation {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      border: 1.5px dashed rgba(225, 29, 72, 0.45);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: monospace;
-      font-size: 6px;
-      color: rgba(225, 29, 72, 0.65);
-      transform: rotate(-8deg);
-    }
-    @media (max-width: 640px) {
-      .postal-cancellation {
-        width: 40px;
-        height: 40px;
-        font-size: 5px;
-      }
-    }
-
-    /* Solapa triangular 3D superior con forro interior de doble faz */
-    .envelope-flap-wrapper {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 154px;
-      z-index: 20;
-      transform-origin: top center;
-      transition: transform 1.15s cubic-bezier(0.25, 1, 0.5, 1), z-index 0s linear 0.55s;
-      transform-style: preserve-3d;
-      pointer-events: auto;
-    }
-    @media (max-width: 640px) {
-      .envelope-flap-wrapper {
-        height: 118px;
-      }
-    }
-    .real-envelope.is-open .envelope-flap-wrapper {
-      transform: rotateX(180deg);
-      z-index: 4;
-      transition: transform 1.15s cubic-bezier(0.25, 1, 0.5, 1), z-index 0s linear 0.55s;
-    }
-
-    .envelope-flap-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      transform-origin: top center;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .envelope-flap-front {
-      transform: rotateX(0deg);
-      z-index: 2;
-    }
-    .envelope-flap-back {
-      transform: rotateX(180deg);
-      z-index: 1;
-    }
-    .envelope-flap-svg {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 4px 8px rgba(30, 12, 18, 0.08));
-    }
-    .real-envelope.is-open .envelope-flap-back .envelope-flap-svg {
-      filter: drop-shadow(0 -8px 16px rgba(30, 12, 18, 0.12));
-    }
-
-    /* Sello de lacre carmesí 3D centrado en la punta de la solapa */
-    .wax-seal {
-      position: absolute;
-      bottom: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fb7185 0%, #e11d48 45%, #9f1239 80%, #4c0519 100%);
-      box-shadow: 
-        0 6px 18px -2px rgba(159, 18, 57, 0.55),
-        0 2px 6px rgba(0, 0, 0, 0.2),
-        inset 0 2px 3px rgba(255, 255, 255, 0.45),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 25;
-      user-select: none;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-    }
-    .wax-seal::before {
-      content: '';
-      position: absolute;
-      inset: 4px;
-      border-radius: 50%;
-      border: 1.5px dashed rgba(255, 255, 255, 0.35);
-      pointer-events: none;
-    }
-    .wax-seal-inner {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #e11d48, #881337);
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(255, 255, 255, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffe4e8;
-      font-size: 1.15rem;
-    }
-    .wax-seal:hover {
-      transform: translateX(-50%) scale(1.12);
-      box-shadow: 
-        0 10px 24px -2px rgba(159, 18, 57, 0.7),
-        0 0 18px rgba(244, 63, 94, 0.45),
-        inset 0 2px 4px rgba(255, 255, 255, 0.5);
-    }
-    @media (max-width: 640px) {
-      .wax-seal {
-        bottom: -20px;
-        width: 44px;
-        height: 44px;
-      }
-      .wax-seal-inner {
-        width: 26px;
-        height: 26px;
-        font-size: 0.95rem;
-      }
-    }
-    .real-envelope.is-open .wax-seal {
-      animation: waxSealBreak 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      pointer-events: none;
-    }
-    @keyframes waxSealBreak {
-      0% {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-      }
-      35% {
-        transform: translateX(-50%) scale(1.22) rotate(-8deg);
-        filter: drop-shadow(0 0 16px rgba(225, 29, 72, 0.9));
-        opacity: 0.95;
-      }
-      100% {
-        transform: translateX(-50%) scale(1.4) translateY(22px) rotate(18deg);
-        opacity: 0;
-      }
-    }
-
-    /* Transición suave de elevación y fade-in de la carta completa */
-    #carta-card {
-      transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-      transform: translateY(20px) scale(0.98);
-    }
-    #carta-card.carta-visible {
-      opacity: 1 !important;
-      transform: translateY(0) scale(1) !important;
-    }
-
-    /* Firma de la carta y trazo SVG animado */
-    .carta-firma {
-      margin-top: 2.2rem;
-      text-align: center;
-      font-family: 'Courier Prime', 'Courier New', Courier, monospace;
-    }
-    .carta-firma .firma-principal {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #e11d48;
-    }
-    .carta-firma .firma-subtexto {
-      font-size: 0.85rem;
-      color: #78716c;
-      margin-top: 0.35rem;
-      letter-spacing: 0.05em;
-    }
-    .signature-stroke {
-      stroke-dasharray: 260;
-      stroke-dashoffset: 260;
-      transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .signature-stroke.drawn {
-      stroke-dashoffset: 0;
-    }
-
-    /* Reproductor de vinilo y barras ecualizadoras */
-    .vinyl-disc {
-      animation: spinVinyl 4s linear infinite;
-      animation-play-state: paused;
-    }
-    .vinyl-disc.is-playing {
-      animation-play-state: running;
-    }
-    @keyframes spinVinyl {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .eq-bar {
-      width: 2.5px;
-      height: 3px;
-      background-color: #e11d48;
-      border-radius: 1px;
-      transition: height 0.2s ease;
-    }
-    .eq-bar.is-playing {
-      animation: eqBar 0.8s ease-in-out infinite alternate;
-    }
-    .eq-bar:nth-child(1) { animation-delay: 0.1s; animation-duration: 0.7s; }
-    .eq-bar:nth-child(2) { animation-delay: 0.3s; animation-duration: 0.9s; }
-    .eq-bar:nth-child(3) { animation-delay: 0.0s; animation-duration: 0.6s; }
-    .eq-bar:nth-child(4) { animation-delay: 0.2s; animation-duration: 0.8s; }
-    @keyframes eqBar {
-      0% { height: 3px; }
-      100% { height: 14px; }
-    }
-
-    /* Botón de Abrazo Virtual: Ripple y partículas 3D parabólicas */
-    .hug-ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(225, 29, 72, 0.45) 0%, rgba(251, 113, 133, 0.18) 50%, transparent 70%);
-      transform: scale(0);
-      animation: rippleExpand 0.95s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-      pointer-events: none;
-      z-index: 10;
-    }
-    @keyframes rippleExpand {
-      to {
-        transform: scale(4.5);
-        opacity: 0;
-      }
-    }
-    .burst-particle-3d {
-      position: fixed;
-      pointer-events: none;
-      z-index: 99999;
-      font-size: 21px;
-      user-select: none;
-      animation: parabolicFly var(--flight-duration, 1.4s) cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
-      will-change: transform, opacity;
-    }
-    @keyframes parabolicFly {
-      0% {
-        transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(0.6) rotate(0deg);
-        opacity: 1;
-      }
-      60% {
-        opacity: 0.95;
-      }
-      100% {
-        transform: translate(-50%, -50%) translate3d(var(--tx), var(--ty), 0) scale(var(--target-scale, 1.25)) rotate(var(--rot, 45deg));
-        opacity: 0;
-      }
-    }
-
-    /* Scrollbar estilizada */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #fbf7f4;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #f472b6;
-      border-radius: 4px;
-    }
-  </style>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
+<body class="overflow-hidden selection:bg-rose-500/30 selection:text-rose-100">
 
-<body class="bg-[#faf5f3] text-stone-800 font-sans antialiased selection:bg-rose-200 selection:text-rose-900 relative overflow-x-hidden min-h-screen">
+  <!-- Capas atmosféricas -->
+  <div class="ambient-mesh" aria-hidden="true"></div>
+  <div class="film-grain" aria-hidden="true"></div>
+  <canvas id="sky-canvas" aria-hidden="true"></canvas>
+  <div id="cursor-halo" class="cursor-halo" aria-hidden="true"></div>
 
-  <!-- Cielo estrellado de fondo -->
-  <div class="starry-sky" id="starry-sky"></div>
-
-  <!-- Canvas de partículas flotantes (corazones y brillos) -->
-  <canvas id="particles-canvas"></canvas>
-
-  <!-- Estrella especial de Romeo que se mueve suavemente por el cielo jugando -->
-  <div id="romeo-star" class="group cursor-pointer select-none" onclick="triggerRomeoTribute()">
-    <div class="relative flex items-center justify-center">
-      <div class="absolute w-12 h-12 rounded-full bg-amber-300/35 blur-md animate-pulse pointer-events-none"></div>
-      <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-200 via-yellow-100 to-white flex items-center justify-center text-lg shadow-[0_0_18px_rgba(251,191,36,0.85)] transition-transform duration-300 group-hover:scale-125 border border-amber-200/60">
-        ⭐
+  <!-- Pantalla de Bloqueo -->
+  <section id="gatekeeper-screen" class="gatekeeper-overlay" aria-label="Acceso privado">
+    <div id="gatekeeper-card" class="glass-card w-full max-w-md rounded-3xl p-7 sm:p-9 text-center relative overflow-hidden">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-300/20 text-rose-200 text-xs font-medium tracking-wide mb-5">
+        <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Acceso Privado
       </div>
-      <!-- Tooltip interactivo centrado -->
-      <div class="absolute top-11 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-stone-900/95 text-amber-200 text-xs font-serif font-medium whitespace-nowrap shadow-xl border border-amber-300/40 backdrop-blur-md opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 z-50">
-        <span>✨ Romeo cuidándote desde las estrellas</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- PANTALLA DE BLOQUEO PRIVADA CON APERTURA DE TELÓN / SOBRE 3D -->
-  <div id="gatekeeper-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#150a0e]/90 backdrop-blur-md px-4 py-6 overflow-y-auto">
-    <div class="max-w-md w-full bg-white/95 backdrop-blur-xl p-6 sm:p-10 rounded-3xl shadow-2xl border border-rose-100 text-center relative overflow-hidden my-auto">
-      <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
-      <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-pink-200 rounded-full blur-2xl opacity-60 pointer-events-none"></div>
-      
-      <div class="relative z-10 pt-2">
-        <h2 class="font-serif text-2xl sm:text-3xl text-rose-950 font-bold mb-2">Un Espacio Solo Para Ti</h2>
-        <p class="text-stone-600 text-xs sm:text-sm mb-5 leading-relaxed px-1 sm:px-2">Para ingresar debes anotar el nombre del amor de tu vida: el amor más puro que has recibido, amor de queso 🧀 y boca chueca</p>
-        
-        <!-- Indicador reactivo de 5 huellitas -->
-        <div class="flex items-center justify-center gap-2.5 sm:gap-3.5 mb-4 select-none" id="passcode-dots">
-          <span class="passcode-dot" data-index="0">🐾</span>
-          <span class="passcode-dot" data-index="1">🐾</span>
-          <span class="passcode-dot" data-index="2">🐾</span>
-          <span class="passcode-dot" data-index="3">🐾</span>
-          <span class="passcode-dot" data-index="4">🐾</span>
-        </div>
-
-        <form id="gatekeeper-form" class="space-y-4" onsubmit="event.preventDefault(); handleUnlock(event)">
-          <div class="relative">
-            <input 
-              type="text" 
-              id="gatekeeper-input" 
-              name="passcode-input"
-              placeholder="Escribe el nombre aquí... 💕" 
-              class="w-full px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl border border-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400 bg-rose-50/40 text-center text-base sm:text-lg font-medium text-stone-800 tracking-wider transition-all placeholder:text-stone-400 placeholder:text-sm shadow-inner"
-              autocomplete="off"
-              autocapitalize="none"
-              autocorrect="off"
-              spellcheck="false"
-              required
-            >
-          </div>
-          <p id="error-msg" class="text-xs text-rose-600 font-medium hidden">¡Ups! Esa no es la clave secreta, inténtalo de nuevo amor ❤️</p>
-          <button 
-            type="submit" 
-            id="btn-unlock"
-            class="w-full py-3.5 bg-gradient-to-r from-rose-500 via-rose-600 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-medium rounded-xl shadow-lg shadow-rose-300/40 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base select-none"
-          >
-            <span>Desbloquear Regalo</span>
-            <span>✨</span>
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- REPRODUCTOR DE MÚSICA FLOTANTE VINTAGE CON VINILO GIRATORIO -->
-  <audio id="bg-audio" src="./musica/Perros y Gatos - Macha y el Bloque Depresivo.mp3" loop preload="auto"></audio>
-  <div id="music-player" class="fixed bottom-5 right-5 z-40 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-rose-200/80 flex items-center gap-3 transition-transform duration-300 hover:scale-105">
-    <button id="music-toggle-btn" onclick="toggleMusic()" class="relative w-12 h-12 rounded-full focus:outline-none flex items-center justify-center cursor-pointer select-none" aria-label="Reproducir música">
-      <!-- Disco de vinilo en miniatura con surcos concéntricos -->
-      <div id="vinyl-disc" class="vinyl-disc w-12 h-12 rounded-full bg-stone-900 border-2 border-stone-800 shadow-md relative flex items-center justify-center">
-        <div class="absolute inset-1 rounded-full border border-stone-700/60 pointer-events-none"></div>
-        <div class="absolute inset-2 rounded-full border border-stone-600/40 pointer-events-none"></div>
-        <div class="absolute inset-3 rounded-full border border-stone-700/50 pointer-events-none"></div>
-        <!-- Etiqueta central -->
-        <div class="w-5 h-5 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-[8px] text-white font-bold shadow-inner relative z-10">
-          <span id="vinyl-play-icon" class="ml-0.5">▶</span>
-        </div>
-      </div>
-    </button>
-    <div class="text-left pr-2 select-none">
-      <p id="song-title" class="text-xs font-bold text-stone-800 tracking-wide truncate max-w-[150px] sm:max-w-[200px]">Perros y Gatos</p>
-      <p id="song-artist" class="text-[10px] text-stone-500 font-medium truncate max-w-[150px] sm:max-w-[200px]">Macha y el Bloque Depresivo</p>
-      <div class="flex items-center gap-2 mt-1">
-        <span class="text-[10px] text-rose-500 font-semibold" id="song-status">Pausado</span>
-        <!-- 4 barras ecualizadoras animadas -->
-        <div id="eq-bars" class="flex items-end gap-0.5 h-3">
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-          <span class="eq-bar"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <main class="relative z-10 ambient-glow min-h-screen">
-    <!-- Header / Hero -->
-    <header class="max-w-4xl mx-auto pt-16 pb-12 px-6 text-center">
-      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 text-xs font-semibold uppercase tracking-widest mb-6 shadow-sm">
-        ✨ Hoy es tu día especial ✨
-      </span>
-      <h1 class="text-4xl sm:text-6xl md:text-7xl font-serif font-bold text-stone-900 tracking-tight leading-tight mb-4">
-        ¡Feliz Cumpleaños, <br class="hidden sm:inline" />
-        <span class="bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500">Babu!</span>
-      </h1>
-      <p class="max-w-2xl mx-auto text-base sm:text-lg text-stone-600 leading-relaxed font-light mb-8">
-        Cada momento a tu lado es el regalo más hermoso de mi vida. Me siento profundamente orgulloso de la mujer increíble que camina a mi lado, y por eso creé este pequeño rincón para ti: un espacio lleno del cariño sincero de los seres que te aman con lo más puro y noble de su corazón.
+      <h2 class="font-serif-display text-3xl sm:text-4xl text-[#fbf7f4] mb-3">Un Espacio Solo Para Ti</h2>
+      <p class="text-sm sm:text-[15px] text-[#e7cfd6] leading-relaxed mb-6">
+        Para ingresar debes anotar el nombre del amor de tu vida: el amor más puro que has recibido, amor de queso y boca chueca.
       </p>
 
-      <!-- Contador de amor con efecto Count-Up -->
-      <div id="counters-container" class="inline-flex flex-wrap items-center justify-center gap-4 bg-white/75 backdrop-blur-md px-6 py-4 rounded-2xl border border-rose-100 shadow-sm">
-        <div class="text-center px-3">
-          <div class="flex items-center justify-center gap-1">
-            <span id="counter-days" class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">0</span>
-            <span class="text-xs text-rose-500 animate-heartbeat">❤️</span>
-          </div>
-          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Días de Amor</p>
-        </div>
-        <div class="w-px h-8 bg-rose-100"></div>
-        <div class="text-center px-3">
-          <div class="flex items-center justify-center gap-1">
-            <span id="counter-smiles" class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">0</span>
-            <span class="text-xs text-rose-500 animate-heartbeat">❤️</span>
-          </div>
-          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Sonrisas Compartidas</p>
-        </div>
-        <div class="w-px h-8 bg-rose-100"></div>
-        <div class="text-center px-3">
-          <div class="flex items-center justify-center gap-1">
-            <span id="counter-wishes" class="text-2xl sm:text-3xl font-bold font-serif text-rose-600">0</span>
-            <span class="text-xs text-rose-500 animate-heartbeat">❤️</span>
-          </div>
-          <p class="text-[11px] uppercase tracking-wider text-stone-400 font-semibold mt-0.5">Nuevos Deseos</p>
-        </div>
+      <!-- Indicadores de progreso -->
+      <div class="flex items-center justify-center gap-3 mb-5" aria-hidden="true">
+        <svg class="paw-dot w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>
+        <svg class="paw-dot w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>
+        <svg class="paw-dot w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>
+        <svg class="paw-dot w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>
+        <svg class="paw-dot w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>
       </div>
-      
-      <!-- Subcontador / Reloj en tiempo real de días, horas, minutos y segundos -->
-      <div class="mt-4 flex flex-col items-center gap-2">
-        <div class="inline-flex items-center gap-2 bg-rose-50/90 backdrop-blur-sm px-5 py-2 rounded-full border border-rose-200/80 shadow-sm text-xs sm:text-sm text-stone-700 font-medium">
-          <span class="text-rose-500 animate-heartbeat">❤️</span>
-          <span id="realtime-ticker" class="tracking-wide">Calculando tiempo de amor...</span>
-        </div>
-        
-        <p class="text-xs text-stone-500 font-medium">Juntos desde el <span class="text-rose-600 font-semibold">5 de Marzo de 2022</span> ❤️</p>
-        <div id="bday-special-badge" class="hidden px-4 py-1.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs font-semibold shadow-md animate-pulse">
-          🎂 ¡Hoy es 27 de Noviembre, tu Cumpleaños! Feliz día mi amor 🎉
-        </div>
+
+      <div class="space-y-3">
+        <input
+          id="secret-input"
+          type="text"
+          autocomplete="off"
+          placeholder="Escribe el nombre aquí..."
+          class="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-rose-200/20 text-center text-[#fbf7f4] placeholder:text-rose-200/40 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-500/25 transition"
+        />
+        <button
+          id="btn-unlock"
+          type="button"
+          class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm tracking-wide shadow-lg shadow-rose-950/50 transition-all active:scale-[0.98]"
+        >
+          Desbloquear Regalo
+        </button>
       </div>
+
+      <p id="error-msg" class="hidden mt-3 text-xs font-medium text-rose-300">
+        ¡Ups! Esa no es la clave secreta, inténtalo de nuevo amor.
+      </p>
+
+      <div class="mt-4">
+        <button id="btn-hint" type="button" class="text-xs text-rose-200/55 hover:text-rose-200 transition underline underline-offset-4">
+          ¿Necesitas una pista?
+        </button>
+        <p id="hint-box" class="hidden mt-2 text-xs text-amber-200/85 bg-amber-500/10 border border-amber-300/20 rounded-xl px-3 py-2">
+          Pista: 5 letras, patitas con olor a chetitos de queso y nos cuida desde las estrellas.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estrella Tributo de Romeo -->
+  <div class="romeo-star-btn">
+    <button
+      id="romeo-star-btn"
+      type="button"
+      aria-label="Estrella tributo de Romeo"
+      class="w-11 h-11 rounded-full glass-card flex items-center justify-center text-amber-300 hover:scale-105 transition"
+    >
+      <svg class="romeo-star-icon w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2l2.6 6.1 6.6.6-5 4.4 1.5 6.5L12 16.2 6.3 19.6l1.5-6.5-5-4.4 6.6-.6L12 2z"/>
+      </svg>
+    </button>
+    <div id="romeo-star-popover" class="hidden absolute right-0 mt-2 w-60 glass-card rounded-2xl p-3.5 text-xs text-amber-100 leading-relaxed">
+      <span class="font-semibold text-amber-300 block mb-0.5">Estrella de Romeo</span>
+      Romeo cuidándote desde las estrellas.
+    </div>
+  </div>
+
+  <!-- Navegación flotante -->
+  <nav class="sticky top-4 z-30 flex justify-center px-4 pt-4" aria-label="Navegación principal">
+    <div class="glass-card rounded-full px-2 py-1.5 flex items-center gap-1 text-xs sm:text-sm font-medium">
+      <a href="#inicio" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Inicio</a>
+      <a href="#recuerdos" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Recuerdos</a>
+      <a href="#carta" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Carta</a>
+      <a href="#abrazo" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Abrazo</a>
+    </div>
+  </nav>
+
+  <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-32">
+
+    <!-- Hero Editorial -->
+    <header id="inicio" class="pt-12 pb-10 sm:pt-16 sm:pb-14 text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card text-xs font-medium tracking-widest uppercase text-rose-200 mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+        Hoy es tu día especial
+      </div>
+
+      <div id="bday-special-badge" class="hidden mb-5 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-rose-500/20 to-amber-500/20 border border-amber-300/30 text-amber-100 text-xs sm:text-sm font-semibold">
+        ¡Hoy es 27 de Noviembre, tu Cumpleaños! Feliz día mi amor
+      </div>
+
+      <h1 class="font-serif-display text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-[#fbf7f4] leading-[1.08] mb-6">
+        ¡Feliz Cumpleaños, <span class="italic text-rose-300">Babu</span>!
+      </h1>
+
+      <p class="text-base sm:text-lg text-[#e7cfd6] leading-relaxed font-normal">
+        Cada momento a tu lado es el regalo más hermoso de mi vida. Me siento profundamente orgulloso de la mujer increíble que camina a mi lado, y por eso creé este pequeño rincón para ti: un espacio lleno del cariño sincero de los seres que te aman con lo más puro y noble de su corazón.
+      </p>
     </header>
 
-    <!-- GALERÍA POLAROID INTERACTIVA 3D CON TILT HOLOGRÁFICO Y ENTRADA ESCALONADA -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-      <div id="polaroid-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 perspective-1000">
-        <!-- Las 6 fotos se renderizan dinámicamente -->
+    <!-- Bento Grid de Contadores -->
+    <section id="counters-bento" class="mb-20" aria-label="Contadores de nuestra historia">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Tarjeta ancha en tiempo real -->
+        <div class="glass-card glass-card-interactive md:col-span-3 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div class="text-center lg:text-left">
+            <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Juntos desde el 5 de Marzo de 2022</span>
+            <h2 class="font-serif-display text-2xl sm:text-3xl text-[#fbf7f4] mt-1">Tiempo de amor infinito</h2>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2.5 sm:gap-4 w-full lg:w-auto">
+            <div class="rounded-2xl bg-white/5 border border-white/10 px-3 py-3 text-center">
+              <span id="live-days" class="block font-serif-display text-2xl sm:text-3xl text-rose-200 tabular-nums">0</span>
+              <span class="text-[11px] uppercase tracking-wider text-rose-200/60">Días</span>
+            </div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 px-3 py-3 text-center">
+              <span id="live-hours" class="block font-serif-display text-2xl sm:text-3xl text-rose-200 tabular-nums">00</span>
+              <span class="text-[11px] uppercase tracking-wider text-rose-200/60">Horas</span>
+            </div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 px-3 py-3 text-center">
+              <span id="live-minutes" class="block font-serif-display text-2xl sm:text-3xl text-rose-200 tabular-nums">00</span>
+              <span class="text-[11px] uppercase tracking-wider text-rose-200/60">Min</span>
+            </div>
+            <div class="rounded-2xl bg-white/5 border border-white/10 px-3 py-3 text-center">
+              <span id="live-seconds" class="block font-serif-display text-2xl sm:text-3xl text-amber-200 tabular-nums">00</span>
+              <span class="text-[11px] uppercase tracking-wider text-rose-200/60">Seg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 métricas -->
+        <div class="glass-card glass-card-interactive rounded-3xl p-6 text-center">
+          <span class="block text-xs uppercase tracking-[0.18em] text-rose-200/60 mb-2">Días de Amor</span>
+          <span id="counter-days" class="font-serif-display text-4xl sm:text-5xl text-[#fbf7f4] tabular-nums">0</span>
+        </div>
+
+        <div class="glass-card glass-card-interactive rounded-3xl p-6 text-center">
+          <span class="block text-xs uppercase tracking-[0.18em] text-rose-200/60 mb-2">Sonrisas Compartidas</span>
+          <span id="counter-smiles" class="font-serif-display text-4xl sm:text-5xl text-rose-300 tabular-nums">0</span>
+        </div>
+
+        <div class="glass-card glass-card-interactive rounded-3xl p-6 text-center">
+          <span class="block text-xs uppercase tracking-[0.18em] text-rose-200/60 mb-2">Nuevos Deseos</span>
+          <span id="counter-wishes" class="font-serif-display text-4xl sm:text-5xl text-amber-200 tabular-nums">0</span>
+        </div>
       </div>
     </section>
 
-    <!-- CARTA DE AMOR VINTAGE CON APERTURA DE SOBRE INTERACTIVO -->
-    <section id="carta-section" class="max-w-3xl mx-auto px-6 py-16">
-      <!-- Sobre postal 3D realista con solapa triangular, sello de lacre y estampilla vintage -->
-      <div id="carta-envelope-teaser" class="real-envelope-wrapper select-none mt-14 mb-10" onclick="openEnvelopeLetter()">
-        <div id="envelope-3d-box" class="real-envelope">
-          <!-- Capa 1: Fondo interior del sobre con forro blush romántico -->
-          <div class="envelope-backplate">
-            <div class="envelope-inner-lining"></div>
-          </div>
-
-          <!-- Capa 2: Carta que emerge naturalmente desde el interior -->
-          <div id="envelope-paper-preview" class="envelope-letter-paper">
-            <div class="flex items-center justify-between border-b border-rose-100/90 pb-1.5 mb-2">
-              <div class="flex items-center gap-1.5">
-                <span class="text-rose-500 text-xs">💌</span>
-                <span class="text-[11px] font-typewriter text-rose-600 font-bold tracking-wider">CARTA PRIVADA</span>
-              </div>
-              <span class="text-[10px] font-mono text-stone-400">05 • MAR • 2022</span>
-            </div>
-            <p class="font-typewriter text-[11px] sm:text-xs text-stone-700 leading-relaxed italic">
-              "Si tuviera que programar en código mi destino,<br class="hidden sm:inline">elegiría mil veces coincidir en tu camino..."
-            </p>
-          </div>
-
-          <!-- Capa 3: Bolsillo frontal sólido (sujeta la carta, con caligrafía y estampilla sin cortes) -->
-          <div class="envelope-front-pocket">
-            <svg class="envelope-pocket-svg" viewBox="0 0 440 260" preserveAspectRatio="none">
-              <path d="M 0,0 L 0,260 L 440,260 L 440,0 L 230,138 Q 220,142 210,138 L 0,0 Z" fill="#fcf7f4" stroke="#ebdcd5" stroke-width="1.5"/>
-            </svg>
-
-            <!-- Destinatario caligráfico manuscrito -->
-            <div class="envelope-address">
-              <p class="font-handwriting text-2xl sm:text-3xl text-rose-950 font-bold leading-tight drop-shadow-sm">Para: Babu ❤️</p>
-              <p class="font-typewriter text-[10px] sm:text-[11px] text-stone-600 leading-tight mt-0.5">El amor más puro de mi vida</p>
-              <p class="font-handwriting text-sm sm:text-base text-stone-500 mt-1">De: Talo, Romeo, Nala & Juli</p>
-            </div>
-
-            <!-- Estampilla vintage y matasellos conmemorativo (en la esquina derecha del bolsillo: 100% visible y sin cortes) -->
-            <div class="envelope-stamps-group">
-              <!-- Matasellos postal conmemorativo circular -->
-              <div class="postal-cancellation">
-                <span class="font-bold">05.MAR.22</span>
-                <span>AMOR ETERNO</span>
-                <span>CORREOS</span>
-              </div>
-
-              <!-- Estampilla postal vintage con huellita de amor -->
-              <div class="postal-stamp">
-                <span class="text-xs sm:text-sm">🐾</span>
-                <span class="text-[7px] sm:text-[8px] font-bold text-rose-800 tracking-tighter uppercase mt-0.5">AMOR</span>
-                <span class="text-[6px] sm:text-[7px] text-rose-600 font-mono">2022</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Capa 4: Solapa triangular 3D superior con forro interior de lujo y doble faz -->
-          <div class="envelope-flap-wrapper">
-            <!-- Cara exterior de la solapa (visible cuando está cerrado) -->
-            <div class="envelope-flap-face envelope-flap-front">
-              <svg class="envelope-flap-svg" viewBox="0 0 440 154" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="flapFrontGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#fffbfa"/>
-                    <stop offset="100%" stop-color="#faeee7"/>
-                  </linearGradient>
-                </defs>
-                <path d="M 0,0 L 440,0 L 226,148 Q 220,153 214,148 Z" fill="url(#flapFrontGrad)" stroke="#ebdcd5" stroke-width="1.5"/>
-              </svg>
-              <!-- Sello de lacre carmesí con relieve artesanal centrado en la punta -->
-              <div class="wax-seal" id="wax-seal-btn" title="Toca el sello para abrir">
-                <div class="wax-seal-inner">
-                  <span class="wax-seal-icon">❤️</span>
-                </div>
-              </div>
-            </div>
-            <!-- Cara interior de la solapa (visible cuando se abre hacia arriba, con forro satinado blush) -->
-            <div class="envelope-flap-face envelope-flap-back">
-              <svg class="envelope-flap-svg" viewBox="0 0 440 154" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="flapLiningGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#fee4e8"/>
-                    <stop offset="100%" stop-color="#fff5f6"/>
-                  </linearGradient>
-                </defs>
-                <path d="M 0,0 L 440,0 L 226,148 Q 220,153 214,148 Z" fill="url(#flapLiningGrad)" stroke="#fcd5de" stroke-width="1.5"/>
-              </svg>
-            </div>
-          </div>
+    <!-- Galería Polaroid 3D -->
+    <section id="recuerdos" class="mb-24">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Galería Interactiva</span>
+          <h2 class="font-serif-display text-3xl sm:text-4xl text-[#fbf7f4] mt-1">Nuestros Recuerdos</h2>
         </div>
-
-        <!-- Indicador flotante sutil debajo del sobre -->
-        <p class="text-center text-xs sm:text-sm text-rose-600 font-medium mt-5 flex items-center justify-center gap-2">
-          <span>✨ Toca el sobre para abrir tu carta</span>
-          <span class="animate-bounce">💌</span>
-        </p>
+        <p class="text-sm text-[#e7cfd6]/80">Toca cada tarjeta para leer su dedicatoria o amplíala para verla en detalle.</p>
       </div>
 
-      <!-- Contenedor desplegado de la carta -->
-      <div id="carta-card" class="bg-white/85 backdrop-blur-lg p-6 sm:p-12 rounded-3xl shadow-xl border border-rose-100 relative overflow-hidden hidden opacity-0 cursor-pointer" onclick="handleCartaCardClick(event)">
-        <div class="washi-tape"></div>
+      <div id="polaroid-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7"></div>
+    </section>
 
-        <!-- Barra superior con opción sutil para guardar en sobre o completar la lectura de inmediato -->
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-[11px] font-mono text-rose-400 flex items-center gap-1.5 uppercase tracking-wider">
-            <span>💌</span>
-            <span>Carta Privada</span>
+    <!-- Sobre Postal y Carta -->
+    <section id="carta" class="mb-24 max-w-3xl mx-auto">
+      <div class="text-center mb-8">
+        <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Correo Privado</span>
+        <h2 class="font-serif-display text-3xl sm:text-4xl text-[#fbf7f4] mt-1">Una Carta Para Ti</h2>
+      </div>
+
+      <!-- Sobre cerrado -->
+      <div id="carta-envelope-teaser" class="glass-card rounded-3xl p-7 sm:p-10 relative overflow-hidden">
+        <div class="flex items-center justify-between text-xs font-mono-letter text-rose-200/60 border-b border-white/10 pb-4 mb-6">
+          <span>CARTA PRIVADA</span>
+          <span>05 • MAR • 2022</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
+          <div class="sm:col-span-2 space-y-3">
+            <p class="font-serif-display italic text-lg sm:text-xl text-rose-100 leading-relaxed">
+              "Si tuviera que programar en código mi destino, elegiría mil veces coincidir en tu camino..."
+            </p>
+            <div class="text-xs sm:text-sm text-[#e7cfd6]/80 space-y-1 pt-2">
+              <p><strong class="text-rose-200">Para:</strong> Babu — El amor más puro de mi vida</p>
+              <p><strong class="text-rose-200">De:</strong> Talo, Romeo, Nala &amp; Juli</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center justify-center gap-3">
+            <button
+              id="btn-open-seal"
+              type="button"
+              class="wax-seal-btn w-24 h-24 rounded-full bg-gradient-to-br from-rose-600 via-rose-700 to-rose-900 border-2 border-rose-300/40 flex flex-col items-center justify-center text-rose-50 shadow-xl"
+              aria-label="Romper sello y abrir carta"
+            >
+              <svg class="w-7 h-7 mb-1" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/>
+              </svg>
+              <span class="text-[10px] uppercase tracking-widest font-semibold">Abrir</span>
+            </button>
+            <span class="text-[11px] font-mono-letter text-rose-200/50">05.MAR.22 • CORREOS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carta abierta -->
+      <div id="carta-card" class="hidden letter-paper rounded-3xl p-7 sm:p-11 relative overflow-hidden">
+        <div class="h-1 w-full bg-rose-900/10 rounded-full overflow-hidden mb-6">
+          <div id="carta-progress" class="h-full w-0 bg-rose-600 transition-all duration-150"></div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-rose-950/10 pb-5 mb-6">
+          <div>
+            <h3 class="font-serif-display text-2xl sm:text-3xl text-[#1e0c12]">Para el amor de mi vida</h3>
+            <p class="text-xs sm:text-sm text-rose-950/65 mt-0.5">Un deseo sincero desde lo más profundo de mi corazón</p>
           </div>
           <div class="flex items-center gap-2">
-            <button id="reopen-envelope-btn" type="button" onclick="resetEnvelopeLetter(); event.stopPropagation();" class="text-[11px] font-sans text-stone-500 hover:text-rose-600 transition-colors cursor-pointer flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-rose-50/70 select-none" title="Guardar la carta y volver al sobre postal">
-              <span>✉️ Guardar en sobre</span>
+            <button id="btn-toggle-type-sound" type="button" class="text-xs px-3 py-1.5 rounded-full border border-rose-950/15 text-rose-950/75 hover:bg-rose-950/5 transition">
+              Sonido: ON
             </button>
-            <button id="skip-typewriter-btn" type="button" onclick="revealFullLetter(); event.stopPropagation();" class="text-[11px] font-sans text-rose-500/90 hover:text-rose-700 underline underline-offset-4 transition-colors cursor-pointer flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-rose-50/70 select-none" title="Completar la lectura de la carta inmediatamente">
-              <span>Completar lectura</span>
-              <span>⚡</span>
+            <button id="btn-skip-typewriter" type="button" class="text-xs px-3 py-1.5 rounded-full bg-rose-600 text-white hover:bg-rose-500 transition">
+              Completar lectura
+            </button>
+            <button id="btn-close-letter" type="button" class="text-xs px-3 py-1.5 rounded-full border border-rose-950/15 text-rose-950/75 hover:bg-rose-950/5 transition">
+              Guardar en sobre
             </button>
           </div>
         </div>
 
-        <div class="text-center mb-6">
-          <span class="text-3xl">💌</span>
-          <h3 class="font-serif text-2xl sm:text-3xl font-bold text-stone-900 mt-2">Para el amor de mi vida</h3>
-          <p class="text-xs text-rose-500 font-medium">Un deseo sincero desde lo más profundo de mi corazón</p>
+        <div id="carta-body" class="font-mono-letter text-sm sm:text-[15px] leading-[1.85] text-[#2a1219] whitespace-pre-line min-h-[220px]"></div>
+
+        <div id="carta-firma" class="mt-8 pt-6 border-t border-rose-950/10 text-right opacity-0 translate-y-3 transition-all duration-700">
+          <p class="font-serif-display italic text-2xl text-rose-800">Talo, Romeo, Nala &amp; Juli</p>
+          <p class="text-xs font-mono-letter uppercase tracking-widest text-rose-950/55 mt-1">Tus acompañantes de viaje</p>
         </div>
 
-        <div id="carta-contenido" class="carta-texto-maquina min-h-[300px]">
-          <!-- Texto animado tipo máquina de escribir -->
-        </div>
-        <div class="text-center">
-          <span id="typewriter-cursor" class="typewriter-cursor hidden">|</span>
-        </div>
-
-        <!-- Firma con rúbrica SVG decorativa animada -->
-        <div class="carta-firma opacity-0 transition-opacity duration-700" id="carta-firma">
-          <p class="firma-principal">Talo, Romeo, Nala & Juli ❤️</p>
-          <svg class="mx-auto mt-1 mb-2" width="220" height="24" viewBox="0 0 220 24" fill="none">
-            <path id="signature-flourish" d="M15 15 C 55 5, 85 20, 115 12 C 145 4, 180 18, 205 10" stroke="#e11d48" stroke-width="2.5" stroke-linecap="round" fill="none" class="signature-stroke" />
-          </svg>
-          <p class="firma-subtexto">🐾 Tus acompañantes de viaje 🐾</p>
-        </div>
-        
-        <!-- Botón de Abrazo Virtual con 6 ladridos caninos, ondas físicas y partículas 3D -->
-        <div class="mt-8 flex justify-center">
-          <button onclick="launchLoveBurst(event)" class="relative overflow-hidden px-7 py-3.5 bg-gradient-to-r from-rose-500 via-rose-600 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm sm:text-base font-semibold rounded-full shadow-lg shadow-rose-300/40 transition-transform active:scale-95 flex items-center gap-2 group cursor-pointer select-none">
-            <span class="relative z-10">Recibir un abrazo virtual</span>
-            <span class="relative z-10 group-hover:scale-125 transition-transform duration-300">💖</span>
+        <!-- Botón de Sorpresa Video Flow (se activa al terminar de leer la carta) -->
+        <div id="carta-flow-surprise" class="hidden opacity-0 translate-y-3 transition-all duration-700 mt-8 pt-6 border-t border-rose-950/10 text-center">
+          <p class="text-xs uppercase tracking-[0.2em] text-rose-800/75 font-semibold mb-3">
+            Sorpresa Desbloqueada al Leer la Carta
+          </p>
+          <button
+            id="btn-open-flow-video"
+            type="button"
+            class="flow-surprise-btn inline-flex items-center gap-3 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-semibold text-sm tracking-wide shadow-xl transition-all active:scale-95"
+          >
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            Ver Nuestra Postal Animada en la Playa ✨
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="text-center py-8 text-xs text-stone-400">
+    <!-- Abrazo Virtual -->
+    <section id="abrazo" class="max-w-xl mx-auto text-center">
+      <div class="glass-card rounded-3xl p-8 sm:p-10">
+        <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Siempre Cerca</span>
+        <h2 class="font-serif-display text-3xl text-[#fbf7f4] mt-1 mb-3">¿Necesitas un abrazo?</h2>
+        <p class="text-sm text-[#e7cfd6]/80 mb-6">Cada toque envía un abrazo de toda nuestra manada directo a tu corazón.</p>
+
+        <button
+          id="btn-virtual-hug"
+          type="button"
+          class="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold shadow-xl shadow-rose-950/50 transition-all active:scale-95"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/>
+          </svg>
+          Enviar Abrazo Virtual
+          <span id="hug-count" class="px-2 py-0.5 text-xs rounded-full bg-white/20 tabular-nums">0</span>
+        </button>
+
+        <p id="hug-toast" class="mt-5 text-sm text-rose-200 font-medium opacity-0 translate-y-2 transition-all duration-300 min-h-[24px]"></p>
+      </div>
+    </section>
+
+    <footer class="mt-20 text-center text-xs text-rose-200/50">
       Hecho con todo mi amor para ti • ¡Feliz Cumpleaños!
     </footer>
   </main>
 
-  <script>
-    /* =========================================================================
-       1. DATOS DE LOS RECUERDOS (FOTOGRAFÍAS ESTANDARIZADAS Y PERSONALIZADAS)
-       ========================================================================= */
-    const RECUERDOS = [
-      {
-        id: 1,
-        imagen: "./fotos/foto1.jpg",
-        titulo: "Tu arcoíris",
-        inclinacionTexto: "-3deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M7 17a5 5 0 0 1 10 0"/><circle cx="19" cy="8" r="1.2" fill="#222"/><circle cx="17" cy="6" r="1" fill="#222"/><circle cx="21" cy="6" r="1" fill="#222"/><path d="M19 10c-1 0-1.5.8-1.5 1.2 0 .5.7 1 1.5 1s1.5-.5 1.5-1c0-.4-.5-1.2-1.5-1.2z" fill="#222"/></svg>`,
-        nota: "Un angelito blanco que a tu vida llegó,\nde nuevas energías tu mundo llenó.\nCompañera fiel de juegos y dulzura,\nlista para compartir cada nueva aventura.",
-        firma: "NALITA (*)",
-        rotacion: "-2deg"
-      },
-      {
-        id: 2,
-        imagen: "./fotos/foto2.jpg",
-        titulo: "Sonrisa que contagia",
-        inclinacionTexto: "2.5deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><circle cx="12" cy="12" r="7"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9.5 14a3.5 3.5 0 0 0 5 0"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/></svg>`,
-        nota: "Esa sonrisa hermosa que en tu rostro brilla,\nes la magia viva que todo lo maravilla.\nComo las flores frescas que despiertan en el jardín,\ny el canto matutino de las aves sin fin.",
-        firma: "Babu",
-        rotacion: "2.5deg"
-      },
-      {
-        id: 3,
-        imagen: "./fotos/foto3.jpg",
-        titulo: "Tu eterno chetito",
-        inclinacionTexto: "-2deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M6 18c3-1 6-5 5-9s4-5 6-3 1 6-2 9-6 4-9 3z" stroke-dasharray="0.5 1.5"/><path d="M16 4c1 1 1 2 0 3"/><path d="M19 5c1.2 1.2 1.2 2.5 0 3.7"/><path d="M5 14c-.5.8-.3 1.8.5 2.2"/></svg>`,
-        nota: "Fui tu fiel compañero en cada camino y andar,\ncon un amor tan puro que nunca dejará de brillar.\nRecuerda mis patitas con olor a chetitos de queso,\nque siempre te cuidarán desde el cielo con un beso.",
-        firma: "ROMEO 🐾",
-        rotacion: "-1.5deg"
-      },
-      {
-        id: 4,
-        imagen: "./fotos/foto4.jpg",
-        titulo: "Nuestros momentos",
-        inclinacionTexto: "3deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="m3 12 18-9-9 18-2-7-7-2z"/><path d="M12 12l9-9"/><path d="M16 16c-1-1.5-2.5-.5-2.5 0s1.5 2.5 2.5 3.5c1-1 2.5-3 2.5-3.5s-1.5-1.5-2.5 0z" fill="#222"/></svg>`,
-        nota: "Entre viajes, mochilas y rutas por descubrir,\nlibros, desvelos y metas por cumplir.\nCon pelitos en la ropa y risas sin fin,\nconstruir esta vida a tu lado es mi mejor festín.",
-        firma: "Talito <3",
-        rotacion: "3deg"
-      },
-      {
-        id: 5,
-        imagen: "./fotos/foto5.jpg",
-        titulo: "Un amor diferente",
-        inclinacionTexto: "-2.8deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M12 12c-2-2-4 0-2 2s4 2 4-1-2-4-4-3-3 4-1 6 6 1 7-2"/><circle cx="18" cy="8" r="1" fill="#222"/><circle cx="20" cy="10" r="0.9" fill="#222"/><circle cx="16" cy="10" r="0.9" fill="#222"/></svg>`,
-        nota: "Llegué a este hogar con mi forma especial de querer,\nun amor tan único que pocos logran entender.\nCon mis pequeñas fijaciones y mi mundo singular,\naquí estoy presente para cuidarte y acompañar.",
-        firma: "JULIETA 🐾",
-        rotacion: "-2.8deg"
-      },
-      {
-        id: 6,
-        imagen: "./fotos/foto6.jpg",
-        titulo: "Nobleza de tu alma",
-        inclinacionTexto: "2deg",
-        svgDoodle: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left:6px;"><path d="M12 20s-7-4.5-8.5-8.5C2 7.5 5 4 8.5 6.5L12 9.5l3.5-3C19 4 22 7.5 20.5 11.5 19 15.5 12 20 12 20z"/><path d="M19 4l1.5-1.5"/><path d="M22 6h-2"/><path d="M4 4l-1.5-1.5"/></svg>`,
-        nota: "Miras donde pocos ven y sabes escuchar,\nsanando silencios con solo acariciar.\nTu nobleza no pide nada a cambio al entregar,\neres pura empatía y amor sin condición al cuidar.",
-        firma: "Babu (*)",
-        rotacion: "1.8deg"
-      }
-    ];
+  <!-- Reproductor de Vinilo Flotante -->
+  <aside id="music-player" class="fixed bottom-4 right-4 z-40 glass-card rounded-2xl p-3 flex items-center gap-3 max-w-[290px]" aria-label="Reproductor musical">
+    <div id="vinyl-disc" class="vinyl-paused w-11 h-11 rounded-full bg-gradient-to-br from-neutral-900 via-neutral-800 to-black border border-rose-300/30 flex items-center justify-center shrink-0">
+      <div class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-rose-200"></div>
+    </div>
 
-    const FOTOS_DATA = RECUERDOS;
+    <div class="min-w-0 flex-1">
+      <p id="song-title" class="text-xs font-semibold text-[#fbf7f4] truncate">Perros y Gatos</p>
+      <p id="song-artist" class="text-[11px] text-rose-200/70 truncate">Macha y el Bloque Depresivo</p>
+      <div class="flex items-center gap-2 mt-1">
+        <div class="flex items-end gap-0.5 h-3" aria-hidden="true">
+          <span class="eq-bar h-1"></span>
+          <span class="eq-bar h-2"></span>
+          <span class="eq-bar h-1"></span>
+          <span class="eq-bar h-2"></span>
+        </div>
+        <span id="song-status" class="text-[10px] text-rose-200/60">Pausado</span>
+      </div>
+    </div>
 
-    /* =========================================================================
-       CONFIGURACIÓN PERSONALIZADA: CLAVE SECRETA Y FECHA DE ANIVERSARIO
-       ========================================================================= */
-    const claveCorrecta = "romeo";
-    const SECRET_PASSCODE = claveCorrecta; 
-    const FECHA_INICIO = new Date(2022, 2, 5);
+    <button
+      id="btn-toggle-music"
+      type="button"
+      aria-label="Reproducir o pausar música"
+      class="w-9 h-9 rounded-xl bg-rose-600 hover:bg-rose-500 text-white flex items-center justify-center shrink-0 transition"
+    >
+      <svg id="icon-play" class="w-4 h-4 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+    </button>
+  </aside>
 
-    /* =========================================================================
-       2. GENERACIÓN DE TARJETAS POLAROID 3D CON TILT HOLOGRÁFICO
-       ========================================================================= */
-    const polaroidGrid = document.getElementById('polaroid-grid');
+  <!-- Modal Lightbox para Polaroids -->
+  <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Detalle del recuerdo">
+    <div class="glass-card w-full max-w-3xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 relative">
+      <button id="lightbox-close" type="button" aria-label="Cerrar" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/50 hover:bg-rose-600 text-white flex items-center justify-center transition">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
 
-    function renderPolaroids() {
-      polaroidGrid.innerHTML = RECUERDOS.map((recuerdo) => `
-        <div class="polaroid-container relative w-full aspect-[4/5] min-h-[440px] max-h-[520px] cursor-pointer group"
-             onclick="toggleFlip(this)"
-             onmousemove="handlePolaroidTilt(event, this)"
-             onmouseleave="resetPolaroidTilt(this)">
-          
-          <div class="washi-tape"></div>
-          
-          <!-- Contenedor 3D Flip con proporción Polaroid auténtica -->
-          <div class="polaroid-card w-full h-full transform-style-3d relative rounded-2xl shadow-lg hover:shadow-2xl bg-white p-3.5 sm:p-4 border border-stone-200/70"
-               style="--card-rot: ${recuerdo.rotacion}; transform: rotate(${recuerdo.rotacion});">
-            
-            <!-- Capa de brillo holográfico especular -->
-            <div class="polaroid-glare"></div>
+      <div class="bg-[#12080c] aspect-square md:aspect-auto md:min-h-[360px] flex items-center justify-center relative">
+        <img id="lightbox-img" src="" alt="" class="w-full h-full object-cover" />
+        <div id="lightbox-fallback" class="hidden w-full h-full p-6"></div>
+      </div>
 
-            <!-- CARA FRONTAL (Polaroid Clásica con Garabato a Mano) -->
-            <div class="absolute inset-0 p-3.5 sm:p-4 bg-white rounded-2xl backface-hidden flex flex-col justify-between shadow-sm">
-              <div class="w-full aspect-square rounded-xl overflow-hidden bg-stone-100 relative shadow-inner">
-                <img 
-                  src="${recuerdo.imagen}" 
-                  alt="${recuerdo.titulo}" 
-                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                  decoding="async"
-                  onerror="this.src='https://placehold.co/600x600/ffd5dd/1e0c12?text=Momento+Especial'"
-                />
-                <span class="absolute top-2.5 right-2.5 w-7 h-7 bg-white/85 hover:bg-white backdrop-blur-sm text-rose-500 hover:text-rose-600 rounded-full shadow-sm flex items-center justify-center text-xs transition-transform duration-300 group-hover:rotate-180 select-none">
-                  🔄
-                </span>
-              </div>
-              
-              <!-- Texto mecanografiado sobre la foto con inclinación natural y dibujo SVG -->
-              <div class="relative -mt-6 sm:-mt-7 pt-1 pb-2 px-1 text-center z-20 pointer-events-none select-none flex items-center justify-center">
-                <div class="inline-flex items-center justify-center py-1.5 px-3.5 bg-white/95 backdrop-blur-[2px] rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-stone-200/90 transition-transform duration-300 group-hover:scale-105"
-                     style="transform: rotate(${recuerdo.inclinacionTexto || '-2deg'}); display: flex; align-items: center; justify-content: center;">
-                  <h4 class="font-typewriter text-base sm:text-lg font-bold text-stone-900 tracking-wide flex items-center justify-center m-0">
-                    <span>${recuerdo.titulo}</span>
-                    ${recuerdo.svgDoodle}
-                  </h4>
-                </div>
-              </div>
-            </div>
+      <div class="p-6 sm:p-8 flex flex-col justify-between bg-[#1a0b10]">
+        <div>
+          <span id="lightbox-tag" class="text-[11px] uppercase tracking-[0.2em] text-rose-300/75 font-semibold"></span>
+          <h3 id="lightbox-title" class="font-serif-display text-2xl sm:text-3xl text-[#fbf7f4] mt-1 mb-4"></h3>
+          <p id="lightbox-poem" class="font-serif-display text-base leading-relaxed text-[#e7cfd6] whitespace-pre-line"></p>
+        </div>
 
-            <!-- CARA TRASERA (Estilo Máquina de Escribir Vintage) -->
-            <div class="absolute inset-0 p-6 sm:p-7 bg-[#fffdfa] rounded-2xl backface-hidden rotate-y-180 flex flex-col justify-between border-2 border-stone-200/80 shadow-inner">
-              <div class="flex-1 flex flex-col justify-center">
-                <h4 class="font-typewriter text-xl sm:text-2xl font-bold text-stone-900 mb-3 tracking-wide">${recuerdo.titulo}</h4>
-                <p class="font-typewriter text-xs sm:text-[13.5px] text-stone-800 leading-relaxed tracking-wider whitespace-pre-line">
-                  "${recuerdo.nota}"
-                </p>
-              </div>
-              
-              <div class="pt-3 border-t border-stone-200/70 flex items-center justify-between">
-                <span class="font-typewriter text-base sm:text-lg text-stone-900 font-bold tracking-wider">${recuerdo.firma || 'Siempre juntos'}</span>
-                <span class="font-typewriter text-[11px] text-stone-400">Toca para volver</span>
-              </div>
-            </div>
-
+        <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+          <span id="lightbox-sign" class="font-mono-letter text-xs font-semibold text-rose-300"></span>
+          <div class="flex items-center gap-2">
+            <button id="lightbox-prev" type="button" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-white transition">Anterior</button>
+            <button id="lightbox-next" type="button" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs text-white transition">Siguiente</button>
           </div>
         </div>
-      `).join('');
-    }
-
-    // Efecto 3D Tilt holográfico interactivo
-    function handlePolaroidTilt(e, container) {
-      const card = container.querySelector('.polaroid-card');
-      if (!card || card.classList.contains('is-flipped')) return;
-      
-      const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      
-      // Ángulos de inclinación entre -10deg y 10deg
-      const tiltX = ((0.5 - y) * 20).toFixed(2);
-      const tiltY = ((x - 0.5) * 20).toFixed(2);
-      
-      // Coordenadas de brillo especular
-      card.style.setProperty('--glare-x', `${(x * 100).toFixed(1)}%`);
-      card.style.setProperty('--glare-y', `${(y * 100).toFixed(1)}%`);
-      
-      const baseRot = card.style.getPropertyValue('--card-rot') || '0deg';
-      card.style.transform = `perspective(1000px) rotate(${baseRot}) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.025, 1.025, 1.025)`;
-    }
-
-    function resetPolaroidTilt(container) {
-      const card = container.querySelector('.polaroid-card');
-      if (!card || card.classList.contains('is-flipped')) return;
-      const baseRot = card.style.getPropertyValue('--card-rot') || '0deg';
-      card.style.transform = `rotate(${baseRot})`;
-    }
-
-    function toggleFlip(container) {
-      const card = container.querySelector('.polaroid-card');
-      const washi = container.querySelector('.washi-tape');
-      if (!card) return;
-      
-      card.classList.toggle('is-flipped');
-      
-      // Micro-balanceo en la washi tape
-      if (washi) {
-        washi.classList.remove('washi-wobble');
-        void washi.offsetWidth; // reiniciar animación
-        washi.classList.add('washi-wobble');
-      }
-
-      if (card.classList.contains('is-flipped')) {
-        card.style.transform = '';
-      } else {
-        const baseRot = card.style.getPropertyValue('--card-rot') || '0deg';
-        card.style.transform = `rotate(${baseRot})`;
-      }
-      
-      playChime(600, 0.05);
-    }
-
-    // Entrada escalonada con IntersectionObserver
-    function initPolaroidObserver() {
-      const cards = document.querySelectorAll('.polaroid-container');
-      const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const index = Array.from(cards).indexOf(entry.target);
-            setTimeout(() => {
-              entry.target.classList.add('is-visible');
-              const washi = entry.target.querySelector('.washi-tape');
-              if (washi) washi.classList.add('washi-wobble');
-            }, index * 120);
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-
-      cards.forEach(card => observer.observe(card));
-    }
-
-    /* =========================================================================
-       3. SISTEMA DE DESBLOQUEO, INDICADOR REACTIVO Y APERTURA DE SOBRE 3D
-       ========================================================================= */
-    const passInput = document.getElementById('gatekeeper-input') || document.getElementById('passcode-input');
-
-    // Función de validación: insensible a mayúsculas/minúsculas ("Romeo", "romeo", "ROMEO", etc.)
-    function isRomeoPasscode(val) {
-      if (!val) return false;
-      const clean = val.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      return clean === "romeo";
-    }
-
-    if (passInput) {
-      passInput.addEventListener('input', (e) => {
-        const cleanVal = e.target.value.trim();
-        const len = cleanVal.length;
-        const dots = document.querySelectorAll('.passcode-dot');
-        dots.forEach((dot, idx) => {
-          if (idx < len) {
-            dot.classList.add('active');
-          } else {
-            dot.classList.remove('active');
-          }
-        });
-        // Si ya escribió romeo (independiente de mayúsculas), iluminar las 5 huellitas
-        if (isRomeoPasscode(cleanVal)) {
-          dots.forEach(dot => dot.classList.add('active'));
-        }
-      });
-
-      // Validación con tecla Enter sin recargar la página
-      passInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleUnlock(e);
-        }
-      });
-    }
-
-    function handleUnlock(e) {
-      if (e) e.preventDefault();
-      const input = passInput.value;
-      const errorMsg = document.getElementById('error-msg');
-      const gatekeeper = document.getElementById('gatekeeper-screen');
-
-      // Admite "Romeo", "romeo", "ROMEO" y cualquier variación de mayúsculas/minúsculas
-      if (isRomeoPasscode(input)) {
-        errorMsg.classList.add('hidden');
-        passInput.classList.remove('animate-shake', 'input-error-glow');
-        
-        // Doble ráfaga de confeti de celebración (corazones y estrellas doradas)
-        confetti({
-          particleCount: 85,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ['#e11d48', '#f43f5e', '#fb7185', '#fda4af', '#fecdd3']
-        });
-
-        setTimeout(() => {
-          confetti({
-            particleCount: 75,
-            spread: 95,
-            origin: { y: 0.55 },
-            colors: ['#fbbf24', '#f59e0b', '#fef08a', '#ffffff']
-          });
-        }, 250);
-
-        // Transición 3D de apertura de telón/sobre
-        gatekeeper.classList.add('unlock-transition');
-        setTimeout(() => {
-          gatekeeper.style.display = 'none';
-        }, 950);
-
-        // Iniciar música y contadores automáticamente tras desbloquear
-        startMusic();
-        updateCounter();
-        initPolaroidObserver();
-      } else {
-        errorMsg.classList.remove('hidden');
-        passInput.classList.add('animate-shake', 'input-error-glow');
-        setTimeout(() => {
-          passInput.classList.remove('animate-shake', 'input-error-glow');
-        }, 450);
-      }
-    }
-
-    /* =========================================================================
-       4. REPRODUCTOR DE MÚSICA DUAL CON VINILO GIRATORIO
-          - Canción MP3: './musica/Perros y Gatos - Macha y el Bloque Depresivo.mp3'
-          - Respaldo: Sintetizador Web Audio API si no existe el archivo o falla
-       ========================================================================= */
-    const bgAudio = document.getElementById('bg-audio');
-    let audioCtx = null;
-    let isPlaying = false;
-    let musicInterval = null;
-    let currentNoteIndex = 0;
-    let usingCustomAudio = false;
-
-    const MELODIES = {
-      sweet: [261.63, 329.63, 392.00, 523.25, 392.00, 329.63, 440.00, 349.23, 261.63, 392.00],
-      dream: [329.63, 392.00, 493.88, 587.33, 493.88, 392.00, 329.63, 293.66, 369.99],
-      starlight: [523.25, 659.25, 783.99, 1046.50, 783.99, 659.25, 587.33, 783.99]
-    };
-    let selectedMelody = 'sweet';
-
-    function initAudio() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playNote(freq, duration = 0.6) {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.12, audioCtx.currentTime + 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function playChime(freq = 520, duration = 0.1) {
-      initAudio();
-      playNote(freq, duration);
-    }
-
-    // Sonido de clic mecánico ultra suave para la máquina de escribir
-    function playTypewriterClick() {
-      if (!audioCtx) return;
-      try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(900 + Math.random() * 300, audioCtx.currentTime);
-
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
-        filter.Q.setValueAtTime(3, audioCtx.currentTime);
-
-        gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.025, audioCtx.currentTime + 0.004);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.035);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.04);
-      } catch (err) {}
-    }
-
-    // Sonido sutil de apertura y deslizamiento de papel postal con Web Audio API
-    function playPaperSound() {
-      if (!audioCtx) initAudio();
-      if (!audioCtx) return;
-      try {
-        const bufferSize = Math.floor(audioCtx.sampleRate * 0.28);
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * 0.09;
-        }
-
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1400, audioCtx.currentTime);
-        filter.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 0.25);
-        filter.Q.setValueAtTime(2.2, audioCtx.currentTime);
-
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.27);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        noise.start();
-        noise.stop(audioCtx.currentTime + 0.28);
-      } catch (err) {}
-    }
-
-    // Sonido táctil de desprendimiento y crujido de sello de cera con Web Audio API
-    function playWaxCrackSound() {
-      if (!audioCtx) initAudio();
-      if (!audioCtx) return;
-      try {
-        const t = audioCtx.currentTime;
-        // Tono grave cálido del sello de cera
-        const osc = audioCtx.createOscillator();
-        const oscGain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(420, t);
-        osc.frequency.exponentialRampToValueAtTime(120, t + 0.1);
-        oscGain.gain.setValueAtTime(0.18, t);
-        oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-        osc.connect(oscGain);
-        oscGain.connect(audioCtx.destination);
-        osc.start(t);
-        osc.stop(t + 0.11);
-
-        // Crujido de fricción / desprendimiento
-        const bufSize = Math.floor(audioCtx.sampleRate * 0.14);
-        const buf = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-        const data = buf.getChannelData(0);
-        for (let i = 0; i < bufSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * 0.16;
-        }
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buf;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1800, t);
-        filter.frequency.exponentialRampToValueAtTime(400, t + 0.12);
-        filter.Q.setValueAtTime(2.0, t);
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.15, t);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-        noise.connect(filter);
-        filter.connect(noiseGain);
-        noiseGain.connect(audioCtx.destination);
-        noise.start(t);
-        noise.stop(t + 0.14);
-      } catch (err) {}
-    }
-
-    // Síntesis acústica de ladridos caninos alegres con Web Audio API
-    function playSingleBark(pitch = 500, duration = 0.12, timeOffset = 0, volume = 0.14) {
-      if (!audioCtx) initAudio();
-      if (!audioCtx) return;
-      const startTime = audioCtx.currentTime + timeOffset;
-
-      const osc = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
-
-      osc.type = 'sawtooth';
-      osc2.type = 'triangle';
-
-      osc.frequency.setValueAtTime(pitch * 1.35, startTime);
-      osc.frequency.exponentialRampToValueAtTime(pitch * 0.7, startTime + duration);
-
-      osc2.frequency.setValueAtTime(pitch * 1.8, startTime);
-      osc2.frequency.exponentialRampToValueAtTime(pitch * 0.9, startTime + duration);
-
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(1050, startTime);
-      filter.Q.setValueAtTime(2.2, startTime);
-
-      gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-      osc.connect(filter);
-      osc2.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start(startTime);
-      osc2.start(startTime);
-      osc.stop(startTime + duration + 0.02);
-      osc2.stop(startTime + duration + 0.02);
-    }
-
-    // Al menos 6 ladridos juguetones y sutiles (alegría de Romeo, Nalita y Julieta)
-    function playHappyDogBarks(count = 6) {
-      initAudio();
-      const dogPitches = [520, 440, 620, 480, 560, 460];
-      let delay = 0.06;
-
-      for (let i = 0; i < count; i++) {
-        const pitch = dogPitches[i % dogPitches.length] + (Math.random() * 30 - 15);
-        const duration = 0.10 + Math.random() * 0.03;
-        playSingleBark(pitch, duration, delay, 0.13);
-        delay += (i === 1 || i === 3) ? 0.14 : 0.22 + Math.random() * 0.05;
-      }
-    }
-
-    function startSynthMelody() {
-      initAudio();
-      const notes = MELODIES[selectedMelody];
-      clearInterval(musicInterval);
-      
-      musicInterval = setInterval(() => {
-        if (!isPlaying) return;
-        const note = notes[currentNoteIndex % notes.length];
-        playNote(note, 0.8);
-        currentNoteIndex++;
-      }, 500);
-    }
-
-    function stopSynthMelody() {
-      clearInterval(musicInterval);
-    }
-
-    function setPlayerUI(active) {
-      const vinylDisc = document.getElementById('vinyl-disc');
-      const vinylPlayIcon = document.getElementById('vinyl-play-icon');
-      const songStatus = document.getElementById('song-status');
-      const eqBars = document.querySelectorAll('.eq-bar');
-
-      if (active) {
-        if (vinylDisc) vinylDisc.classList.add('is-playing');
-        if (vinylPlayIcon) vinylPlayIcon.textContent = '❚❚';
-        if (songStatus) songStatus.textContent = 'Reproduciendo';
-        eqBars.forEach(b => b.classList.add('is-playing'));
-      } else {
-        if (vinylDisc) vinylDisc.classList.remove('is-playing');
-        if (vinylPlayIcon) vinylPlayIcon.textContent = '▶';
-        if (songStatus) songStatus.textContent = 'Pausado';
-        eqBars.forEach(b => b.classList.remove('is-playing'));
-      }
-    }
-
-    function startMusic() {
-      isPlaying = true;
-      setPlayerUI(true);
-
-      if (bgAudio) {
-        const playPromise = bgAudio.play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            usingCustomAudio = true;
-            document.getElementById('song-title').textContent = 'Perros y Gatos';
-            const artistElem = document.getElementById('song-artist');
-            if (artistElem) artistElem.textContent = 'Macha y el Bloque Depresivo';
-          }).catch(() => {
-            usingCustomAudio = false;
-            document.getElementById('song-title').textContent = 'Melodía Romántica';
-            const artistElem = document.getElementById('song-artist');
-            if (artistElem) artistElem.textContent = 'Sintetizador Lofi';
-            startSynthMelody();
-          });
-          return;
-        }
-      }
-      startSynthMelody();
-    }
-
-    function stopMusic() {
-      isPlaying = false;
-      if (bgAudio) {
-        bgAudio.pause();
-      }
-      stopSynthMelody();
-      setPlayerUI(false);
-    }
-
-    function toggleMusic() {
-      if (isPlaying) {
-        stopMusic();
-      } else {
-        startMusic();
-      }
-    }
-
-    function startMelody() { startMusic(); }
-    function stopMelody() { stopMusic(); }
-
-    /* =========================================================================
-       5. CONTADORES DE AMOR CON EASEOUTQUART Y SEGUNDERO EN TIEMPO REAL
-       ========================================================================= */
-    function updateCounter() {
-      const hoy = new Date();
-      const msPorDia = 1000 * 60 * 60 * 24;
-      const utcInicio = Date.UTC(FECHA_INICIO.getFullYear(), FECHA_INICIO.getMonth(), FECHA_INICIO.getDate());
-      const utcHoy = Date.UTC(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-      const dias = Math.max(0, Math.floor((utcHoy - utcInicio) / msPorDia));
-      
-      // Animación count-up con curva easeOutQuart
-      animateCounter('counter-days', dias);
-      animateCounter('counter-smiles', dias * 3);
-      animateCounter('counter-wishes', 365);
-
-      if (hoy.getDate() === 27 && hoy.getMonth() === 10) {
-        const bdayBadge = document.getElementById('bday-special-badge');
-        if (bdayBadge) bdayBadge.classList.remove('hidden');
-      }
-    }
-
-    function animateCounter(elementId, targetValue, duration = 1600) {
-      const element = document.getElementById(elementId);
-      if (!element) return;
-      const startTime = performance.now();
-
-      function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        // Curva easeOutQuart: 1 - Math.pow(1 - t, 4)
-        const ease = 1 - Math.pow(1 - progress, 4);
-        const current = Math.floor(ease * targetValue);
-        element.textContent = current.toLocaleString('es-ES');
-
-        if (progress < 1) {
-          requestAnimationFrame(update);
-        } else {
-          element.textContent = targetValue.toLocaleString('es-ES');
-        }
-      }
-      requestAnimationFrame(update);
-    }
-
-    // Segundero en tiempo real (setInterval cada 1000ms)
-    function updateRealtimeTicker() {
-      const now = new Date();
-      const diffMs = Math.max(0, now - FECHA_INICIO);
-      const totalSeconds = Math.floor(diffMs / 1000);
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      const tickerElem = document.getElementById('realtime-ticker');
-      if (tickerElem) {
-        tickerElem.innerHTML = `
-          <span class="text-rose-600 font-bold">${days}</span> días, 
-          <span class="text-rose-600 font-bold">${hours}</span> horas, 
-          <span class="text-rose-600 font-bold">${minutes}</span> min y 
-          <span class="text-rose-600 font-bold">${seconds}</span> seg de amor infinito
-        `;
-      }
-    }
-    setInterval(updateRealtimeTicker, 1000);
-    updateRealtimeTicker();
-
-    /* =========================================================================
-       6. CARTA ESTILO MÁQUINA DE ESCRIBIR EN VIVO Y RÚBRICA SVG ANIMADA
-       ========================================================================= */
-    const PARRAFOS_CARTA = [
-      "Si tuviera que programar en código mi destino,<br>elegiría mil veces coincidir en tu camino.<br>Porque eres la luz que reinicia cualquier mal día,<br>el algoritmo perfecto de mi paz y mi alegría.",
-      "Recuerdo el viento en la playa en nuestro último viaje,<br>tu risa ganándole al mar y a todo el paisaje.<br>Entre mochilas, caminos, desvelos y estudio sin fin,<br>hacer equipo contigo es mi mayor festín.<br>No importa la ruta ni cuán lejos vayamos a andar,<br>en cualquier coordenada tú siempre serás mi hogar.",
-      "A tu lado camina esta hermosa y loca manada:<br><strong>NALA</strong>, nube blanca de energía renovada,<br>un angelito travieso listo para la aventura,<br>llenando la casa de juegos, saltos y dulzura.",
-      "Y <strong>JULIETA</strong>, negrita de nobleza y corazón singular,<br>con sus manías y su mundo que solo tú sabes descifrar.<br>Un amor diferente, tan presente y leal,<br>que encuentra en tus caricias su calma especial.",
-      "Y desde una estrella que nunca deja de brillar,<br><strong>ROMEO</strong>, tu eterno chetito, te vuelve a abrazar.<br>Con su aroma a quesito y su amor protector,<br>cuidando tus pasos con infinito calor.",
-      "Hoy celebro tu vida, tu bondad y tu existir,<br>el orgullo inmenso de verte crecer y sonreír.<br>Que este nuevo año te traiga sueños cumplidos a montones,<br>más playas, más rutas y millones de emociones.",
-      "<strong>¡Feliz cumpleaños, mi amor!</strong>"
-    ];
-
-    let isTypingStarted = false;
-    let isTypingDone = false;
-    let typewriterTimeout = null;
-
-    let isEnvelopeOpened = false;
-
-    // Función para abrir el sobre 3D con física realista y transición cinemática
-    function openEnvelopeLetter() {
-      if (isEnvelopeOpened) return;
-      isEnvelopeOpened = true;
-
-      // 1. Ruptura háptica/sonora del sello de lacre
-      playWaxCrackSound();
-
-      // Confeti suave de corazones y chispas doradas desde el sello
-      confetti({
-        particleCount: 50,
-        spread: 70,
-        origin: { y: 0.65 },
-        colors: ['#e11d48', '#fb7185', '#ffd700', '#fda4af', '#fecdd3', '#ffffff']
-      });
-
-      const teaser = document.getElementById('carta-envelope-teaser');
-      const envelopeBox = document.getElementById('envelope-3d-box');
-      const paperPreview = document.getElementById('envelope-paper-preview');
-      const letterCard = document.getElementById('carta-card');
-
-      // 2. Apertura suave de la solapa 3D a los 160ms (después de que el sello se quiebre)
-      setTimeout(() => {
-        if (envelopeBox) {
-          envelopeBox.classList.add('is-open');
-        }
-      }, 160);
-
-      // 3. Campanita y deslizamiento de la carta emergiendo del bolsillo
-      setTimeout(() => {
-        playPaperSound();
-        playChime(640, 0.22);
-        if (paperPreview) {
-          paperPreview.classList.add('slide-out');
-        }
-      }, 720);
-
-      // 4. Transición fluida y cinematográfica hacia la carta completa
-      setTimeout(() => {
-        if (teaser) {
-          teaser.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1)';
-          teaser.style.opacity = '0';
-          teaser.style.transform = 'scale(0.96) translateY(-12px)';
-          teaser.style.pointerEvents = 'none';
-        }
-
-        if (letterCard) {
-          letterCard.classList.remove('hidden');
-          void letterCard.offsetWidth; // Reflow para gatillar transición suave
-          requestAnimationFrame(() => {
-            letterCard.classList.remove('opacity-0');
-            letterCard.classList.add('carta-visible');
-
-            // Scroll suave centrado en la carta sin sacudidas
-            letterCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Iniciar máquina de escribir
-            setTimeout(() => {
-              startTypewriterLetter();
-            }, 500);
-
-            // Ocultar teaser una vez la carta está completamente visible
-            setTimeout(() => {
-              if (teaser && isEnvelopeOpened) {
-                teaser.style.display = 'none';
-              }
-            }, 750);
-          });
-        }
-      }, 2350);
-    }
-
-    // Permitir volver a guardar la carta en el sobre y reabrirla cuando se desee
-    function resetEnvelopeLetter() {
-      const teaser = document.getElementById('carta-envelope-teaser');
-      const envelopeBox = document.getElementById('envelope-3d-box');
-      const paperPreview = document.getElementById('envelope-paper-preview');
-      const letterCard = document.getElementById('carta-card');
-      const container = document.getElementById('carta-contenido');
-      const firmaElem = document.getElementById('carta-firma');
-      const flourish = document.getElementById('signature-flourish');
-      const skipBtn = document.getElementById('skip-typewriter-btn');
-
-      if (typewriterTimeout) clearTimeout(typewriterTimeout);
-      isTypingStarted = false;
-      isTypingDone = false;
-
-      // Sonido sutil de papel
-      playPaperSound();
-
-      // Ocultar suavemente la carta
-      if (letterCard) {
-        letterCard.classList.remove('carta-visible');
-        letterCard.classList.add('opacity-0');
-        setTimeout(() => {
-          letterCard.classList.add('hidden');
-          if (container) container.innerHTML = '';
-          if (firmaElem) {
-            firmaElem.classList.remove('opacity-100');
-            firmaElem.classList.add('opacity-0');
-          }
-          if (flourish) flourish.classList.remove('drawn');
-          if (skipBtn) {
-            skipBtn.style.display = '';
-            skipBtn.style.opacity = '1';
-          }
-        }, 500);
-      }
-
-      // Reaparecer el sobre cerrado
-      setTimeout(() => {
-        if (paperPreview) paperPreview.classList.remove('slide-out');
-        if (envelopeBox) envelopeBox.classList.remove('is-open');
-
-        if (teaser) {
-          teaser.style.display = '';
-          void teaser.offsetWidth;
-          teaser.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-          teaser.style.opacity = '1';
-          teaser.style.transform = 'scale(1) translateY(0)';
-          teaser.style.pointerEvents = 'auto';
-        }
-
-        isEnvelopeOpened = false;
-
-        if (teaser) {
-          teaser.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 550);
-    }
-
-    // Permitir completar la lectura al hacer clic en el contenedor de la carta
-    function handleCartaCardClick(e) {
-      if (e && e.target && e.target.closest('button[onclick*="launchLoveBurst"]')) return;
-      if (!isTypingDone && isTypingStarted) {
-        revealFullLetter();
-      }
-    }
-
-    function finishTypewriter() {
-      if (isTypingDone) return;
-      isTypingDone = true;
-      if (typewriterTimeout) clearTimeout(typewriterTimeout);
-      
-      const cursor = document.getElementById('typewriter-cursor');
-      if (cursor) cursor.classList.add('hidden');
-
-      const skipBtn = document.getElementById('skip-typewriter-btn');
-      if (skipBtn) {
-        skipBtn.style.transition = 'opacity 0.4s ease';
-        skipBtn.style.opacity = '0';
-        setTimeout(() => { if (skipBtn) skipBtn.style.display = 'none'; }, 400);
-      }
-
-      const firmaElem = document.getElementById('carta-firma');
-      if (firmaElem) {
-        firmaElem.classList.remove('opacity-0');
-        firmaElem.classList.add('opacity-100');
-        setTimeout(() => {
-          const flourish = document.getElementById('signature-flourish');
-          if (flourish) flourish.classList.add('drawn');
-        }, 300);
-      }
-    }
-
-    function revealFullLetter() {
-      const container = document.getElementById('carta-contenido');
-      container.innerHTML = PARRAFOS_CARTA.map(p => `<p>${p}</p>`).join('');
-      finishTypewriter();
-    }
-
-    function startTypewriterLetter() {
-      if (isTypingStarted) return;
-      isTypingStarted = true;
-      
-      const container = document.getElementById('carta-contenido');
-      const cursor = document.getElementById('typewriter-cursor');
-      container.innerHTML = '';
-      cursor.classList.remove('hidden');
-
-      let currentParagraphIndex = 0;
-      let currentTokenIndex = 0;
-      let charCounter = 0;
-      let activeP = null;
-
-      // Tokenizar cada párrafo respetando etiquetas HTML como <br> y <strong>
-      const tokenizedParagraphs = PARRAFOS_CARTA.map(p => {
-        return p.match(/<strong>|<\/strong>|<br>|./gs) || [];
-      });
-
-      function typeNext() {
-        if (isTypingDone) return;
-
-        if (currentParagraphIndex >= tokenizedParagraphs.length) {
-          finishTypewriter();
-          return;
-        }
-
-        if (!activeP) {
-          activeP = document.createElement('p');
-          container.appendChild(activeP);
-          currentTokenIndex = 0;
-        }
-
-        const tokens = tokenizedParagraphs[currentParagraphIndex];
-        if (currentTokenIndex < tokens.length) {
-          const token = tokens[currentTokenIndex];
-          activeP.innerHTML += token;
-          currentTokenIndex++;
-          charCounter++;
-
-          // Clic suave en Web Audio cada 3 caracteres (sutil y cálido)
-          if (charCounter % 3 === 0 && !token.startsWith('<')) {
-            playTypewriterClick();
-          }
-
-          // Cadencia de lectura natural y humana con pausas de respiración:
-          let delay = 52 + Math.random() * 22; // Base de lectura cómoda (52-74ms por letra)
-          if (token.startsWith('<')) {
-            delay = token === '<br>' ? 380 : 15; // Pausa al final de un verso poético
-          } else if (token === '.' || token === '!' || token === '?') {
-            delay = 500 + Math.random() * 80; // Pausa reflexiva al final de frase
-          } else if (token === ',' || token === ';' || token === ':') {
-            delay = 280 + Math.random() * 50; // Respiración en comas
-          } else if (token === ' ') {
-            delay = 65 + Math.random() * 25; // Pausa natural entre palabras
-          }
-
-          typewriterTimeout = setTimeout(typeNext, delay);
-        } else {
-          // Fin de la estrofa: pausa amorosa para asimilar las palabras antes del siguiente párrafo
-          currentParagraphIndex++;
-          activeP = null;
-          typewriterTimeout = setTimeout(typeNext, 1000);
-        }
-      }
-
-      typeNext();
-    }
-
-    /* =========================================================================
-       7. INTERACCIÓN DE ABRAZO VIRTUAL: 6 LADRIDOS, RIPPLE Y PARTÍCULAS 3D
-       ========================================================================= */
-    function launchLoveBurst(e) {
-      playChime(784, 0.4);
-      playHappyDogBarks(6); // 🐶 6 ladridos sutiles de alegría canina
-      
-      confetti({
-        particleCount: 110,
-        spread: 95,
-        origin: { y: 0.8 },
-        colors: ['#e11d48', '#f43f5e', '#fb7185', '#f472b6', '#ffd5dd']
-      });
-
-      // Efecto onda expansiva (ripple) sobre el botón
-      const btn = e ? e.currentTarget : document.querySelector('button[onclick*="launchLoveBurst"]');
-      if (btn) {
-        const rect = btn.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        ripple.className = 'hug-ripple';
-        const size = Math.max(rect.width, rect.height);
-        ripple.style.width = ripple.style.height = `${size}px`;
-        const clickX = e ? (e.clientX - rect.left) : (rect.width / 2);
-        const clickY = e ? (e.clientY - rect.top) : (rect.height / 2);
-        ripple.style.left = `${clickX - size / 2}px`;
-        ripple.style.top = `${clickY - size / 2}px`;
-        btn.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 1000);
-      }
-
-      // 18 corazones, huellitas y perritos 3D flotantes con trayectorias parabólicas
-      const originX = e ? e.clientX : window.innerWidth / 2;
-      const originY = e ? e.clientY : window.innerHeight * 0.75;
-      const icons = ['🐾', '💖', '💕', '❤️', '✨', '🐾', '🐶', '🥰', '🌸'];
-      const count = 18;
-
-      for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'burst-particle-3d';
-        p.textContent = icons[Math.floor(Math.random() * icons.length)];
-        p.style.left = `${originX}px`;
-        p.style.top = `${originY}px`;
-        
-        const angle = (Math.PI * 2 * (i / count)) + (Math.random() - 0.5) * 0.5;
-        const distance = Math.random() * 190 + 90;
-        const tx = Math.cos(angle) * distance;
-        const ty = Math.sin(angle) * distance - (Math.random() * 90 + 40);
-        const rot = (Math.random() - 0.5) * 140;
-        const targetScale = (Math.random() * 0.7 + 0.95).toFixed(2);
-        const flightDuration = (Math.random() * 0.5 + 1.2).toFixed(2);
-        
-        p.style.setProperty('--tx', `${tx.toFixed(1)}px`);
-        p.style.setProperty('--ty', `${ty.toFixed(1)}px`);
-        p.style.setProperty('--rot', `${rot.toFixed(1)}deg`);
-        p.style.setProperty('--target-scale', targetScale);
-        p.style.setProperty('--flight-duration', `${flightDuration}s`);
-        
-        document.body.appendChild(p);
-        p.addEventListener('animationend', () => p.remove());
-      }
-    }
-
-    /* =========================================================================
-       8. ESTELA DE CURSOR INTERACTIVA (60ms THROTTLING)
-       ========================================================================= */
-    let lastTrailTime = 0;
-    const trailIcons = ['🐾', '💕', '✨', '🐾', '💖'];
-    
-    function handlePointerTrail(e) {
-      const now = performance.now();
-      if (now - lastTrailTime < 60) return;
-      lastTrailTime = now;
-      
-      const x = e.touches ? e.touches[0].clientX : e.clientX;
-      const y = e.touches ? e.touches[0].clientY : e.clientY;
-      if (x === undefined || y === undefined) return;
-      
-      const particle = document.createElement('span');
-      particle.className = 'cursor-trail-particle';
-      particle.textContent = trailIcons[Math.floor(Math.random() * trailIcons.length)];
-      particle.style.left = `${x}px`;
-      particle.style.top = `${y}px`;
-      
-      const dx = (Math.random() - 0.5) * 24;
-      const drot = (Math.random() - 0.5) * 40;
-      particle.style.setProperty('--dx', `${dx}px`);
-      particle.style.setProperty('--drot', `${drot}deg`);
-      
-      document.body.appendChild(particle);
-      particle.addEventListener('animationend', () => particle.remove());
-    }
-    // Optimización de batería y CPU: activar rastro solo en dispositivos con ratón/puntero fino
-    if (window.matchMedia('(pointer: fine)').matches) {
-      window.addEventListener('mousemove', handlePointerTrail, { passive: true });
-    }
-
-    /* =========================================================================
-       9. CIELO ESTRELLADO, GUIÑO A ROMEO Y CANVAS DE PARTÍCULAS
-       ========================================================================= */
-    function initStarrySky() {
-      const sky = document.getElementById('starry-sky');
-      const count = window.innerWidth < 640 ? 25 : 50;
-      for (let i = 0; i < count; i++) {
-        const star = document.createElement('div');
-        star.className = 'twinkling-star';
-        const size = Math.random() * 2.2 + 1.2;
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.setProperty('--duration', `${(Math.random() * 2.5 + 2).toFixed(1)}s`);
-        star.style.setProperty('--delay', `${(Math.random() * 3).toFixed(1)}s`);
-        sky.appendChild(star);
-      }
-    }
-
-    function triggerRomeoTribute() {
-      playChime(880, 0.3);
-      playSingleBark(660, 0.12, 0.04, 0.14); // Ladridito tierno de Romeo jugando
-      confetti({
-        particleCount: 45,
-        spread: 65,
-        origin: { y: 0.2 },
-        colors: ['#fbbf24', '#fef08a', '#ffffff', '#f59e0b', '#fda4af']
-      });
-    }
-
-    // Canvas de partículas de fondo (corazones y brillos ligeros)
-    const canvas = document.getElementById('particles-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas, { passive: true });
-    resizeCanvas();
-
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-      reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = canvas.height + Math.random() * 20;
-        this.size = Math.random() * 10 + 6;
-        this.speedY = Math.random() * 0.7 + 0.35;
-        this.speedX = (Math.random() - 0.5) * 0.35;
-        this.opacity = Math.random() * 0.45 + 0.2;
-        this.isHeart = Math.random() > 0.4;
-      }
-      update() {
-        this.y -= this.speedY;
-        this.x += this.speedX;
-        if (this.y < -20) this.reset();
-      }
-      draw() {
-        ctx.save();
-        ctx.globalAlpha = this.opacity;
-        if (this.isHeart) {
-          ctx.fillStyle = '#fb7185';
-          ctx.font = `${this.size}px serif`;
-          ctx.fillText('❤', this.x, this.y);
-        } else {
-          ctx.fillStyle = '#fbcfe8';
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size / 3, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.restore();
-      }
-    }
-
-    function initParticles() {
-      particles = [];
-      const count = window.innerWidth < 640 ? 12 : 22;
-      for (let i = 0; i < count; i++) {
-        const p = new Particle();
-        p.y = Math.random() * canvas.height;
-        particles.push(p);
-      }
-    }
-
-    let isTabVisible = true;
-    let particleAnimationId = null;
-
-    function animateParticles() {
-      if (!isTabVisible) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      particleAnimationId = requestAnimationFrame(animateParticles);
-    }
-
-    // Ahorro total de recursos: pausar canvas cuando la pestaña pasa a segundo plano
-    document.addEventListener('visibilitychange', () => {
-      isTabVisible = !document.hidden;
-      if (isTabVisible) {
-        if (!particleAnimationId) {
-          animateParticles();
-        }
-      } else {
-        if (particleAnimationId) {
-          cancelAnimationFrame(particleAnimationId);
-          particleAnimationId = null;
-        }
-      }
-    });
-
-    /* =========================================================================
-       10. INICIALIZACIÓN GENERAL
-       ========================================================================= */
-    window.onload = function() {
-      renderPolaroids();
-      initStarrySky();
-      initParticles();
-      animateParticles();
-    };
-  </script>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Sorpresa de Video Flow (Bárbara y sus Perritos en la Playa) -->
+  <div id="flow-video-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Postal animada en la playa">
+    <div class="glass-card w-full max-w-4xl rounded-3xl overflow-hidden relative border border-amber-300/30 shadow-2xl">
+      <button id="flow-video-close" type="button" aria-label="Cerrar video" class="absolute top-3.5 right-3.5 z-20 w-10 h-10 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="relative aspect-video bg-[#0d0508] overflow-hidden">
+        <video
+          id="flow-video-player"
+          src="./assets/caricatura-playa.mp4"
+          poster="./assets/caricatura-playa.jpg"
+          class="w-full h-full object-cover"
+          playsinline
+          loop
+          muted
+          controls
+        ></video>
+      </div>
+
+      <div class="p-6 sm:p-7 bg-gradient-to-r from-[#1a0b10] via-[#220d14] to-[#1a0b10] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-[11px] uppercase tracking-[0.22em] text-amber-300 font-semibold">Recuerdo Especial • Manada Completa</span>
+          <h3 class="font-serif-display text-2xl text-[#fbf7f4] mt-0.5">Babu, Romeo, Julieta y Nalita en la Playa</h3>
+          <p class="text-xs sm:text-sm text-[#e7cfd6]/80 mt-1">Siempre juntos bajo el mismo sol, cuidando cada uno de tus pasos con amor infinito.</p>
+        </div>
+        <div class="flex items-center gap-2.5 shrink-0">
+          <button id="flow-video-replay" type="button" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition">
+            Repetir Flow ✨
+          </button>
+          <a href="./assets/caricatura-playa.mp4" download="recuerdo-playa-babu.mp4" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white transition">
+            Guardar Video
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
