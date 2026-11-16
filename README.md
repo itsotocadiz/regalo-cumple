@@ -8,76 +8,60 @@
 
 ## 🌟 Características de la Experiencia
 
-### 1. 🔒 Pantalla de Bloqueo Interactiva y Apertura de Sobre 3D
-- **Seguridad personalizada:** Para desbloquear la experiencia, se requiere ingresar la clave secreta `romeo` en honor al ángel protector de cuatro patitas.
-- **Indicador reactivo de huellitas:** 5 huellitas luminosas (`🐾`) que se encienden una a una con resplandor (`scale(1.2)` y `drop-shadow`) al ritmo de la escritura.
-- **Feedback háptico y visual:** Animación `@keyframes shake` y resplandor de advertencia si la clave es incorrecta.
-- **Apertura de sobre 3D:** Al acertar la clave, la pantalla de bloqueo se pliega hacia arriba en perspectiva 3D (`transform: translateY(-100%) rotateX(15deg)`) y dispara una doble ráfaga de confeti con corazones y estrellas doradas.
+### 1. 🔒 Pantalla de Bloqueo Privada con Validación Criptográfica (`SHA-256`)
+- **Seguridad sin texto plano:** La clave secreta en honor al ángel protector de cuatro patitas se valida mediante huella criptográfica `SHA-256` (`Web Crypto API`) con respaldo determinista `FNV-1a`.
+- **Indicador reactivo de huellitas:** 5 huellitas vectoriales que se iluminan progresivamente al escribir.
+- **Feedback háptico y visual:** Vibración háptica, animación `@keyframes shakeError` y triple ráfaga de confeti al desbloquear.
 
-### 2. 🐾 Estela de Cursor Interactiva y Cielo Estrellado
-- **Estela mágica:** Al mover el mouse o deslizar en pantallas táctiles, se genera una suave estela flotante de huellitas (`🐾`), corazones (`💕`) y destellos (`✨`) throttled a 60ms con desvanecimiento natural.
-- **Cielo estrellado de fondo:** Capa fija con decenas de estrellas y luciérnagas parpadeantes (`@keyframes twinkle`).
-- **Tributo a Romeo:** En la esquina superior descansa una estrella dorada brillante con un aura pulsante; al pasar el cursor o tocarla, revela el mensaje con amor: *"✨ Romeo cuidándote desde las estrellas"*, acompañado de un tintineo sutil y estrellas doradas.
+### 2. ⭐ Estrella Viva de Romeo y Cielo Estrellado Inteligente
+- **Órbita celeste continua:** La Estrella de Romeo levita describiendo una trayectoria suave en tiempo real (`requestAnimationFrame`) con halo dorado giratorio y lluvia de polvo estelar.
+- **Acorde celestial interactivo:** Al tocar la estrella, sintetiza un acorde armónico en `Web Audio API` y despliega su dedicatoria.
+- **Ahorro inteligente de batería (`Page Visibility API`):** El motor gráfico del cielo estrellado y las partículas entran en hibernación automática cuando la pestaña pasa a segundo plano.
 
-### 3. ⏳ Contadores de Amor y Segundero en Tiempo Real
-- **Conteo progresivo con `easeOutQuart`:** Días de amor, sonrisas compartidas y nuevos deseos se animan desde `0` hasta su cifra calculada mediante `IntersectionObserver` y `requestAnimationFrame`.
-- **Reloj en tiempo real:** Subcontador que calcula y actualiza segundo a segundo (`setInterval` cada `1000ms`) los días, horas, minutos y segundos exactos transcurridos desde el **5 de marzo de 2022**.
-- **Latido a 60 BPM:** Íconos de corazón animados con `@keyframes heartbeat` en perfecta cadencia de 60 pulsaciones por minuto.
-- **Badge de cumpleaños:** Si se abre el **27 de noviembre**, se activa un mensaje conmemorativo animado de felicitación.
+### 3. ⏳ Bento Grid de Contadores y Segundero en Tiempo Real
+- **Conteo progresivo con `easeOutQuart`:** Días de amor, sonrisas compartidas y nuevos deseos animados al entrar en el viewport mediante `IntersectionObserver`.
+- **Reloj en vivo:** Calcula y actualiza segundo a segundo los días, horas, minutos y segundos exactos transcurridos desde el **5 de marzo de 2022**.
 
-### 4. 📸 Galería Polaroid 3D con Inclinación Holográfica (Tilt & Glare)
-- **Giro 3D auténtico:** Al tocar cualquier fotografía, la tarjeta gira 180° (`rotateY(180deg) scale(1.03)`) para revelar una dedicatoria secreta en rima y su firma original (Nalita, Babu, Romeo, Talito, Julieta).
-- **Holographic Tilt & Specular Glare:** Al pasar el cursor por encima, la tarjeta responde a la posición del mouse inclinándose entre `-10°` y `+10°` con un reflejo radial que simula brillo holográfico.
-- **Entrada escalonada:** Las 6 fotos aterrizan en la página de forma progresiva con un intervalo de `120ms` y un micro-balanceo realista en la cinta washi-tape.
-- **Levitación en móviles:** En pantallas táctiles (`@media (hover: none)`), las Polaroids flotan suavemente invitando al usuario a tocarlas.
+### 4. 📸 Galería Polaroid 3D con Inclinación Holográfica y Lightbox con Swipe
+- **Giro 3D y Glare:** Tarjetas Polaroid con rotación de 180°, reflejo especular reactivo al puntero y poemas personalizados al reverso (Nalita, Babu, Romeo, Talito y Julieta).
+- **Modal Lightbox:** Vista ampliada con navegación por teclado, botones y gestos táctiles (*swipe*).
+- **Imágenes HD optimizadas:** Fotografías comprimidas en JPEG progresivo de alta fidelidad (~88% de reducción de peso) con decodificación asíncrona (`decoding="async"`).
 
-### 5. 💌 Sobre Postal 3D Cinemático y Carta con Máquina de Escribir en Vivo
-- **Apertura de sobre 3D realista:** Sello de lacre carmesí con relieve artesanal que cruje y se rompe al toque con destellos de confeti dorado y corazones.
-- **Solapa 3D de doble faz:** Rotación física fluida de 180° hacia arriba sin parpadeos, revelando un forro interior satinado blush y sombra proyectada.
-- **Deslizamiento y transición cinemática:** La carta asoma desde el bolsillo del sobre y se transforma fluidamente en el lienzo de lectura sin saltos bruscos.
-- **Rejugabilidad (Guardar en sobre):** Botón para volver a doblar y guardar la carta en el sobre postal para revivir la experiencia cuantas veces se desee.
-- **Efecto máquina de escribir:** Al desplegarse la carta, el texto se escribe en tiempo real carácter por carácter con un cursor titilante `|`.
-- **Sonido mecánico en Web Audio API:** Síntesis sonora procedural en cada pulsación sin necesidad de cargar archivos externos pesados.
-- **Botón de revelado instantáneo:** Opción discreta *"Completar lectura ⚡"* para desplegar todo el contenido al instante.
-- **Rúbrica decorativa animada:** Una vez completada la carta, se dibuja un trazo SVG suave bajo la firma de Talo usando `stroke-dasharray` y `stroke-dashoffset`.
+### 5. 💌 Carta Mecanografiada y Sorpresa de Video Casero Handycam (3D Pixar Multipose + Sonido del Mar)
+- **Máquina de escribir en vivo:** Redacción carácter por carácter con barra de progreso, sonido mecánico procedural y opción de completar lectura al instante.
+- **Video Casero Handycam (`16s • 30 FPS`):** Al terminar de leer la carta, se desbloquea el botón sorpresa que abre una escena animada multipose estilo Pixar de **Bárbara, Julieta, Romeo y Nalita en la playa**:
+  - Pestañeo 3D natural, cabello mecido por la brisa marina, cambios de postura por personalidad (saludo de patita y postura de juego de Nalita, risa cómplice de Bárbara y Romeo, colita alegre de Julieta) y olas con espuma en la orilla.
+  - **Diseño sonoro con olas del mar en estéreo (`🌊 Mar: ON/OFF`):** Síntesis binaural de oleaje costero sincronizado con la escena.
+  - **Enfoque interactivo (`AF Lock`):** Al tocar cualquier personaje en el video, la cámara Handycam enfoca dinámicamente esa zona con ondas, partículas y su sonido característico.
 
-### 6. 🎵 Reproductor Flotante de Disco de Vinilo y Abrazo Virtual
-- **Minidisco de vinilo:** Diseño con surcos concéntricos que gira de manera continua mientras la música está activa y se detiene suavemente al pausar.
-- **Ecualizador visual:** 4 barras animadas al compás de la reproducción.
-- **Audio dual:** 
-  1. Canción principal: *"Perros y Gatos"* de Macha y el Bloque Depresivo (`./musica/Perros y Gatos - Macha y el Bloque Depresivo.mp3`).
-  2. Respaldo: Sintetizador Lofi en Web Audio API en caso de restricciones de autoplay o falta de conexión.
-- **Botón de Abrazo Virtual:** Emite una onda expansiva física (ripple effect), confeti y una explosión tridimensional de 12 a 18 corazones y huellitas con trayectorias parabólicas.
+### 6. 🎵 Reproductor Flotante de Vinilo y Abrazo Virtual
+- **Audio dual:** Reproduce *"Perros y Gatos"* de Macha y el Bloque Depresivo con analizador de frecuencias FFT en tiempo real y sintetizador Lofi automático de respaldo.
+- **Abrazo Virtual:** Envía ráfagas de corazones flotantes, confeti y mensajes rotativos de toda la manada.
 
 ---
 
-## 🛠️ Tecnologías Empleadas
+## 📂 Arquitectura Modular del Proyecto
 
-- **HTML5 Semántico & CSS 3D Transforms** (`preserve-3d`, `perspective`, `backface-visibility`).
-- **Tailwind CSS CDN** con paleta de colores personalizada (`rosewood`, `blush`, `champagne`, `velvet`).
-- **Google Fonts** (`Special Elite`, `Caveat`, `Playfair Display`, `Plus Jakarta Sans`, `Courier Prime`).
-- **Web Audio API** para sonidos mecánicos procedimentales, campanas armónicas y sintetizador Lofi de respaldo.
-- **Canvas Confetti** para celebraciones y destellos visuales.
-- **Vanilla JavaScript puro** sin dependencias pesadas para máximo rendimiento a 60 FPS.
-
----
-
-## 📂 Estructura del Repositorio
-
-```
+```text
 regalo-cumple/
-├── .nojekyll              # Configuración para GitHub Pages
-├── README.md              # Documentación del proyecto
-├── index.html             # Aplicación interactiva principal
+├── .nojekyll                # Configuración para GitHub Pages
+├── README.md                # Documentación técnica del proyecto
+├── index.html               # Estructura semántica principal
+├── tarjeta-imprimir.html    # Tarjeta postal física imprimible con código QR
+├── css/
+│   └── styles.css           # Sistema de diseño Glassmorphism, animaciones 3D y visor Handycam
+├── js/
+│   ├── data.js              # Módulo encapsulado de configuración, recuerdos y textos
+│   ├── audio.js             # Motor AudioEngine (MP3, Lofi synth, olas del mar en estéreo, efectos)
+│   └── app.js               # Controladores de UI, SHA-256 gatekeeper, galería, carta y video
 ├── assets/
-│   └── perrito-cursor.png # Cursor personalizado de perrito
+│   ├── caricatura-playa.jpg # Ilustración 3D Pixar de Bárbara y su manada en la playa
+│   ├── caricatura-playa.mp4 # Video casero Handycam multipose de 16s con sonido del mar
+│   ├── perrito-cursor.png   # Cursor personalizado
+│   ├── qr-regalo.png        # Código QR en PNG
+│   └── qr-regalo.svg        # Código QR vectorial en SVG
 ├── fotos/
-│   ├── foto1.jpg          # Tu arcoíris (Nalita)
-│   ├── foto2.jpg          # Sonrisa que contagia (Babu)
-│   ├── foto3.jpg          # Tu eterno chetito (Romeo)
-│   ├── foto4.jpg          # Nuestros momentos (Talito)
-│   ├── foto5.jpg          # Un amor diferente (Julieta)
-│   └── foto6.jpg          # Nobleza de tu alma (Babu)
+│   └── foto1.jpg .. foto6.jpg # Fotografías optimizadas en HD progresivo (~1 MB total)
 └── musica/
     └── Perros y Gatos - Macha y el Bloque Depresivo.mp3
 ```
