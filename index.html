@@ -263,7 +263,7 @@
           <p class="text-xs font-mono-letter uppercase tracking-widest text-rose-950/55 mt-1">Tus acompañantes de viaje</p>
         </div>
 
-        <!-- Botón de Sorpresa Video Flow (se activa al terminar de leer la carta) -->
+        <!-- Botón de Sorpresa Video Casero Handycam (se activa al terminar de leer la carta) -->
         <div id="carta-flow-surprise" class="hidden opacity-0 translate-y-3 transition-all duration-700 mt-8 pt-6 border-t border-rose-950/10 text-center">
           <p class="text-xs uppercase tracking-[0.2em] text-rose-800/75 font-semibold mb-3">
             Sorpresa Desbloqueada al Leer la Carta
@@ -276,7 +276,7 @@
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z"/>
             </svg>
-            Ver Nuestra Postal Animada en la Playa ✨
+            Ver Nuestro Video Casero en la Playa ✨
           </button>
         </div>
       </div>
@@ -371,80 +371,63 @@
     </div>
   </div>
 
-  <!-- Modal Sorpresa de Video Flow (Bárbara y sus Perritos Animados según su Personalidad) -->
-  <div id="flow-video-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Postal animada en la playa">
+  <!-- Modal Sorpresa: Video Casero estilo Handycam en la Playa -->
+  <div id="flow-video-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Video casero en la playa">
     <div class="glass-card w-full max-w-4xl rounded-3xl overflow-hidden relative border border-amber-300/30 shadow-2xl">
       <button id="flow-video-close" type="button" aria-label="Cerrar video" class="absolute top-3.5 right-3.5 z-30 w-10 h-10 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
 
-      <div class="relative aspect-video bg-[#0d0508] overflow-hidden select-none">
+      <!-- Escenario Handycam con Visor de Cámara Casera y Enfoque Dinámico al Tocar -->
+      <div id="handycam-stage" class="handycam-stage relative aspect-video bg-[#0d0508] overflow-hidden select-none">
         <video
           id="flow-video-player"
-          src="./assets/caricatura-playa.mp4?v=2"
+          src="./assets/caricatura-playa.mp4?v=3"
           poster="./assets/caricatura-playa.jpg"
-          class="w-full h-full object-cover"
+          class="handycam-video w-full h-full object-cover"
           playsinline
           loop
           muted
         ></video>
 
-        <!-- Zonas interactivas por personaje sobre el video -->
-        <button
-          type="button"
-          data-character="julieta"
-          title="Toca a Julieta 🐾"
-          aria-label="Interactuar con Julieta"
-          class="character-hotspot z-20"
-          style="left: 19%; top: 28%; width: 24%; height: 60%;"
-        ></button>
+        <!-- Guías de Esquinas del Visor Handycam -->
+        <div class="handycam-corner top-4 left-4 border-t-2 border-l-2" aria-hidden="true"></div>
+        <div class="handycam-corner top-4 right-16 border-t-2 border-r-2" aria-hidden="true"></div>
+        <div class="handycam-corner bottom-4 left-4 border-b-2 border-l-2" aria-hidden="true"></div>
+        <div class="handycam-corner bottom-4 right-4 border-b-2 border-r-2" aria-hidden="true"></div>
 
-        <button
-          type="button"
-          data-character="babu"
-          title="Toca a Babu 💖"
-          aria-label="Interactuar con Babu"
-          class="character-hotspot z-20"
-          style="left: 43%; top: 8%; width: 16%; height: 78%;"
-        ></button>
+        <!-- HUD Superior Izquierdo: REC + Modo Handycam -->
+        <div class="absolute top-6 left-7 z-20 flex items-center gap-3 pointer-events-none font-mono-letter text-xs tracking-widest text-white drop-shadow">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-black/45 backdrop-blur-sm border border-white/15">
+            <span class="rec-dot w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+            <span class="font-bold text-rose-200">REC</span>
+          </span>
+          <span class="hidden sm:inline-block text-[11px] text-amber-200/90 bg-black/35 px-2 py-0.5 rounded">
+            HANDYCAM • AF
+          </span>
+        </div>
 
-        <button
-          type="button"
-          data-character="romeo"
-          title="Toca a Romeo 👼"
-          aria-label="Interactuar con Romeo"
-          class="character-hotspot z-20"
-          style="left: 55%; top: 22%; width: 16%; height: 58%;"
-        ></button>
+        <!-- HUD Inferior Izquierdo: Código de Tiempo en Vivo -->
+        <div class="absolute bottom-6 left-7 z-20 pointer-events-none font-mono-letter text-xs sm:text-sm tracking-widest text-white/90 bg-black/40 backdrop-blur-sm px-2.5 py-0.5 rounded border border-white/10">
+          <span id="handycam-timecode">00:00:00:00</span>
+        </div>
 
-        <button
-          type="button"
-          data-character="nalita"
-          title="Toca a Nalita 🐶"
-          aria-label="Interactuar con Nalita"
-          class="character-hotspot z-20"
-          style="left: 71%; top: 50%; width: 18%; height: 40%;"
-        ></button>
-
-        <!-- Mensaje interactivo de personalidad -->
-        <div class="absolute bottom-3 inset-x-4 z-20 flex justify-center pointer-events-none">
-          <p id="flow-character-toast" class="px-4 py-2 rounded-full bg-black/70 backdrop-blur-md border border-amber-300/30 text-xs sm:text-sm text-amber-100 font-medium text-center transition-opacity duration-300">
-            ✨ Toca a Julieta, Babu, Romeo o Nalita en el video para ver su reacción ✨
-          </p>
+        <!-- HUD Inferior Derecho: Estampa de Fecha Casera -->
+        <div class="absolute bottom-6 right-7 z-20 pointer-events-none font-mono-letter text-xs sm:text-sm tracking-widest text-amber-300/95 drop-shadow">
+          PLAYA • MANADA ❤️
         </div>
       </div>
 
-      <div class="p-6 sm:p-7 bg-gradient-to-r from-[#1a0b10] via-[#220d14] to-[#1a0b10] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="p-5 sm:p-6 bg-gradient-to-r from-[#1a0b10] via-[#220d14] to-[#1a0b10] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span class="text-[11px] uppercase tracking-[0.22em] text-amber-300 font-semibold">Recuerdo Animado • Manada Completa</span>
-          <h3 class="font-serif-display text-2xl text-[#fbf7f4] mt-0.5">Babu, Romeo, Julieta y Nalita en la Playa</h3>
-          <p class="text-xs sm:text-sm text-[#e7cfd6]/80 mt-1">Julieta batiendo su colita con su pato, Romeo brillando con su aureola, Nalita dando saltitos y Babu abrazándolos frente al mar.</p>
+          <span class="text-[11px] uppercase tracking-[0.22em] text-amber-300 font-semibold">Cámara en Mano • 15 Segundos</span>
+          <h3 class="font-serif-display text-xl sm:text-2xl text-[#fbf7f4] mt-0.5">Babu, Romeo, Julieta y Nalita en la Playa</h3>
         </div>
         <div class="flex items-center gap-2.5 shrink-0">
           <button id="flow-video-replay" type="button" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition">
-            Repetir Video ✨
+            Reiniciar Toma ✨
           </button>
-          <a href="./assets/caricatura-playa.mp4" download="recuerdo-playa-babu.mp4" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white transition">
+          <a href="./assets/caricatura-playa.mp4" download="video-casero-playa-babu.mp4" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white transition">
             Guardar Video
           </a>
         </div>

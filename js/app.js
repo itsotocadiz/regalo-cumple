@@ -453,7 +453,7 @@ function initGallery() {
   }, { passive: true });
 }
 
-// --- 5. Sobre Postal, Carta Mecanografiada y Sorpresa Flow ---
+// --- 5. Sobre Postal, Carta Mecanografiada y Sorpresa Video Casero ---
 function initLetter() {
   const envelopeBox = $('#carta-envelope-teaser');
   const letterCard = $('#carta-card');
@@ -540,16 +540,30 @@ function initLetter() {
   });
 }
 
-// --- 5B. Modal Sorpresa de Video Flow + Interacción por Personalidad ---
+// --- 5B. Modal Video Casero Handycam + Enfoque y Animación Dinámica en el Área Tocada ---
 function initFlowVideoModal() {
   const openBtn = $('#btn-open-flow-video');
   const modal = $('#flow-video-modal');
   const closeBtn = $('#flow-video-close');
   const replayBtn = $('#flow-video-replay');
   const videoEl = $('#flow-video-player');
-  const captionEl = $('#flow-character-toast');
+  const stageEl = $('#handycam-stage');
+  const timecodeEl = $('#handycam-timecode');
 
   if (!modal) return;
+
+  let focusResetTimer = null;
+  let tcInterval = null;
+
+  const updateTimecode = () => {
+    if (!videoEl || !timecodeEl) return;
+    const t = videoEl.currentTime || 0;
+    const secs = Math.floor(t);
+    const frames = Math.floor((t - secs) * 30);
+    const ss = String(secs).padStart(2, '0');
+    const ff = String(frames).padStart(2, '0');
+    timecodeEl.textContent = `00:00:${ss}:${ff}`;
+  };
 
   const openModal = () => {
     navigator.vibrate?.([35, 30, 65]);
@@ -563,6 +577,8 @@ function initFlowVideoModal() {
       videoEl.currentTime = 0;
       videoEl.play().catch(() => {});
     }
+    if (tcInterval) clearInterval(tcInterval);
+    tcInterval = setInterval(updateTimecode, 60);
   };
 
   const closeModal = () => {
@@ -570,6 +586,11 @@ function initFlowVideoModal() {
     modal.classList.remove('flex');
     if (videoEl) {
       videoEl.pause();
+      videoEl.style.transform = '';
+    }
+    if (tcInterval) {
+      clearInterval(tcInterval);
+      tcInterval = null;
     }
   };
 
@@ -578,64 +599,79 @@ function initFlowVideoModal() {
   replayBtn?.addEventListener('click', () => {
     if (videoEl) {
       videoEl.currentTime = 0;
+      videoEl.style.transform = '';
       videoEl.play().catch(() => {});
       fireConfetti({ particleCount: 45, spread: 65, origin: { y: 0.7 } });
     }
   });
 
-  // Reacciones interactivas al tocar a cada personaje en la escena
-  const characterData = {
-    julieta: {
-      msg: '🐕‍🦺 Julieta mueve su colita orgullosa con su pato de peluche y te cuida con amor leal.',
-      freq: 410,
-      colors: ['#a855f7', '#ec4899', '#f43f5e']
-    },
-    babu: {
-      msg: '💖 Babu ilumina toda la playa con su sonrisa y abraza con ternura a su manada.',
-      freq: 0,
-      colors: ['#e11d48', '#fb7185', '#ffd5dd']
-    },
-    romeo: {
-      msg: '👼 Romeo brilla con su aureola dorada, cuidándote siempre con su amor de chetito.',
-      freq: 560,
-      colors: ['#f6d38b', '#fde68a', '#ffffff']
-    },
-    nalita: {
-      msg: '🐶 ¡Nalita da saltitos de pura alegría y energía lista para una nueva aventura!',
-      freq: 680,
-      colors: ['#fef08a', '#fb7185', '#ffffff']
+  // Al tocar cualquier personaje/área del video: enfoque dinámico de cámara + impulso elástico en esa zona
+  stageEl?.addEventListener('click', (e) => {
+    if (!videoEl) return;
+    const rect = stageEl.getBoundingClientRect();
+    const relX = (e.clientX - rect.left) / rect.width;
+    const relY = (e.clientY - rect.top) / rect.height;
+    const pctX = Math.max(10, Math.min(90, relX * 100));
+    const pctY = Math.max(10, Math.min(90, relY * 100));
+
+    // Retícula verde de autofoco Handycam en el punto exacto
+    const afBox = document.createElement('div');
+    afBox.className = 'af-focus-box';
+    afBox.style.left = `${pctX}%`;
+    afBox.style.top = `${pctY}%`;
+    stageEl.appendChild(afBox);
+    setTimeout(() => afBox.remove(), 1100);
+
+    // Onda elástica localizada en el personaje tocado
+    const wave = document.createElement('div');
+    wave.className = 'touch-wave-ring';
+    wave.style.left = `${pctX}%`;
+    wave.style.top = `${pctY}%`;
+    stageEl.appendChild(wave);
+    setTimeout(() => wave.remove(), 800);
+
+    // Movimiento natural de cámara Handycam enfocando el área tocada con pulso elástico
+    const tiltDeg = (relX - 0.5) * -2.2;
+    videoEl.style.transformOrigin = `${pctX}% ${pctY}%`;
+    videoEl.style.filter = 'blur(1.2px) brightness(1.06)';
+    videoEl.style.transform = `scale(1.18) rotate(${tiltDeg.toFixed(2)}deg)`;
+
+    setTimeout(() => {
+      if (videoEl) videoEl.style.filter = 'blur(0px) brightness(1.02)';
+    }, 180);
+
+    if (focusResetTimer) clearTimeout(focusResetTimer);
+    focusResetTimer = setTimeout(() => {
+      if (videoEl) {
+        videoEl.style.transform = 'scale(1) rotate(0deg)';
+        videoEl.style.filter = '';
+      }
+    }, 1450);
+
+    // Sonido según la zona del personaje tocado (Julieta izq, Babu/Romeo centro, Nalita der)
+    if (relX < 0.42) {
+      audioEngine.playPuppyBark(420); // Julieta
+    } else if (relX > 0.68) {
+      audioEngine.playPuppyBark(680); // Nalita
+    } else {
+      audioEngine.playStarChime(); // Babu y Romeo
     }
-  };
 
-  modal.querySelectorAll('[data-character]').forEach((spot) => {
-    spot.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const key = spot.getAttribute('data-character');
-      const info = characterData[key];
-      if (!info) return;
-
-      if (key === 'romeo' || key === 'babu') {
-        audioEngine.playStarChime();
-      } else {
-        audioEngine.playPuppyBark(info.freq);
-      }
-
-      if (captionEl) {
-        captionEl.textContent = info.msg;
-        captionEl.classList.remove('opacity-0');
-      }
-
-      const rect = spot.getBoundingClientRect();
-      fireConfetti({
-        particleCount: 35,
-        spread: 55,
-        origin: {
-          x: (rect.left + rect.width / 2) / window.innerWidth,
-          y: (rect.top + rect.height / 2) / window.innerHeight
-        },
-        colors: info.colors
-      });
-    });
+    // Corazones y destellos flotando directamente desde el personaje tocado
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('span');
+      p.className = 'hug-particle text-rose-400';
+      p.innerHTML = relX > 0.52 && relX < 0.68
+        ? `<svg class="w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.1 6.6.6-5 4.4 1.5 6.5L12 16.2 6.3 19.6l1.5-6.5-5-4.4 6.6-.6L12 2z"/></svg>`
+        : `<svg class="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/></svg>`;
+      p.style.left = `${e.clientX}px`;
+      p.style.top = `${e.clientY}px`;
+      p.style.setProperty('--tx', `${(Math.random() - 0.5) * 140}px`);
+      p.style.setProperty('--ty', `${-70 - Math.random() * 90}px`);
+      p.style.setProperty('--rot', `${(Math.random() - 0.5) * 40}deg`);
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1750);
+    }
   });
 
   modal.addEventListener('click', (e) => {
