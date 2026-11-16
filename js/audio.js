@@ -12,6 +12,11 @@ class AudioEngine {
     this.lofiInterval = null;
     this.soundEnabled = true;
 
+    // Estado para el sonido ambiental de olas del mar en el video de la playa
+    this.oceanEnabled = true;
+    this.oceanNodes = null;
+    this.oceanLfoInterval = null;
+
     this.audio.addEventListener('error', () => {
       if (this.isPlaying && !this.usingFallback) {
         this.startLofiFallback();
@@ -123,6 +128,102 @@ class AudioEngine {
 
     playChord();
     this.lofiInterval = setInterval(playChord, 2500);
+  }
+
+  // Sonido inmersivo de olas del mar y brisa marina en tiempo real
+  startOceanAmbience() {
+    if (!this.oceanEnabled) return;
+    const ctx = this.ensureContext();
+    if (!ctx || this.oceanNodes) return;
+
+    try {
+      const bufferSize = ctx.sampleRate * 4;
+      const noiseBuffer = ctx.createBuffer(2, bufferSize, ctx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const output = noiseBuffer.getChannelData(ch);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.035;
+          b6 = white * 0.115926;
+        }
+      }
+
+      const source = ctx.createBufferSource();
+      source.buffer = noiseBuffer;
+      source.loop = true;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(420, ctx.currentTime);
+      filter.Q.setValueAtTime(0.9, ctx.currentTime);
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.01, ctx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
+
+      source.connect(filter);
+      filter.connect(masterGain);
+      masterGain.connect(ctx.destination);
+      source.start();
+
+      this.oceanNodes = { source, filter, masterGain };
+
+      // Ciclo orgánico de rompiente de olas cada 5 segundos
+      const triggerWaveSwell = () => {
+        if (!this.oceanNodes || !this.audioCtx) return;
+        const now = this.audioCtx.currentTime;
+        this.oceanNodes.filter.frequency.cancelScheduledValues(now);
+        this.oceanNodes.filter.frequency.setValueAtTime(340, now);
+        this.oceanNodes.filter.frequency.exponentialRampToValueAtTime(1150, now + 2.1);
+        this.oceanNodes.filter.frequency.exponentialRampToValueAtTime(320, now + 4.8);
+
+        this.oceanNodes.masterGain.gain.cancelScheduledValues(now);
+        this.oceanNodes.masterGain.gain.setValueAtTime(0.12, now);
+        this.oceanNodes.masterGain.gain.linearRampToValueAtTime(0.28, now + 2.0);
+        this.oceanNodes.masterGain.gain.linearRampToValueAtTime(0.11, now + 4.8);
+      };
+
+      triggerWaveSwell();
+      this.oceanLfoInterval = setInterval(triggerWaveSwell, 5000);
+    } catch {
+      // Silencioso si el navegador bloquea Web Audio
+    }
+  }
+
+  stopOceanAmbience() {
+    if (this.oceanLfoInterval) {
+      clearInterval(this.oceanLfoInterval);
+      this.oceanLfoInterval = null;
+    }
+    if (this.oceanNodes && this.audioCtx) {
+      try {
+        const now = this.audioCtx.currentTime;
+        const { source, masterGain } = this.oceanNodes;
+        masterGain.gain.cancelScheduledValues(now);
+        masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.35);
+        setTimeout(() => {
+          try { source.stop(); source.disconnect(); } catch {}
+        }, 400);
+      } catch {}
+      this.oceanNodes = null;
+    }
+  }
+
+  toggleOceanAmbience() {
+    this.oceanEnabled = !this.oceanEnabled;
+    if (this.oceanEnabled) {
+      this.startOceanAmbience();
+    } else {
+      this.stopOceanAmbience();
+    }
+    return this.oceanEnabled;
   }
 
   playTypeClick() {

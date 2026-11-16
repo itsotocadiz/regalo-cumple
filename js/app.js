@@ -546,6 +546,7 @@ function initFlowVideoModal() {
   const modal = $('#flow-video-modal');
   const closeBtn = $('#flow-video-close');
   const replayBtn = $('#flow-video-replay');
+  const oceanBtn = $('#btn-toggle-ocean');
   const videoEl = $('#flow-video-player');
   const stageEl = $('#handycam-stage');
   const timecodeEl = $('#handycam-timecode');
@@ -573,6 +574,7 @@ function initFlowVideoModal() {
     if (!audioEngine.isPlaying) {
       audioEngine.play();
     }
+    audioEngine.startOceanAmbience();
     if (videoEl) {
       videoEl.currentTime = 0;
       videoEl.play().catch(() => {});
@@ -584,6 +586,7 @@ function initFlowVideoModal() {
   const closeModal = () => {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    audioEngine.stopOceanAmbience();
     if (videoEl) {
       videoEl.pause();
       videoEl.style.transform = '';
@@ -596,6 +599,12 @@ function initFlowVideoModal() {
 
   openBtn?.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
+  oceanBtn?.addEventListener('click', () => {
+    const enabled = audioEngine.toggleOceanAmbience();
+    if (oceanBtn) {
+      oceanBtn.textContent = enabled ? '🌊 Mar: ON' : '🌊 Mar: OFF';
+    }
+  });
   replayBtn?.addEventListener('click', () => {
     if (videoEl) {
       videoEl.currentTime = 0;
