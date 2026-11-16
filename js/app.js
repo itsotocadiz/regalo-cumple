@@ -90,72 +90,107 @@ function initGatekeeper() {
   });
 }
 
-// --- 2. Cielo Estrellado en Canvas + Halo de Cursor ---
+// --- 2. Cielo Estrellado en Canvas + Halo de Cursor + Estrella Viva de Romeo ---
 function initSkyAndHalo() {
   const canvas = $('#sky-canvas');
   const halo = $('#cursor-halo');
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (halo && !prefersReduced) {
+  if (halo) {
     window.addEventListener('pointermove', (e) => {
       halo.style.left = `${e.clientX}px`;
       halo.style.top = `${e.clientY}px`;
     }, { passive: true });
   }
 
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let width = 0;
-  let height = 0;
-  let stars = [];
-  let rafId = null;
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    let stars = [];
+    let rafId = null;
 
-  const resize = () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    const count = Math.min(85, Math.max(35, Math.floor((width * height) / 22000)));
-    stars = Array.from({ length: count }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      r: Math.random() * 1.6 + 0.4,
-      alpha: Math.random() * 0.6 + 0.2,
-      speed: Math.random() * 0.015 + 0.005,
-      phase: Math.random() * Math.PI * 2,
-      warm: Math.random() > 0.7
-    }));
-  };
+    const resize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      const count = Math.min(85, Math.max(35, Math.floor((width * height) / 22000)));
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.6 + 0.4,
+        alpha: Math.random() * 0.6 + 0.2,
+        speed: Math.random() * 0.015 + 0.005,
+        phase: Math.random() * Math.PI * 2,
+        warm: Math.random() > 0.7
+      }));
+    };
 
-  resize();
-  window.addEventListener('resize', resize);
+    resize();
+    window.addEventListener('resize', resize);
 
-  const draw = (time) => {
-    ctx.clearRect(0, 0, width, height);
-    const scrollOffset = window.scrollY * 0.06;
-    for (const s of stars) {
-      const twinkle = prefersReduced ? s.alpha : s.alpha + Math.sin(time * 0.002 * (s.speed * 100) + s.phase) * 0.25;
-      const yPos = ((s.y - scrollOffset) % height + height) % height;
-      ctx.beginPath();
-      ctx.arc(s.x, yPos, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = s.warm
-        ? `rgba(246, 211, 139, ${Math.max(0.1, twinkle)})`
-        : `rgba(255, 213, 221, ${Math.max(0.1, twinkle)})`;
-      ctx.fill();
-    }
-    if (!prefersReduced) {
+    const draw = (time) => {
+      ctx.clearRect(0, 0, width, height);
+      const scrollOffset = window.scrollY * 0.06;
+      for (const s of stars) {
+        const twinkle = s.alpha + Math.sin(time * 0.002 * (s.speed * 100) + s.phase) * 0.25;
+        const yPos = ((s.y - scrollOffset) % height + height) % height;
+        ctx.beginPath();
+        ctx.arc(s.x, yPos, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.warm
+          ? `rgba(246, 211, 139, ${Math.max(0.1, twinkle)})`
+          : `rgba(255, 213, 221, ${Math.max(0.1, twinkle)})`;
+        ctx.fill();
+      }
       rafId = requestAnimationFrame(draw);
-    }
-  };
+    };
 
-  if (rafId) cancelAnimationFrame(rafId);
-  rafId = requestAnimationFrame(draw);
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(draw);
+  }
 
-  // Estrella tributo de Romeo
+  // Estrella tributo de Romeo con movimiento orbital JS + lluvia de polvo estelar
+  const starWrap = $('.romeo-star-btn');
   const starBtn = $('#romeo-star-btn');
   const starPopover = $('#romeo-star-popover');
+
+  if (starWrap && starBtn) {
+    let startTs = performance.now();
+    const animateRomeoStar = (now) => {
+      const t = (now - startTs) / 1000;
+      const dx = Math.sin(t * 1.4) * 10 + Math.cos(t * 0.7) * 5;
+      const dy = Math.cos(t * 1.8) * 8 + Math.sin(t * 0.9) * 4;
+      const rot = Math.sin(t * 1.5) * 9;
+      starWrap.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
+      requestAnimationFrame(animateRomeoStar);
+    };
+    requestAnimationFrame(animateRomeoStar);
+
+    // Emitir chispitas doradas continuas desde la estrella de Romeo
+    setInterval(() => {
+      const rect = starBtn.getBoundingClientRect();
+      if (rect.width === 0) return;
+      const spark = document.createElement('span');
+      spark.className = 'romeo-stardust';
+      spark.style.left = `${rect.left + rect.width / 2 + (Math.random() - 0.5) * 20}px`;
+      spark.style.top = `${rect.top + rect.height / 2 + (Math.random() - 0.5) * 16}px`;
+      spark.style.setProperty('--dx', `${(Math.random() - 0.5) * 34}px`);
+      spark.style.setProperty('--dy', `${18 + Math.random() * 26}px`);
+      document.body.appendChild(spark);
+      setTimeout(() => spark.remove(), 1450);
+    }, 550);
+  }
+
   starBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
+    audioEngine.playStarChime();
     starPopover?.classList.toggle('hidden');
+    fireConfetti({
+      particleCount: 35,
+      spread: 55,
+      origin: { x: 0.92, y: 0.08 },
+      colors: ['#f6d38b', '#fde68a', '#fbbf24', '#ffffff']
+    });
   });
+
   document.addEventListener('click', () => {
     starPopover?.classList.add('hidden');
   });
@@ -505,13 +540,14 @@ function initLetter() {
   });
 }
 
-// --- 5B. Modal Sorpresa de Video Flow (Caricatura en la Playa) ---
+// --- 5B. Modal Sorpresa de Video Flow + Interacción por Personalidad ---
 function initFlowVideoModal() {
   const openBtn = $('#btn-open-flow-video');
   const modal = $('#flow-video-modal');
   const closeBtn = $('#flow-video-close');
   const replayBtn = $('#flow-video-replay');
   const videoEl = $('#flow-video-player');
+  const captionEl = $('#flow-character-toast');
 
   if (!modal) return;
 
@@ -545,6 +581,61 @@ function initFlowVideoModal() {
       videoEl.play().catch(() => {});
       fireConfetti({ particleCount: 45, spread: 65, origin: { y: 0.7 } });
     }
+  });
+
+  // Reacciones interactivas al tocar a cada personaje en la escena
+  const characterData = {
+    julieta: {
+      msg: '🐕‍🦺 Julieta mueve su colita orgullosa con su pato de peluche y te cuida con amor leal.',
+      freq: 410,
+      colors: ['#a855f7', '#ec4899', '#f43f5e']
+    },
+    babu: {
+      msg: '💖 Babu ilumina toda la playa con su sonrisa y abraza con ternura a su manada.',
+      freq: 0,
+      colors: ['#e11d48', '#fb7185', '#ffd5dd']
+    },
+    romeo: {
+      msg: '👼 Romeo brilla con su aureola dorada, cuidándote siempre con su amor de chetito.',
+      freq: 560,
+      colors: ['#f6d38b', '#fde68a', '#ffffff']
+    },
+    nalita: {
+      msg: '🐶 ¡Nalita da saltitos de pura alegría y energía lista para una nueva aventura!',
+      freq: 680,
+      colors: ['#fef08a', '#fb7185', '#ffffff']
+    }
+  };
+
+  modal.querySelectorAll('[data-character]').forEach((spot) => {
+    spot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = spot.getAttribute('data-character');
+      const info = characterData[key];
+      if (!info) return;
+
+      if (key === 'romeo' || key === 'babu') {
+        audioEngine.playStarChime();
+      } else {
+        audioEngine.playPuppyBark(info.freq);
+      }
+
+      if (captionEl) {
+        captionEl.textContent = info.msg;
+        captionEl.classList.remove('opacity-0');
+      }
+
+      const rect = spot.getBoundingClientRect();
+      fireConfetti({
+        particleCount: 35,
+        spread: 55,
+        origin: {
+          x: (rect.left + rect.width / 2) / window.innerWidth,
+          y: (rect.top + rect.height / 2) / window.innerHeight
+        },
+        colors: info.colors
+      });
+    });
   });
 
   modal.addEventListener('click', (e) => {

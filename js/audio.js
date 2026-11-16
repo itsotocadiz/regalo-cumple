@@ -141,6 +141,48 @@ class AudioEngine {
     osc.stop(ctx.currentTime + 0.035);
   }
 
+  playStarChime() {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const freqs = [587.33, 880.0, 1174.66, 1567.98];
+    freqs.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      const start = ctx.currentTime + i * 0.07;
+      osc.frequency.setValueAtTime(f, start);
+      gain.gain.setValueAtTime(0.001, start);
+      gain.gain.exponentialRampToValueAtTime(0.045, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.65);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.7);
+    });
+  }
+
+  playPuppyBark(baseFreq = 520) {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    [0, 0.14].forEach((offset, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const t = ctx.currentTime + offset;
+      const f = baseFreq * (idx === 1 ? 1.12 : 1.0);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f * 0.75, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 1.35, t + 0.045);
+      osc.frequency.exponentialRampToValueAtTime(f * 0.6, t + 0.11);
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(0.06, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.125);
+    });
+  }
+
   getVisualizerLevels(barsCount = 4) {
     if (!this.isPlaying) return Array(barsCount).fill(20);
     if (this.analyser && this.dataArray && !this.usingFallback) {
