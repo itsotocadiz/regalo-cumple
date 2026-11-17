@@ -707,10 +707,6 @@
     const btn = $('#btn-virtual-hug');
     const btnLabel = $('#btn-hug-label');
     const toast = $('#hug-toast');
-    const countEl = $('#hug-count');
-    const stepBadge = $('#hug-step-badge');
-    const distLabel = $('#hug-distance-label');
-    const progressBar = $('#hug-progress-bar');
     const pawTrail = $('#hug-paw-trail');
     const dogsActor = $('#hug-dogs-actor');
     const dogsImg = $('#hug-dogs-img');
@@ -746,14 +742,13 @@
       if (dogsImg) dogsImg.src = './assets/perritos-paso1.png';
       if (babuActor) babuActor.style.transform = 'scale(1)';
       if (babuAura) babuAura.style.transform = 'scale(1)';
-      if (progressBar) progressBar.style.width = '0%';
-      if (countEl) countEl.textContent = `0 / ${MAX_STEPS}`;
-      if (stepBadge) stepBadge.textContent = `0 / ${MAX_STEPS} pasos`;
-      if (distLabel) distLabel.textContent = '¡La manada está lista para correr hacia ti!';
-      if (btnLabel) btnLabel.textContent = 'Dar un Paso hacia el Abrazo';
+      if (btnLabel) btnLabel.textContent = 'Enviar Abrazo';
       if (climaxOverlay) {
         climaxOverlay.classList.add('opacity-0');
         setTimeout(() => climaxOverlay.classList.add('hidden'), 350);
+      }
+      if (toast) {
+        toast.classList.add('opacity-0', 'translate-y-2');
       }
     };
 
@@ -791,24 +786,7 @@
         babuAura.style.transform = `scale(${(1 + progress * 0.85).toFixed(2)})`;
       }
 
-      // 5. Actualizar contadores y barra de progreso
-      if (countEl) countEl.textContent = `${step} / ${MAX_STEPS}`;
-      if (stepBadge) stepBadge.textContent = `${step} / ${MAX_STEPS} pasos`;
-      if (progressBar) progressBar.style.width = `${Math.round(progress * 100)}%`;
-
-      if (distLabel) {
-        if (step < 8) {
-          distLabel.textContent = '¡Julieta, Romeo y Nalita empezaron a correr hacia ti! 🐾';
-        } else if (step < 16) {
-          distLabel.textContent = '¡Van a mitad de camino dejando sus huellitas en el piso! ✨';
-        } else if (step < MAX_STEPS) {
-          distLabel.textContent = `¡Solo faltan ${MAX_STEPS - step} pasos para el Gran Abrazo! 💖`;
-        } else {
-          distLabel.textContent = '¡LLEGARON A TUS BRAZOS! ¡GRAN ABRAZO DE MANADA! 🎉';
-        }
-      }
-
-      // 6. Sonido y partículas por paso
+      // 5. Sonido y partículas por paso
       const rect = btn.getBoundingClientRect();
       const originX = rect.left + rect.width / 2;
       const originY = rect.top + rect.height / 2;
@@ -857,7 +835,7 @@
           requestAnimationFrame(() => climaxOverlay.classList.remove('opacity-0'));
         }
 
-        if (btnLabel) btnLabel.textContent = '¡Repetir Camino al Abrazo! ✨';
+        if (btnLabel) btnLabel.textContent = '¡Repetir Abrazo! ✨';
 
         // Triple explosión de confeti + lluvia masiva de corazones
         fireConfetti({ particleCount: 110, spread: 100, origin: { y: 0.65 } });
