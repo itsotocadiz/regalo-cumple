@@ -520,3 +520,52 @@ a, button, input, [role="button"] {
   z-index: 60;
   animation: floatHeartUp 1.8s var(--ease-smooth) forwards;
 }
+
+/* Escenario Interactivo de 25 Pasos y Rastro de Huellas en el Piso */
+.hug-dogs-actor {
+  transition: left 0.36s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.25s ease;
+  will-change: left, transform;
+}
+
+@keyframes dogHopStep {
+  0% { transform: translateY(0) rotate(0deg) scale(1); }
+  45% { transform: translateY(-16px) rotate(-4deg) scale(1.05); }
+  100% { transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+.hug-dogs-hopping {
+  animation: dogHopStep 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pawStampPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(var(--paw-rot, -15deg));
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.32) rotate(var(--paw-rot, -15deg));
+  }
+  100% {
+    opacity: 0.92;
+    transform: translate(-50%, -50%) scale(1) rotate(var(--paw-rot, -15deg));
+  }
+}
+
+.floor-paw-print {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  animation: pawStampPop 0.42s var(--ease-spring) forwards;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+@keyframes pawGoldenWave {
+  0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(var(--paw-rot, -15deg)); }
+  50% { transform: translate(-50%, -50%) scale(1.45) rotate(var(--paw-rot, -15deg)); color: #fde047; filter: drop-shadow(0 0 12px #fbbf24); }
+}
+
+.floor-paw-print.is-celebrating {
+  animation: pawGoldenWave 0.8s ease-in-out infinite;
+}

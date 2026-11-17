@@ -701,39 +701,186 @@
     });
   }
 
-  // --- 6. Abrazo Virtual ---
+  // --- 6. Abrazo Virtual: Camino Interactivo de 25 Pasos con Rastro de Huellas en el Piso ---
   function initVirtualHug() {
+    const MAX_STEPS = 25;
     const btn = $('#btn-virtual-hug');
+    const btnLabel = $('#btn-hug-label');
     const toast = $('#hug-toast');
     const countEl = $('#hug-count');
-    let hugs = 0;
+    const stepBadge = $('#hug-step-badge');
+    const distLabel = $('#hug-distance-label');
+    const progressBar = $('#hug-progress-bar');
+    const pawTrail = $('#hug-paw-trail');
+    const dogsActor = $('#hug-dogs-actor');
+    const dogsImg = $('#hug-dogs-img');
+    const babuActor = $('#hug-babu-actor');
+    const babuAura = $('#hug-babu-aura');
+    const climaxOverlay = $('#hug-climax-overlay');
+
+    let step = 0;
+
+    const pawColors = ['#c084fc', '#fde68a', '#fda4af']; // Julieta (violeta), Romeo (dorado), Nalita (rosado)
+
+    const stampPawOnFloor = (currentStep) => {
+      if (!pawTrail) return;
+      const paw = document.createElement('span');
+      paw.className = 'floor-paw-print';
+      const pctX = 96 - ((currentStep - 1) / (MAX_STEPS - 1)) * 88;
+      const isLeftPaw = currentStep % 2 === 1;
+      const pctY = isLeftPaw ? 30 : 72;
+      const rot = isLeftPaw ? -16 : 16;
+
+      paw.style.left = `${pctX.toFixed(1)}%`;
+      paw.style.top = `${pctY}%`;
+      paw.style.color = pawColors[(currentStep - 1) % pawColors.length];
+      paw.style.setProperty('--paw-rot', `${rot}deg`);
+      paw.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><circle cx="12" cy="15" r="4"/><circle cx="7" cy="9" r="1.8"/><circle cx="11" cy="7" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/></svg>`;
+      pawTrail.appendChild(paw);
+    };
+
+    const resetRunway = () => {
+      step = 0;
+      if (pawTrail) pawTrail.innerHTML = '';
+      if (dogsActor) dogsActor.style.left = '68%';
+      if (dogsImg) dogsImg.src = './assets/perritos-paso1.png';
+      if (babuActor) babuActor.style.transform = 'scale(1)';
+      if (babuAura) babuAura.style.transform = 'scale(1)';
+      if (progressBar) progressBar.style.width = '0%';
+      if (countEl) countEl.textContent = `0 / ${MAX_STEPS}`;
+      if (stepBadge) stepBadge.textContent = `0 / ${MAX_STEPS} pasos`;
+      if (distLabel) distLabel.textContent = '¡La manada está lista para correr hacia ti!';
+      if (btnLabel) btnLabel.textContent = 'Dar un Paso hacia el Abrazo';
+      if (climaxOverlay) {
+        climaxOverlay.classList.add('opacity-0');
+        setTimeout(() => climaxOverlay.classList.add('hidden'), 350);
+      }
+    };
 
     btn?.addEventListener('click', () => {
-      hugs++;
-      if (countEl) countEl.textContent = String(hugs);
-      navigator.vibrate?.([40, 30, 80]);
-      fireConfetti({ particleCount: 55, spread: 80, origin: { y: 0.75 } });
+      if (step >= MAX_STEPS) {
+        resetRunway();
+        return;
+      }
 
+      step++;
+      const progress = step / MAX_STEPS;
+
+      // 1. Alternar fotograma de caminata/salto de los 3 perritos
+      if (dogsImg) {
+        dogsImg.src = step % 2 === 0 ? './assets/perritos-paso2.png' : './assets/perritos-paso1.png';
+      }
+
+      // 2. Desplazar el grupo de perritos hacia los brazos de Bárbara (de 68% a 14%)
+      if (dogsActor) {
+        const targetLeft = 68 - progress * 54;
+        dogsActor.style.left = `${targetLeft.toFixed(1)}%`;
+        dogsActor.classList.remove('hug-dogs-hopping');
+        void dogsActor.offsetWidth;
+        dogsActor.classList.add('hug-dogs-hopping');
+      }
+
+      // 3. Estampar la huella de este paso en el piso
+      stampPawOnFloor(step);
+
+      // 4. Intensificar la emoción de Bárbara conforme se acercan
+      if (babuActor) {
+        babuActor.style.transform = `scale(${(1 + progress * 0.08).toFixed(3)})`;
+      }
+      if (babuAura) {
+        babuAura.style.transform = `scale(${(1 + progress * 0.85).toFixed(2)})`;
+      }
+
+      // 5. Actualizar contadores y barra de progreso
+      if (countEl) countEl.textContent = `${step} / ${MAX_STEPS}`;
+      if (stepBadge) stepBadge.textContent = `${step} / ${MAX_STEPS} pasos`;
+      if (progressBar) progressBar.style.width = `${Math.round(progress * 100)}%`;
+
+      if (distLabel) {
+        if (step < 8) {
+          distLabel.textContent = '¡Julieta, Romeo y Nalita empezaron a correr hacia ti! 🐾';
+        } else if (step < 16) {
+          distLabel.textContent = '¡Van a mitad de camino dejando sus huellitas en el piso! ✨';
+        } else if (step < MAX_STEPS) {
+          distLabel.textContent = `¡Solo faltan ${MAX_STEPS - step} pasos para el Gran Abrazo! 💖`;
+        } else {
+          distLabel.textContent = '¡LLEGARON A TUS BRAZOS! ¡GRAN ABRAZO DE MANADA! 🎉';
+        }
+      }
+
+      // 6. Sonido y partículas por paso
       const rect = btn.getBoundingClientRect();
       const originX = rect.left + rect.width / 2;
       const originY = rect.top + rect.height / 2;
 
-      for (let i = 0; i < 14; i++) {
-        const p = document.createElement('span');
-        p.className = 'hug-particle text-rose-400';
-        p.innerHTML = `<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/></svg>`;
-        p.style.left = `${originX}px`;
-        p.style.top = `${originY}px`;
-        p.style.setProperty('--tx', `${(Math.random() - 0.5) * 240}px`);
-        p.style.setProperty('--ty', `${-120 - Math.random() * 140}px`);
-        p.style.setProperty('--rot', `${(Math.random() - 0.5) * 45}deg`);
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 1850);
-      }
+      if (step < MAX_STEPS) {
+        navigator.vibrate?.(25);
+        if (step % 3 === 0) {
+          audioEngine.playPuppyBark(480 + step * 8);
+        } else {
+          audioEngine.playTypeClick();
+        }
 
-      if (toast) {
-        toast.textContent = MENSAJES_ABRAZO[(hugs - 1) % MENSAJES_ABRAZO.length];
-        toast.classList.remove('opacity-0', 'translate-y-2');
+        // Corazoncito suave en cada paso
+        for (let i = 0; i < 4; i++) {
+          const p = document.createElement('span');
+          p.className = 'hug-particle text-rose-400';
+          p.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/></svg>`;
+          p.style.left = `${originX}px`;
+          p.style.top = `${originY}px`;
+          p.style.setProperty('--tx', `${(Math.random() - 0.5) * 140}px`);
+          p.style.setProperty('--ty', `${-80 - Math.random() * 90}px`);
+          p.style.setProperty('--rot', `${(Math.random() - 0.5) * 40}deg`);
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 1500);
+        }
+
+        if (toast) {
+          toast.textContent = MENSAJES_ABRAZO[(step - 1) % MENSAJES_ABRAZO.length];
+          toast.classList.remove('opacity-0', 'translate-y-2');
+        }
+      } else {
+        // ¡PASO 25: EXPLOSIÓN DEL GRAN ABRAZO!
+        navigator.vibrate?.([60, 40, 100, 40, 140]);
+        audioEngine.playStarChime();
+        setTimeout(() => audioEngine.playPuppyBark(540), 180);
+        setTimeout(() => audioEngine.playPuppyBark(680), 420);
+
+        // Iluminar las 25 huellitas del piso en ola dorada
+        pawTrail?.querySelectorAll('.floor-paw-print').forEach((p, idx) => {
+          setTimeout(() => p.classList.add('is-celebrating'), idx * 25);
+        });
+
+        // Mostrar tarjeta clímax del Gran Abrazo
+        if (climaxOverlay) {
+          climaxOverlay.classList.remove('hidden');
+          requestAnimationFrame(() => climaxOverlay.classList.remove('opacity-0'));
+        }
+
+        if (btnLabel) btnLabel.textContent = '¡Repetir Camino al Abrazo! ✨';
+
+        // Triple explosión de confeti + lluvia masiva de corazones
+        fireConfetti({ particleCount: 110, spread: 100, origin: { y: 0.65 } });
+        setTimeout(() => fireConfetti({ particleCount: 70, angle: 60, spread: 65, origin: { x: 0.1, y: 0.7 } }), 200);
+        setTimeout(() => fireConfetti({ particleCount: 70, angle: 120, spread: 65, origin: { x: 0.9, y: 0.7 } }), 200);
+
+        for (let i = 0; i < 26; i++) {
+          const p = document.createElement('span');
+          p.className = 'hug-particle text-rose-400';
+          p.innerHTML = `<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/></svg>`;
+          p.style.left = `${originX}px`;
+          p.style.top = `${originY}px`;
+          p.style.setProperty('--tx', `${(Math.random() - 0.5) * 380}px`);
+          p.style.setProperty('--ty', `${-160 - Math.random() * 220}px`);
+          p.style.setProperty('--rot', `${(Math.random() - 0.5) * 65}deg`);
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 1950);
+        }
+
+        if (toast) {
+          toast.textContent = '¡EXPLOSIÓN DE AMOR! Toda tu manada te abraza con el corazón entero 💖🐾';
+          toast.classList.remove('opacity-0', 'translate-y-2');
+        }
       }
     });
   }

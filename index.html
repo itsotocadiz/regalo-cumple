@@ -97,16 +97,6 @@
     </div>
   </div>
 
-  <!-- Navegación flotante -->
-  <nav class="sticky top-4 z-30 flex justify-center px-4 pt-4" aria-label="Navegación principal">
-    <div class="glass-card rounded-full px-2 py-1.5 flex items-center gap-1 text-xs sm:text-sm font-medium">
-      <a href="#inicio" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Inicio</a>
-      <a href="#recuerdos" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Recuerdos</a>
-      <a href="#carta" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Carta</a>
-      <a href="#abrazo" class="px-3.5 py-1.5 rounded-full text-rose-100/80 hover:text-white hover:bg-white/10 transition">Abrazo</a>
-    </div>
-  </nav>
-
   <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-32">
 
     <!-- Hero Editorial -->
@@ -201,7 +191,6 @@
       <div id="carta-envelope-teaser" class="glass-card rounded-3xl p-7 sm:p-10 relative overflow-hidden">
         <div class="flex items-center justify-between text-xs font-mono-letter text-rose-200/60 border-b border-white/10 pb-4 mb-6">
           <span>CARTA PRIVADA</span>
-          <span>05 • MAR • 2022</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
@@ -227,7 +216,6 @@
               </svg>
               <span class="text-[10px] uppercase tracking-widest font-semibold">Abrir</span>
             </button>
-            <span class="text-[11px] font-mono-letter text-rose-200/50">05.MAR.22 • CORREOS</span>
           </div>
         </div>
       </div>
@@ -282,26 +270,92 @@
       </div>
     </section>
 
-    <!-- Abrazo Virtual -->
-    <section id="abrazo" class="max-w-xl mx-auto text-center">
-      <div class="glass-card rounded-3xl p-8 sm:p-10">
-        <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Siempre Cerca</span>
-        <h2 class="font-serif-display text-3xl text-[#fbf7f4] mt-1 mb-3">¿Necesitas un abrazo?</h2>
-        <p class="text-sm text-[#e7cfd6]/80 mb-6">Cada toque envía un abrazo de toda nuestra manada directo a tu corazón.</p>
+    <!-- Abrazo Virtual Interactivo: Camino de 25 Pasos de la Manada -->
+    <section id="abrazo" class="max-w-4xl mx-auto text-center">
+      <div class="glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+        <span class="text-xs uppercase tracking-[0.2em] text-rose-300/80 font-semibold">Siempre Cerca • 25 Pasos de Amor</span>
+        <h2 class="font-serif-display text-3xl sm:text-4xl text-[#fbf7f4] mt-1 mb-2">Camino al Gran Abrazo</h2>
+        <p class="text-sm text-[#e7cfd6]/80 mb-5">
+          Presiona el botón para que <strong>Julieta, Romeo y Nalita</strong> corran hacia los brazos de <strong>Babu</strong> dejando sus huellitas en el piso.
+        </p>
+
+        <!-- Barra de progreso y contador de los 25 pasos -->
+        <div class="max-w-xl mx-auto mb-4">
+          <div class="flex items-center justify-between text-xs font-mono-letter text-rose-200/80 mb-1.5 px-1">
+            <span id="hug-distance-label">¡La manada está lista para correr hacia ti!</span>
+            <span id="hug-step-badge" class="font-bold text-amber-300 tabular-nums">0 / 25 pasos</span>
+          </div>
+          <div class="h-2.5 w-full rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
+            <div id="hug-progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-rose-500 via-pink-400 to-amber-300 transition-all duration-300"></div>
+          </div>
+        </div>
+
+        <!-- Escenario Panorámico Interactivo: Bárbara a la izquierda, Perritos avanzando desde la derecha y Piso de Huellas -->
+        <div id="hug-runway-stage" class="hug-runway-stage relative h-56 sm:h-64 rounded-2xl bg-gradient-to-b from-[#14070c] via-[#1d0b12] to-[#2c111b] border border-rose-300/20 overflow-hidden mb-6 shadow-inner select-none">
+          <!-- Estrellas sutiles de fondo del escenario -->
+          <div class="absolute inset-0 opacity-35 pointer-events-none" style="background-image: radial-gradient(circle at 20% 25%, rgba(246,211,139,0.5) 1px, transparent 1px), radial-gradient(circle at 65% 20%, rgba(255,213,221,0.5) 1.5px, transparent 1.5px), radial-gradient(circle at 82% 35%, rgba(246,211,139,0.4) 1px, transparent 1px); background-size: 180px 120px;"></div>
+
+          <!-- Suelo / Sendero donde quedan estampadas las 25 huellas -->
+          <div class="hug-floor-surface absolute bottom-0 inset-x-0 h-16 sm:h-20 bg-gradient-to-t from-[#3d1725]/80 via-[#2a1019]/50 to-transparent border-t border-rose-300/10 pointer-events-none"></div>
+
+          <!-- Contenedor del Rastro de las 25 Huellas en el Piso -->
+          <div id="hug-paw-trail" class="absolute bottom-1.5 left-[18%] right-[6%] h-14 pointer-events-none z-10"></div>
+
+          <!-- Bárbara (Babu) esperando con los brazos abiertos a la izquierda -->
+          <div id="hug-babu-actor" class="hug-babu-actor absolute bottom-2 left-1 sm:left-4 z-20 pointer-events-none transition-transform duration-300">
+            <div id="hug-babu-aura" class="hug-babu-aura absolute inset-0 -m-3 rounded-full bg-rose-500/15 blur-xl transition-all duration-500"></div>
+            <img
+              src="./assets/babu-esperando.png"
+              alt="Bárbara esperando con los brazos abiertos"
+              class="relative z-10 h-36 sm:h-48 w-auto object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.75)]"
+            />
+          </div>
+
+          <!-- Los 3 Perritos (Julieta, Romeo y Nalita) caminando paso a paso desde la derecha -->
+          <div id="hug-dogs-actor" class="hug-dogs-actor absolute bottom-2 z-20 pointer-events-none" style="left: 68%;">
+            <img
+              id="hug-dogs-img"
+              src="./assets/perritos-paso1.png"
+              alt="Julieta, Romeo y Nalita corriendo hacia Babu"
+              class="h-32 sm:h-44 w-auto object-contain drop-shadow-[0_10px_18px_rgba(0,0,0,0.75)]"
+            />
+          </div>
+
+          <!-- Celebración Clímax al llegar al Paso 25 (Explosión del Gran Abrazo) -->
+          <div id="hug-climax-overlay" class="hidden opacity-0 transition-all duration-500 absolute inset-0 z-30 bg-gradient-to-r from-[#1a0810]/95 via-[#2e0e1c]/95 to-[#1a0810]/95 backdrop-blur-md flex flex-col sm:flex-row items-center justify-center gap-5 p-4 sm:p-6">
+            <div class="relative shrink-0">
+              <div class="absolute -inset-2 rounded-2xl bg-gradient-to-r from-rose-500 via-amber-300 to-rose-500 blur-md opacity-80 animate-pulse"></div>
+              <img
+                src="./assets/caricatura-playa.jpg"
+                alt="Gran Abrazo de Babu con Julieta, Romeo y Nalita"
+                class="relative w-44 sm:w-56 h-32 sm:h-40 object-cover rounded-2xl border-2 border-amber-200/80 shadow-2xl"
+              />
+            </div>
+            <div class="text-center sm:text-left max-w-md">
+              <span class="inline-block px-3 py-0.5 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-200 text-[11px] font-bold uppercase tracking-widest mb-1.5">
+                ¡25 / 25 • Gran Abrazo de Manada!
+              </span>
+              <h3 class="font-serif-display text-2xl sm:text-3xl text-[#fbf7f4]">¡Llegaron a tus brazos! 💖🐾</h3>
+              <p class="text-xs sm:text-sm text-rose-100/90 mt-1 leading-relaxed">
+                Julieta, Romeo y Nalita recorrieron cada paso hasta fundirse contigo en el abrazo más puro, apretado y lleno de amor.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <button
           id="btn-virtual-hug"
           type="button"
-          class="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold shadow-xl shadow-rose-950/50 transition-all active:scale-95"
+          class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:from-rose-500 hover:to-amber-400 text-white font-semibold shadow-xl shadow-rose-950/50 transition-all active:scale-95"
         >
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/>
           </svg>
-          Enviar Abrazo Virtual
-          <span id="hug-count" class="px-2 py-0.5 text-xs rounded-full bg-white/20 tabular-nums">0</span>
+          <span id="btn-hug-label">Dar un Paso hacia el Abrazo</span>
+          <span id="hug-count" class="px-2.5 py-0.5 text-xs rounded-full bg-black/25 border border-white/20 tabular-nums">0 / 25</span>
         </button>
 
-        <p id="hug-toast" class="mt-5 text-sm text-rose-200 font-medium opacity-0 translate-y-2 transition-all duration-300 min-h-[24px]"></p>
+        <p id="hug-toast" class="mt-4 text-sm text-rose-200 font-medium opacity-0 translate-y-2 transition-all duration-300 min-h-[24px]"></p>
       </div>
     </section>
 
