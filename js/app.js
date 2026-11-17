@@ -706,7 +706,6 @@
     const MAX_STEPS = 25;
     const btn = $('#btn-virtual-hug');
     const btnLabel = $('#btn-hug-label');
-    const toast = $('#hug-toast');
     const pawTrail = $('#hug-paw-trail');
     const dogsActor = $('#hug-dogs-actor');
     const dogsImg = $('#hug-dogs-img');
@@ -738,7 +737,10 @@
     const resetRunway = () => {
       step = 0;
       if (pawTrail) pawTrail.innerHTML = '';
-      if (dogsActor) dogsActor.style.left = '68%';
+      if (dogsActor) {
+        dogsActor.style.left = '100%';
+        dogsActor.style.transform = 'translateX(-100%)';
+      }
       if (dogsImg) dogsImg.src = './assets/perritos-paso1.png';
       if (babuActor) babuActor.style.transform = 'scale(1)';
       if (babuAura) babuAura.style.transform = 'scale(1)';
@@ -746,9 +748,6 @@
       if (climaxOverlay) {
         climaxOverlay.classList.add('opacity-0');
         setTimeout(() => climaxOverlay.classList.add('hidden'), 350);
-      }
-      if (toast) {
-        toast.classList.add('opacity-0', 'translate-y-2');
       }
     };
 
@@ -766,10 +765,11 @@
         dogsImg.src = step % 2 === 0 ? './assets/perritos-paso2.png' : './assets/perritos-paso1.png';
       }
 
-      // 2. Desplazar el grupo de perritos hacia los brazos de Bárbara (de 68% a 14%)
+      // 2. Desplazar el grupo de perritos sin recortes en ninguna pantalla (100% -> 0%)
       if (dogsActor) {
-        const targetLeft = 68 - progress * 54;
-        dogsActor.style.left = `${targetLeft.toFixed(1)}%`;
+        const posPct = ((1 - progress) * 100).toFixed(1);
+        dogsActor.style.left = `${posPct}%`;
+        dogsActor.style.transform = `translateX(-${posPct}%)`;
         dogsActor.classList.remove('hug-dogs-hopping');
         void dogsActor.offsetWidth;
         dogsActor.classList.add('hug-dogs-hopping');
@@ -799,7 +799,6 @@
           audioEngine.playTypeClick();
         }
 
-        // Corazoncito suave en cada paso
         for (let i = 0; i < 4; i++) {
           const p = document.createElement('span');
           p.className = 'hug-particle text-rose-400';
@@ -812,11 +811,6 @@
           document.body.appendChild(p);
           setTimeout(() => p.remove(), 1500);
         }
-
-        if (toast) {
-          toast.textContent = MENSAJES_ABRAZO[(step - 1) % MENSAJES_ABRAZO.length];
-          toast.classList.remove('opacity-0', 'translate-y-2');
-        }
       } else {
         // ¡PASO 25: EXPLOSIÓN DEL GRAN ABRAZO!
         navigator.vibrate?.([60, 40, 100, 40, 140]);
@@ -824,12 +818,10 @@
         setTimeout(() => audioEngine.playPuppyBark(540), 180);
         setTimeout(() => audioEngine.playPuppyBark(680), 420);
 
-        // Iluminar las 25 huellitas del piso en ola dorada
         pawTrail?.querySelectorAll('.floor-paw-print').forEach((p, idx) => {
           setTimeout(() => p.classList.add('is-celebrating'), idx * 25);
         });
 
-        // Mostrar tarjeta clímax del Gran Abrazo
         if (climaxOverlay) {
           climaxOverlay.classList.remove('hidden');
           requestAnimationFrame(() => climaxOverlay.classList.remove('opacity-0'));
@@ -837,7 +829,6 @@
 
         if (btnLabel) btnLabel.textContent = '¡Repetir Abrazo! ✨';
 
-        // Triple explosión de confeti + lluvia masiva de corazones
         fireConfetti({ particleCount: 110, spread: 100, origin: { y: 0.65 } });
         setTimeout(() => fireConfetti({ particleCount: 70, angle: 60, spread: 65, origin: { x: 0.1, y: 0.7 } }), 200);
         setTimeout(() => fireConfetti({ particleCount: 70, angle: 120, spread: 65, origin: { x: 0.9, y: 0.7 } }), 200);
@@ -853,11 +844,6 @@
           p.style.setProperty('--rot', `${(Math.random() - 0.5) * 65}deg`);
           document.body.appendChild(p);
           setTimeout(() => p.remove(), 1950);
-        }
-
-        if (toast) {
-          toast.textContent = '¡EXPLOSIÓN DE AMOR! Toda tu manada te abraza con el corazón entero 💖🐾';
-          toast.classList.remove('opacity-0', 'translate-y-2');
         }
       }
     });
