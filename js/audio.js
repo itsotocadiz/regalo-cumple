@@ -193,6 +193,9 @@
           this.oceanNodes.masterGain.gain.setValueAtTime(0.12, now);
           this.oceanNodes.masterGain.gain.linearRampToValueAtTime(0.28, now + 2.0);
           this.oceanNodes.masterGain.gain.linearRampToValueAtTime(0.11, now + 4.8);
+
+          // Canto de gaviotas costeras a lo lejos
+          this.playSeagullPair(0.8);
         };
 
         triggerWaveSwell();
@@ -200,6 +203,29 @@
       } catch {
         // Silencioso si el navegador bloquea Web Audio
       }
+    }
+
+    playSeagullPair(delaySec = 0.2) {
+      const ctx = this.ensureContext();
+      if (!ctx || document.hidden) return;
+      [0, 0.62].forEach((offset, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const t = ctx.currentTime + delaySec + offset;
+        const dur = idx === 0 ? 0.52 : 0.44;
+        const peak = idx === 0 ? 2120 : 1980;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(peak * 0.74, t);
+        osc.frequency.exponentialRampToValueAtTime(peak, t + dur * 0.28);
+        osc.frequency.exponentialRampToValueAtTime(peak * 0.62, t + dur);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.linearRampToValueAtTime(0.032, t + dur * 0.22);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.02);
+      });
     }
 
     stopOceanAmbience() {

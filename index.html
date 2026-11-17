@@ -371,23 +371,22 @@
     </div>
   </div>
 
-  <!-- Modal Sorpresa: Video Casero estilo Handycam en la Playa -->
+  <!-- Modal Sorpresa: Solo el Video Casero estilo Handycam y la X para Cerrar -->
   <div id="flow-video-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-xl items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Video casero en la playa">
     <div class="glass-card w-full max-w-4xl rounded-3xl overflow-hidden relative border border-amber-300/30 shadow-2xl">
       <button id="flow-video-close" type="button" aria-label="Cerrar video" class="absolute top-3.5 right-3.5 z-30 w-10 h-10 rounded-full bg-black/60 hover:bg-rose-600 text-white flex items-center justify-center transition">
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
 
-      <!-- Escenario Handycam con Visor de Cámara Casera y Enfoque Dinámico al Tocar -->
-      <div id="handycam-stage" class="handycam-stage relative aspect-video bg-[#0d0508] overflow-hidden select-none">
+      <!-- Escenario Handycam Puro -->
+      <div id="handycam-stage" class="relative aspect-video bg-[#0d0508] overflow-hidden select-none">
         <video
           id="flow-video-player"
-          src="./assets/caricatura-playa.mp4?v=5"
+          src="./assets/caricatura-playa.mp4?v=6"
           poster="./assets/caricatura-playa.jpg"
-          class="handycam-video w-full h-full object-cover"
+          class="w-full h-full object-cover"
           playsinline
           loop
-          muted
         ></video>
 
         <!-- Guías de Esquinas del Visor Handycam -->
@@ -403,7 +402,7 @@
             <span class="font-bold text-rose-200">REC</span>
           </span>
           <span class="hidden sm:inline-block text-[11px] text-amber-200/90 bg-black/35 px-2 py-0.5 rounded">
-            HANDYCAM • AF
+            HANDYCAM • PLAYA
           </span>
         </div>
 
@@ -415,24 +414,6 @@
         <!-- HUD Inferior Derecho: Estampa de Fecha Casera -->
         <div class="absolute bottom-6 right-7 z-20 pointer-events-none font-mono-letter text-xs sm:text-sm tracking-widest text-amber-300/95 drop-shadow">
           PLAYA • MANADA ❤️
-        </div>
-      </div>
-
-      <div class="p-5 sm:p-6 bg-gradient-to-r from-[#1a0b10] via-[#220d14] to-[#1a0b10] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-[11px] uppercase tracking-[0.22em] text-amber-300 font-semibold">Cámara en Mano • 15 Segundos</span>
-          <h3 class="font-serif-display text-xl sm:text-2xl text-[#fbf7f4] mt-0.5">Babu, Romeo, Julieta y Nalita en la Playa</h3>
-        </div>
-        <div class="flex items-center gap-2.5 shrink-0">
-          <button id="btn-toggle-ocean" type="button" class="px-3.5 py-2.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-300/30 text-xs font-semibold text-sky-100 transition">
-            🌊 Mar: ON
-          </button>
-          <button id="flow-video-replay" type="button" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition">
-            Reiniciar Toma ✨
-          </button>
-          <a href="./assets/caricatura-playa.mp4" download="video-casero-playa-babu.mp4" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white transition">
-            Guardar Video
-          </a>
         </div>
       </div>
     </div>

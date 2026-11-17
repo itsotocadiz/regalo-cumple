@@ -618,21 +618,18 @@
     });
   }
 
-  // --- 5B. Modal Video Casero Handycam + Enfoque y Animación Dinámica en el Área Tocada ---
+  // --- 5B. Modal Video Casero Handycam (Solo Video, Sonido de Mar y Gaviotas, y X para Cerrar) ---
   function initFlowVideoModal() {
     const openBtn = $('#btn-open-flow-video');
     const modal = $('#flow-video-modal');
     const closeBtn = $('#flow-video-close');
-    const replayBtn = $('#flow-video-replay');
-    const oceanBtn = $('#btn-toggle-ocean');
     const videoEl = $('#flow-video-player');
-    const stageEl = $('#handycam-stage');
     const timecodeEl = $('#handycam-timecode');
 
     if (!modal) return;
 
-    let focusResetTimer = null;
     let tcInterval = null;
+    let resumeMusicOnClose = false;
 
     const updateTimecode = () => {
       if (!videoEl || !timecodeEl || document.hidden) return;
@@ -649,14 +646,25 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       fireConfetti({ particleCount: 80, spread: 85, origin: { y: 0.65 } });
-      if (!audioEngine.isPlaying) {
-        audioEngine.play();
+
+      // Pausar la canción principal mientras se reproduce el video de la playa
+      resumeMusicOnClose = audioEngine.isPlaying;
+      if (audioEngine.isPlaying) {
+        audioEngine.pause();
       }
-      audioEngine.startOceanAmbience();
+
       if (videoEl) {
         videoEl.currentTime = 0;
-        videoEl.play().catch(() => {});
+        videoEl.muted = false;
+        videoEl.play().catch(() => {
+          videoEl.muted = true;
+          videoEl.play().catch(() => {});
+          audioEngine.startOceanAmbience();
+        });
+      } else {
+        audioEngine.startOceanAmbience();
       }
+
       if (tcInterval) clearInterval(tcInterval);
       tcInterval = setInterval(updateTimecode, 60);
     };
@@ -667,93 +675,20 @@
       audioEngine.stopOceanAmbience();
       if (videoEl) {
         videoEl.pause();
-        videoEl.style.transform = '';
       }
       if (tcInterval) {
         clearInterval(tcInterval);
         tcInterval = null;
       }
+      // Reanudar la canción principal al cerrar el video
+      if (resumeMusicOnClose) {
+        resumeMusicOnClose = false;
+        audioEngine.play();
+      }
     };
 
     openBtn?.addEventListener('click', openModal);
     closeBtn?.addEventListener('click', closeModal);
-    oceanBtn?.addEventListener('click', () => {
-      const enabled = audioEngine.toggleOceanAmbience();
-      if (oceanBtn) {
-        oceanBtn.textContent = enabled ? '🌊 Mar: ON' : '🌊 Mar: OFF';
-      }
-    });
-    replayBtn?.addEventListener('click', () => {
-      if (videoEl) {
-        videoEl.currentTime = 0;
-        videoEl.style.transform = '';
-        videoEl.play().catch(() => {});
-        fireConfetti({ particleCount: 45, spread: 65, origin: { y: 0.7 } });
-      }
-    });
-
-    stageEl?.addEventListener('click', (e) => {
-      if (!videoEl) return;
-      const rect = stageEl.getBoundingClientRect();
-      const relX = (e.clientX - rect.left) / rect.width;
-      const relY = (e.clientY - rect.top) / rect.height;
-      const pctX = Math.max(10, Math.min(90, relX * 100));
-      const pctY = Math.max(10, Math.min(90, relY * 100));
-
-      const afBox = document.createElement('div');
-      afBox.className = 'af-focus-box';
-      afBox.style.left = `${pctX}%`;
-      afBox.style.top = `${pctY}%`;
-      stageEl.appendChild(afBox);
-      setTimeout(() => afBox.remove(), 1100);
-
-      const wave = document.createElement('div');
-      wave.className = 'touch-wave-ring';
-      wave.style.left = `${pctX}%`;
-      wave.style.top = `${pctY}%`;
-      stageEl.appendChild(wave);
-      setTimeout(() => wave.remove(), 800);
-
-      const tiltDeg = (relX - 0.5) * -2.2;
-      videoEl.style.transformOrigin = `${pctX}% ${pctY}%`;
-      videoEl.style.filter = 'blur(1.2px) brightness(1.06)';
-      videoEl.style.transform = `scale(1.18) rotate(${tiltDeg.toFixed(2)}deg)`;
-
-      setTimeout(() => {
-        if (videoEl) videoEl.style.filter = 'blur(0px) brightness(1.02)';
-      }, 180);
-
-      if (focusResetTimer) clearTimeout(focusResetTimer);
-      focusResetTimer = setTimeout(() => {
-        if (videoEl) {
-          videoEl.style.transform = 'scale(1) rotate(0deg)';
-          videoEl.style.filter = '';
-        }
-      }, 1450);
-
-      if (relX < 0.42) {
-        audioEngine.playPuppyBark(420);
-      } else if (relX > 0.68) {
-        audioEngine.playPuppyBark(680);
-      } else {
-        audioEngine.playStarChime();
-      }
-
-      for (let i = 0; i < 8; i++) {
-        const p = document.createElement('span');
-        p.className = 'hug-particle text-rose-400';
-        p.innerHTML = relX > 0.52 && relX < 0.68
-          ? `<svg class="w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.1 6.6.6-5 4.4 1.5 6.5L12 16.2 6.3 19.6l1.5-6.5-5-4.4 6.6-.6L12 2z"/></svg>`
-          : `<svg class="w-4 h-4 text-rose-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.193-8.11C.695 9.685 2.09 5.5 5.83 4.55 8.03 3.99 10.35 4.88 12 6.7c1.65-1.82 3.97-2.71 6.17-2.15 3.74.95 5.135 5.135 3.023 8.34C18.716 16.65 12 21 12 21z"/></svg>`;
-        p.style.left = `${e.clientX}px`;
-        p.style.top = `${e.clientY}px`;
-        p.style.setProperty('--tx', `${(Math.random() - 0.5) * 140}px`);
-        p.style.setProperty('--ty', `${-70 - Math.random() * 90}px`);
-        p.style.setProperty('--rot', `${(Math.random() - 0.5) * 40}deg`);
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 1750);
-      }
-    });
 
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeModal();
